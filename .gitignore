@@ -1,24 +1,64 @@
-# Compiled class file
-*.class
-
-# Log file
+# --- IDEs & OS ---
+.idea/
+.vscode/
+*.iml
+*.swp
+.DS_Store
+Thumbs.db
 *.log
+local.properties
 
-# BlueJ files
-*.ctxt
+# --- JAVA / SPRING BOOT (Backend) ---
+**/target/
+**/build/
+**/*.class
+**/out/
+.mvn/wrapper/maven-wrapper.jar
+# Solo ignorar los ejecutables si no quieres usarlos, 
+# pero mvnw suele subirse para que otros puedan compilar.
+# mvnw
+# mvnw.cmd
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# --- ANDROID (Mobile) ---
+**/capture/
+**/.externalNativeBuild
+**/.cxx
+**/*.apk
+**/*.ap_
+**/*.dex
+**/captures/
+**/.gradle/
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+# --- NODE / REACT (Frontend) ---
+**/node_modules/
+**/dist/
+**/build/
+**/env/
+.env
+.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# --- PYTHON / ODOO ---
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+**/.venv/
+**/venv/
+**/ENV/
+
+# --- DOCKER & DATABASES ---
+# Ignora las carpetas donde los contenedores guardan los datos persistentes
+**/pgdata/
+**/mysql-data/
+**/data/
+**/*.db
+**/*.sqlite3
+
+# --- FIREBASE ---
+.firebase/
+**/firebase-debug.log
+**/firestore-debug.log
+**/ui-debug.log
