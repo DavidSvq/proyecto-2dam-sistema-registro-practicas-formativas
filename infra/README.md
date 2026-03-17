@@ -33,7 +33,7 @@ El archivo `docker-compose.yml` despliega un contenedor de **MySQL 8.0** con las
 1. **Situarse en el directorio de infraestructura:**
 
    ```Bash
-   cd docker
+   cd infra
 
 2. **Levantar el contenedor:**
 
