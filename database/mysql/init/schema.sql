@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS centros (
     codigo_centro VARCHAR(20) PRIMARY KEY,
     nombre_oficial VARCHAR(150) NOT NULL,
-    direccion_postal VARCHAR(255),
+    direccion VARCHAR(255),
     localidad VARCHAR(100),
     telefono VARCHAR(20),
     correo_institucional VARCHAR(100) UNIQUE
@@ -14,7 +14,9 @@ CREATE TABLE IF NOT EXISTS empresas (
     razon_social VARCHAR(150) NOT NULL,
     direccion VARCHAR(255),
     localidad VARCHAR(100),
-    estado_convenio ENUM('ACTIVO', 'INACTIVO') DEFAULT 'ACTIVO'
+    telefono_contacto VARCHAR(20),
+    email_contacto VARCHAR(100),
+    persona_contacto VARCHAR(100)
 );
 
 -- 3. Entidad Personal Docente
@@ -60,14 +62,14 @@ CREATE TABLE IF NOT EXISTS alumnos (
 -- --- DATOS DE PRUEBA (2 por tabla) ---
 
 -- 1. Centros
-INSERT INTO centros (codigo_centro, nombre_oficial, direccion_postal, localidad, telefono, correo_institucional) VALUES 
+INSERT INTO centros (codigo_centro, nombre_oficial, direccion, localidad, telefono, correo_institucional) VALUES 
 ('28001234', 'IES Tecnológico Siglo XXI', 'Av. de la Innovación 1', 'Madrid', '912345678', 'secretaria@iestech.es'),
 ('41005678', 'IES Al-Andalus Desarrollo', 'Calle Betis 50', 'Sevilla', '954123456', 'info@iesalandalus.es');
 
 -- 2. Empresas
-INSERT INTO empresas (cif, razon_social, direccion, localidad, estado_convenio) VALUES 
-('A12345678', 'Sistemas Digitales Avanzados S.A.', 'Parque Tecnológico Edificio A', 'Madrid', 'ACTIVO'),
-('B98765432', 'Odoo Solutions S.L.', 'Calle Progreso 12', 'Sevilla', 'ACTIVO');
+INSERT INTO empresas (cif, razon_social, direccion, localidad, telefono_contacto, email_contacto, persona_contacto) VALUES 
+('B87654321', 'Sistemas Digitales Avanzados S.A.', 'Calle de la Informática 12, Planta 4', 'Madrid', '910887766', 'contacto@sdavanzados.com', 'Carlos Ruiz'),
+('B41987654', 'Andalucía Innova Software', 'Avenida de la Palmera s/n', 'Sevilla', '954998877', 'rrhh@andinnova.es', 'Lucía Martínez');
 
 -- 3. Personal Docente (DOC001 al DOC004)
 INSERT INTO personal_docente (codigo_docente, nombre, apellidos, email, rol, fk_centro) VALUES 
