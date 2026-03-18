@@ -62,3 +62,12 @@ yarn-error.log*
 **/firebase-debug.log
 **/firestore-debug.log
 **/ui-debug.log
+
+# --- SPRING TOOLSUITE (IDE) ---
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache

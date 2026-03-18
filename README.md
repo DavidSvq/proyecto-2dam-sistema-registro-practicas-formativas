@@ -9,20 +9,21 @@ Bienvenido al repositorio central del proyecto. Aquí se gestionan la infraestru
 ### 🗄️ 1. Infraestructura de Base de Datos (MySQL)
 Configuración de Docker para MySQL 8.0 y scripts de inicialización.
 
-👉 **[Guía de configuración de Base de Datos e Infraestructura](./infra/README.md)**
+👉 **[Guia para levantar primero la bbdd del microservicio](./infra/README.md)**
 
 ---
 
-### 📦 2. Gestión y ERP (Odoo)
-Entorno de Odoo con contenedores específicos y módulos adaptados.
+### ⚙️ Microservicio de Gestión (Backend)
 
-👉 **[Ver Documentación de Odoo](./odoo/README.md)**
+Este microservicio constituye el núcleo lógico del proyecto, encargado de la persistencia de datos y la exposición de una API REST para la gestión de entidades educativas y empresariales.
 
----
+Está desarrollado con **Java 17** y **Spring Boot**, utilizando una base de datos **MySQL** para el almacenamiento. Su función principal es centralizar la información de:
 
-### ☕ 3. Backend (Spring Boot)
-*Estado: En desarrollo.*
-API REST para la gestión de lógica de negocio y persistencia.
+* **Gestión Académica:** Control de centros, profesores y alumnos.
+* **Gestión de FCT:** Administración de empresas colaboradoras y tutores de empresa.
+* **Capa de Persistencia:** Implementación de validaciones y relaciones entre entidades para asegurar la integridad de los datos.
+
+👉 **[Guia para probar el microservicio en local](./backend/backend/README.md)**
 
 ---
 
@@ -31,3 +32,5 @@ API REST para la gestión de lógica de negocio y persistencia.
 1. **Clonar el repositorio:**
    ```bash
    git clone https://github.com/DavidSvq/proyecto-dam-sistemas-registros-practicas-formativas
+
+## 📢 NOTA FINAL: ESTE PROYECTO SE ENCUENTRA ACTUALMENTE EN PLENO DESARROLLO, POR LO QUE EL CÓDIGO Y LA DOCUMENTACIÓN IRÁN SUFRIENDO MODIFICACIONES PERIÓDICAS.
