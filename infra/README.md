@@ -64,5 +64,11 @@ El archivo `docker-compose.yml` despliega un contenedor de **MySQL 8.0** con las
 
         2º
         docker-compose up -d
-> [!NOTE]
-Estado Provisional: Esta documentación se actualizará a medida que se integren los microservicios de Backend (Spring Boot).
+
+---
+
+## 📢 NOTA FINAL: ESTE PROYECTO SE ENCUENTRA ACTUALMENTE EN PLENO DESARROLLO, POR LO QUE EL CÓDIGO Y LA DOCUMENTACIÓN IRÁN SUFRIENDO MODIFICACIONES PERIÓDICAS.
+
+---
+
+⬅️ [Volver al Repositorio Principal](../README.md)
