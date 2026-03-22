@@ -16,14 +16,34 @@ public class TareaController {
 
     private final ITareaService tareaService;
 
-    // 1. EL TUTOR EMPRESA ASIGNA
-    @PostMapping("/asignar")
-    public ResponseEntity<Tarea> asignar(@RequestBody Tarea tarea) {
-        return new ResponseEntity<>(tareaService.asignarTarea(tarea), HttpStatus.CREATED);
+    // 1. CREAR TAREA (El Front envía el JSON con idAlumno, idTutor, etc.)
+    @PostMapping
+    public ResponseEntity<Tarea> crear(@RequestBody Tarea tarea) {
+        return new ResponseEntity<>(tareaService.crearTarea(tarea), HttpStatus.CREATED);
     }
 
-    // 2. EL ALUMNO ACTUALIZA (Cambio de estado y horas reales)
-    // Ej: /api/tareas/1/estado?nuevoEstado=COMPLETADA&horas=4.5
+    // 2. ASIGNAR TAREA (Activa la tarea, pone fecha y estado ASIGNADA)
+    @PutMapping("/{id}/asignar")
+    public ResponseEntity<Tarea> asignar(@PathVariable Long id) {
+        return ResponseEntity.ok(tareaService.asignarTarea(id));
+    }
+
+    // 3. MODIFICAR TAREA (Para corregir títulos o descripciones)
+    @PutMapping("/{id}")
+    public ResponseEntity<Tarea> modificar(@PathVariable Long id, @RequestBody Tarea tarea) {
+        return ResponseEntity.ok(tareaService.modificarTarea(id, tarea));
+    }
+
+    // 4. ELIMINAR TAREA
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        tareaService.eliminarTarea(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // --- GESTIÓN DE ESTADOS Y FILTROS ---
+
+    // El Alumno cambia el estado (ej: a COMPLETADA enviando horasReales)
     @PatchMapping("/{id}/estado")
     public ResponseEntity<Tarea> actualizarEstado(
             @PathVariable Long id,
@@ -32,22 +52,23 @@ public class TareaController {
         return ResponseEntity.ok(tareaService.actualizarEstadoAlumno(id, nuevoEstado, horas));
     }
 
-    // 3. EL PROFESOR REVISA
+    // El Profesor revisa la tarea
     @PatchMapping("/{id}/revisar")
     public ResponseEntity<Tarea> revisar(@PathVariable Long id) {
         return ResponseEntity.ok(tareaService.revisarTarea(id));
     }
 
-    // 4. CONSULTAS PARA EL FRONT
+    // Listado por Alumno
     @GetMapping("/alumno/{idAlumno}")
-    public ResponseEntity<List<Tarea>> listarTodas(@PathVariable String idAlumno) {
+    public ResponseEntity<List<Tarea>> listarPorAlumno(@PathVariable String idAlumno) {
         return ResponseEntity.ok(tareaService.obtenerTodasPorAlumno(idAlumno));
     }
 
-    @GetMapping("/alumno/{idAlumno}/filtro")
-    public ResponseEntity<List<Tarea>> filtrarPorEstado(
-            @PathVariable String idAlumno,
-            @RequestParam String estado) {
-        return ResponseEntity.ok(tareaService.obtenerPorAlumnoYEstado(idAlumno, estado));
+    // Listado por Tutor de Empresa y Estado
+    @GetMapping("/tutor/{idTutor}/estado/{estado}")
+    public ResponseEntity<List<Tarea>> listarPorTutorYEstado(
+            @PathVariable String idTutor,
+            @PathVariable String estado) {
+        return ResponseEntity.ok(tareaService.obtenerPorTutorEmpresaYEstado(idTutor, estado));
     }
 }

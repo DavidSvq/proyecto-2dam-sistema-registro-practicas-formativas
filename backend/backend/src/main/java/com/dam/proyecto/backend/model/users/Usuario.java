@@ -22,6 +22,9 @@ public abstract class Usuario {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @Column(nullable = false, length = 255)
+    private String password;
+
     // Métodos de lógica (se implementarán en el Service)
     public abstract void login(String email, String password);
     public abstract void recuperarPassword(String email);

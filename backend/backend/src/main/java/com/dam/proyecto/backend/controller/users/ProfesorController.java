@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.controller.users;
 
+import com.dam.proyecto.backend.model.enums.RolDocente;
 import com.dam.proyecto.backend.model.users.Profesor;
 import com.dam.proyecto.backend.service.users.IProfesorService;
 import lombok.RequiredArgsConstructor;
@@ -12,50 +13,66 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/profesores")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Permitir peticiones desde cualquier origen (ajustar en producción)
+@CrossOrigin(origins = "*")
 public class ProfesorController {
 
     private final IProfesorService profesorService;
 
-    // 1. Obtener todos
-    @GetMapping
-    public ResponseEntity<List<Profesor>> listar() {
-        return ResponseEntity.ok(profesorService.listarTodos());
+    // 1. REGISTRO: POST /api/profesores
+    @PostMapping
+    public ResponseEntity<Profesor> crearProfesor(@RequestBody Profesor profesor) {
+        // Llama a: guardar(Profesor profesor)
+        return new ResponseEntity<>(profesorService.guardar(profesor), HttpStatus.CREATED);
     }
 
-    // 2. Obtener uno por ID
+    // 2. BUSCAR POR ID: GET /api/profesores/DOC001
     @GetMapping("/{id}")
     public ResponseEntity<Profesor> obtenerPorId(@PathVariable String id) {
+        // Llama a: obtenerPorId(String idProfesor)
         return profesorService.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 3. Crear nuevo Profesor
-    @PostMapping
-    public ResponseEntity<Profesor> crear(@RequestBody Profesor profesor) {
-        Profesor nuevoProfesor = profesorService.guardar(profesor);
-        return new ResponseEntity<>(nuevoProfesor, HttpStatus.CREATED);
+    // 3. LISTAR POR CENTRO Y ROL: GET /api/profesores/centro/CEN01?rol=TUTOR
+    @GetMapping("/centro/{codCentro}")
+    public ResponseEntity<List<Profesor>> listarEquipo(
+            @PathVariable String codCentro,
+            @RequestParam(required = false) RolDocente rol) {
+
+        if (rol != null) {
+            // Llama a: listarTutoresPorCentro(String codCentro, RolDocente rol)
+            return ResponseEntity.ok(profesorService.listarTutoresPorCentro(codCentro, rol));
+        }
+        // Llama a: listarPorCentro(String codCentro)
+        return ResponseEntity.ok(profesorService.listarPorCentro(codCentro));
     }
 
-    // 4. Actualizar Profesor
+    // 4. ACTUALIZAR: PUT /api/profesores/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Profesor> actualizar(@PathVariable String id, @RequestBody Profesor profesor) {
-        return profesorService.obtenerPorId(id)
-                .map(p -> {
-                    profesor.setId(id); // Aseguramos que mantenga el ID de la URL
-                    return ResponseEntity.ok(profesorService.guardar(profesor));
-                })
-                .orElse(ResponseEntity.notFound().build());
+        try {
+            // Llama a: actualizar(String idProfesor, Profesor datosNuevos)
+            return ResponseEntity.ok(profesorService.actualizar(id, profesor));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // 5. Eliminar Profesor
+    // 5. ELIMINAR: DELETE /api/profesores/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable String id) {
-        if (profesorService.obtenerPorId(id).isPresent()) {
-            profesorService.eliminar(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        // Llama a: eliminarProfesor(String idProfesor)
+        profesorService.eliminarProfesor(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 6. VER EL PROFESOR DE UN ALUMNO: GET /api/profesores/alumno/ALU01
+    @GetMapping("/alumno/{idAlumno}")
+    public ResponseEntity<Profesor> obtenerTutorDeAlumno(@PathVariable String idAlumno) {
+        // Llama a: obtenerProfesorDeAlumno(String idAlumno)
+        return profesorService.obtenerProfesorDeAlumno(idAlumno)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

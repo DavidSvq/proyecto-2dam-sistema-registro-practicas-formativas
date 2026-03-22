@@ -2,6 +2,8 @@ package com.dam.proyecto.backend.repository;
 
 import com.dam.proyecto.backend.model.Tarea;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -9,19 +11,19 @@ import java.util.List;
 @Repository
 public interface TareaRepository extends JpaRepository<Tarea, Long> {
 
-    // A. LISTADO COMPLETO (Para que el Front gestione filtros o el Alumno vea su historial)
-    // El "OrderBy" asegura que lo último que se le asignó salga arriba.
-    List<Tarea> findByAlumno_IdOrderByFechaAsignacionDesc(String idAlumno);
+    // A. LISTADO POR ALUMNO (Respetando 'idAlumno')
+    @Query("SELECT t FROM Tarea t WHERE t.alumno.id = :idAlumno ORDER BY t.fechaAsignacion DESC")
+    List<Tarea> findByAlumno_IdOrderByFechaAsignacionDesc(@Param("idAlumno") String idAlumno);
 
-    // B. BÚSQUEDA POR ESTADO (Lo que pediste: buscar por cualquier estado)
-    // Útil para: "Ver solo mis tareas CANCELADAS" o "Ver solo las EN_PROGRESO"
-    List<Tarea> findByAlumno_IdAndEstado(String idAlumno, String estado);
+    // B. BÚSQUEDA POR ALUMNO Y ESTADO (Respetando 'idAlumno' y 'estado')
+    @Query("SELECT t FROM Tarea t WHERE t.alumno.id = :idAlumno AND t.estado = :estado")
+    List<Tarea> findByAlumno_IdAndEstado(@Param("idAlumno") String idAlumno, @Param("estado") String estado);
 
-    // C. BÚSQUEDA PARA EL TUTOR DE EMPRESA
-    // Para que el tutor vea qué alumnos tienen tareas 'REASIGNADAS' o 'COMPLETADAS'
-    List<Tarea> findByTutorEmpresa_IdAndEstado(String codigoTutor, String estado);
+    // C. BÚSQUEDA PARA EL TUTOR DE EMPRESA (Respetando 'codigoTutor' y 'estado')
+    @Query("SELECT t FROM Tarea t WHERE t.tutorEmpresa.id = :codigoTutor AND t.estado = :estado")
+    List<Tarea> findByTutorEmpresa_IdAndEstado(@Param("codigoTutor") String codigoTutor, @Param("estado") String estado);
 
-    // D. BÚSQUEDA PARA EL PROFESOR-TUTOR
-    // Solo le interesan las que el alumno marcó como 'COMPLETADA' para ponerlas como 'REVISADA'
-    List<Tarea> findByProfesorTutor_IdAndEstado(String idProfesor, String estado);
+    // D. BÚSQUEDA PARA EL PROFESOR-TUTOR (Respetando 'idProfesor' y 'estado')
+    @Query("SELECT t FROM Tarea t WHERE t.profesorTutor.id = :idProfesor AND t.estado = :estado")
+    List<Tarea> findByProfesorTutor_IdAndEstado(@Param("idProfesor") String idProfesor, @Param("estado") String estado);
 }

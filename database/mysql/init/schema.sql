@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS personal_docente (
     nombre VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL DEFAULT '1234',
     rol ENUM('GESTOR', 'TUTOR') NOT NULL,
     num_alumnos INT DEFAULT 0,
     fk_centro VARCHAR(20),
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS tutores_empresa (
     nombre VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL DEFAULT '1234',
     num_alumnos INT DEFAULT 0,
     fk_empresa VARCHAR(15),
     FOREIGN KEY (fk_empresa) REFERENCES empresas(cif)
@@ -48,6 +50,7 @@ CREATE TABLE IF NOT EXISTS alumnos (
     nombre VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL DEFAULT '1234',
     horas_totales INT DEFAULT 0,
     fk_centro VARCHAR(20),
     fk_empresa VARCHAR(15),
@@ -140,28 +143,27 @@ INSERT INTO tutores_empresa (codigo_tutor, nombre, apellidos, email, fk_empresa)
 ('TUT006', 'Irene', 'Empresa6', 'irene@odoo.es', 'CIF006');
 
 -- 5. Alumnos (REFERENCIAS CORREGIDAS A DOC Y TUT)
-INSERT INTO alumnos (id_codigo_alumno, nombre, apellidos, email, fk_centro, fk_empresa, fk_profesor, fk_tutor) VALUES 
-('ALU01', 'Alumno', 'Uno', 'alu01@gmail.com', 'CEN01', 'CIF001', 'DOC002', 'TUT001'),
-('ALU02', 'Alumno', 'Dos', 'alu02@gmail.com', 'CEN01', 'CIF001', 'DOC002', 'TUT001'),
-('ALU03', 'Alumno', 'Tres', 'alu03@gmail.com', 'CEN01', 'CIF002', 'DOC002', 'TUT002'),
-('ALU04', 'Alumno', 'Cuatro', 'alu04@gmail.com', 'CEN01', 'CIF002', 'DOC003', 'TUT002'),
-('ALU05', 'Alumno', 'Cinco', 'alu05@gmail.com', 'CEN01', 'CIF005', 'DOC003', 'TUT005'),
-('ALU06', 'Alumno', 'Seis', 'alu06@gmail.com', 'CEN01', 'CIF005', 'DOC004', 'TUT005'),
-('ALU07', 'Alumno', 'Siete', 'alu07@gmail.com', 'CEN01', 'CIF001', 'DOC004', 'TUT001'),
-('ALU08', 'Alumno', 'Ocho', 'alu08@gmail.com', 'CEN01', 'CIF002', 'DOC002', 'TUT002'),
-('ALU09', 'Alumno', 'Nueve', 'alu09@gmail.com', 'CEN01', 'CIF005', 'DOC003', 'TUT005'),
-('ALU10', 'Alumno', 'Diez', 'alu10@gmail.com', 'CEN01', 'CIF001', 'DOC004', 'TUT001'),
-('ALU11', 'Alumno', 'Once', 'alu11@gmail.com', 'CEN02', 'CIF003', 'DOC005', 'TUT003'),
-('ALU12', 'Alumno', 'Doce', 'alu12@gmail.com', 'CEN02', 'CIF003', 'DOC005', 'TUT003'),
-('ALU13', 'Alumno', 'Trece', 'alu13@gmail.com', 'CEN02', 'CIF004', 'DOC006', 'TUT004'),
-('ALU14', 'Alumno', 'Catorce', 'alu14@gmail.com', 'CEN02', 'CIF004', 'DOC006', 'TUT004'),
-('ALU15', 'Alumno', 'Quince', 'alu15@gmail.com', 'CEN02', 'CIF006', 'DOC007', 'TUT006'),
-('ALU16', 'Alumno', 'Dieciséis', 'alu16@gmail.com', 'CEN02', 'CIF006', 'DOC007', 'TUT006'),
-('ALU17', 'Alumno', 'Diecisiete', 'alu17@gmail.com', 'CEN02', 'CIF003', 'DOC008', 'TUT003'),
-('ALU18', 'Alumno', 'Dieciocho', 'alu18@gmail.com', 'CEN02', 'CIF004', 'DOC008', 'TUT004'),
-('ALU19', 'Alumno', 'Diecinueve', 'alu19@gmail.com', 'CEN02', 'CIF006', 'DOC005', 'TUT006'),
-('ALU20', 'Alumno', 'Veinte', 'alu20@gmail.com', 'CEN02', 'CIF003', 'DOC006', 'TUT003');
-
+INSERT INTO alumnos (id_codigo_alumno, nombre, apellidos, email, password, fk_centro, fk_empresa, fk_profesor, fk_tutor) VALUES 
+('ALU01', 'Alumno', 'Uno', 'alu01@gmail.com', '1234', 'CEN01', 'CIF001', 'DOC002', 'TUT001'),
+('ALU02', 'Alumno', 'Dos', 'alu02@gmail.com', '1234', 'CEN01', 'CIF001', 'DOC002', 'TUT001'),
+('ALU03', 'Alumno', 'Tres', 'alu03@gmail.com', '1234', 'CEN01', 'CIF002', 'DOC002', 'TUT002'),
+('ALU04', 'Alumno', 'Cuatro', 'alu04@gmail.com', '1234', 'CEN01', 'CIF002', 'DOC003', 'TUT002'),
+('ALU05', 'Alumno', 'Cinco', 'alu05@gmail.com', '1234', 'CEN01', 'CIF005', 'DOC003', 'TUT005'),
+('ALU06', 'Alumno', 'Seis', 'alu06@gmail.com', '1234', 'CEN01', 'CIF005', 'DOC004', 'TUT005'),
+('ALU07', 'Alumno', 'Siete', 'alu07@gmail.com', '1234', 'CEN01', 'CIF001', 'DOC004', 'TUT001'),
+('ALU08', 'Alumno', 'Ocho', 'alu08@gmail.com', '1234', 'CEN01', 'CIF002', 'DOC002', 'TUT002'),
+('ALU09', 'Alumno', 'Nueve', 'alu09@gmail.com', '1234', 'CEN01', 'CIF005', 'DOC003', 'TUT005'),
+('ALU10', 'Alumno', 'Diez', 'alu10@gmail.com', '1234', 'CEN01', 'CIF001', 'DOC004', 'TUT001'),
+('ALU11', 'Alumno', 'Once', 'alu11@gmail.com', '1234', 'CEN02', 'CIF003', 'DOC005', 'TUT003'),
+('ALU12', 'Alumno', 'Doce', 'alu12@gmail.com', '1234', 'CEN02', 'CIF003', 'DOC005', 'TUT003'),
+('ALU13', 'Alumno', 'Trece', 'alu13@gmail.com', '1234', 'CEN02', 'CIF004', 'DOC006', 'TUT004'),
+('ALU14', 'Alumno', 'Catorce', 'alu14@gmail.com', '1234', 'CEN02', 'CIF004', 'DOC006', 'TUT004'),
+('ALU15', 'Alumno', 'Quince', 'alu15@gmail.com', '1234', 'CEN02', 'CIF006', 'DOC007', 'TUT006'),
+('ALU16', 'Alumno', 'Dieciséis', 'alu16@gmail.com', '1234', 'CEN02', 'CIF006', 'DOC007', 'TUT006'),
+('ALU17', 'Alumno', 'Diecisiete', 'alu17@gmail.com', '1234', 'CEN02', 'CIF003', 'DOC008', 'TUT003'),
+('ALU18', 'Alumno', 'Dieciocho', 'alu18@gmail.com', '1234', 'CEN02', 'CIF004', 'DOC008', 'TUT004'),
+('ALU19', 'Alumno', 'Diecinueve', 'alu19@gmail.com', '1234', 'CEN02', 'CIF006', 'DOC005', 'TUT006'),
+('ALU20', 'Alumno', 'Veinte', 'alu20@gmail.com', '1234', 'CEN02', 'CIF003', 'DOC006', 'TUT003');
 -- 6. Datos de Prueba para Asistencias (4 registros para 6 alumnos distintos)
 -- Los IDs son autoincrementales, por lo que no los incluyo en el INSERT.
 

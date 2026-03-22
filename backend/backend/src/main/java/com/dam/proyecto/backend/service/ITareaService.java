@@ -7,27 +7,27 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 public interface ITareaService {
-    // 1. ASIGNACIÓN (Tutor de Empresa)
-    // El estado inicial será 'ASIGNADA'
-    Tarea asignarTarea(Tarea tarea);
 
-    // 2. GESTIÓN DE ESTADOS (Alumno)
-    // Para cambiar a: EN_PROGRESO, COMPLETADA, REASIGNADA, CANCELADA
-    // Si el estado es 'COMPLETADA', se guardan las horasReales
+    // 1. PERSISTENCIA PURA (Nueva)
+    // Solo guarda el objeto en la BD sin tocar estados ni fechas
+    Tarea crearTarea(Tarea tarea);
+
+    // 2. ASIGNACIÓN (Tutor de Empresa) - Modificado
+    // Aquí es donde se aplica la lógica de 'ASIGNADA', fecha y horas 0.0
+    Tarea asignarTarea(Long idTarea);
+
+    // 3. EDICIÓN Y BORRADO (Nuevas)
+    Tarea modificarTarea(Long idTarea, Tarea tareaModificada);
+    void eliminarTarea(Long idTarea);
+
+    // 4. GESTIÓN DE ESTADOS (Alumno) - Manteniendo tus parámetros
     Tarea actualizarEstadoAlumno(Long idTarea, String nuevoEstado, Double horasReales);
 
-    // 3. VALIDACIÓN (Profesor-Tutor)
-    // Pasa la tarea de 'COMPLETADA' a 'REVISADA'
+    // 5. VALIDACIÓN (Profesor-Tutor)
     Tarea revisarTarea(Long idTarea);
 
-    // 4. CONSULTAS Y FILTROS
-    // Listado general por fecha descendente
+    // 6. CONSULTAS Y FILTROS - Respetando tus nombres de parámetros
     List<Tarea> obtenerTodasPorAlumno(String idAlumno);
-
-    // Búsqueda específica por estado (Tu petición)
-    // Útil para los botones de filtro: "Ver Pendientes", "Ver Canceladas", etc.
     List<Tarea> obtenerPorAlumnoYEstado(String idAlumno, String estado);
-
-    // Consulta para el Tutor de Empresa (Ver qué ha asignado él)
     List<Tarea> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, String estado);
 }

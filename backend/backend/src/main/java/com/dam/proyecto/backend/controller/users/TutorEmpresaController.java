@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.controller.users;
 
+import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.model.users.TutorEmpresa;
 import com.dam.proyecto.backend.service.users.ITutorEmpresaService;
 import lombok.RequiredArgsConstructor;
@@ -17,31 +18,44 @@ public class TutorEmpresaController {
 
     private final ITutorEmpresaService tutorService;
 
-    @GetMapping
-    public ResponseEntity<List<TutorEmpresa>> listar() {
-        return ResponseEntity.ok(tutorService.listarTodos());
+    // --- ACCIONES DEL PROFESOR GESTOR ---
+
+    @PostMapping("/empresa/{cifEmpresa}")
+    public ResponseEntity<TutorEmpresa> registrar(@RequestBody TutorEmpresa tutor, @PathVariable String cifEmpresa) {
+        // Llama a: registrarTutorEmpresa(TutorEmpresa tutor, String cifEmpresa)
+        return new ResponseEntity<>(tutorService.registrarTutorEmpresa(tutor, cifEmpresa), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TutorEmpresa> obtenerPorId(@PathVariable String id) {
-        return tutorService.obtenerPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PutMapping("/{idTutor}")
+    public ResponseEntity<TutorEmpresa> actualizar(@PathVariable String idTutor, @RequestBody TutorEmpresa tutor) {
+        // Llama a: actualizarTutorEmpresa(String idTutor, TutorEmpresa datosNuevos)
+        return ResponseEntity.ok(tutorService.actualizarTutor(idTutor, tutor));
     }
 
-    @GetMapping("/empresa/{cif}")
-    public ResponseEntity<List<TutorEmpresa>> listarPorEmpresa(@PathVariable String cif) {
-        return ResponseEntity.ok(tutorService.listarPorEmpresa(cif));
-    }
-
-    @PostMapping
-    public ResponseEntity<TutorEmpresa> crear(@RequestBody TutorEmpresa tutor) {
-        return new ResponseEntity<>(tutorService.guardar(tutor), HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable String id) {
-        tutorService.eliminar(id);
+    @DeleteMapping("/{idTutor}")
+    public ResponseEntity<Void> eliminar(@PathVariable String idTutor) {
+        // Llama a: eliminarTutorEmpresa(String idTutor)
+        tutorService.eliminarTutor(idTutor);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/empresa/{cifEmpresa}")
+    public ResponseEntity<List<TutorEmpresa>> listarPorEmpresa(@PathVariable String cifEmpresa) {
+        // Llama a: listarTutoresPorEmpresa(String cifEmpresa)
+        return ResponseEntity.ok(tutorService.listarPorEmpresa(cifEmpresa));
+    }
+
+    // --- ACCIONES DEL TUTOR DE EMPRESA ---
+
+    @GetMapping("/{idTutor}/alumnos")
+    public ResponseEntity<List<Alumno>> listarMisAlumnos(@PathVariable String idTutor) {
+        // Llama a: listarMisAlumnos(String idTutor)
+        return ResponseEntity.ok(tutorService.listarMisAlumnos(idTutor));
+    }
+
+    @GetMapping("/{idTutor}/perfil")
+    public ResponseEntity<TutorEmpresa> obtenerPerfil(@PathVariable String idTutor) {
+        // Llama a: obtenerPerfil(String idTutor)
+        return ResponseEntity.ok(tutorService.obtenerPerfil(idTutor));
     }
 }

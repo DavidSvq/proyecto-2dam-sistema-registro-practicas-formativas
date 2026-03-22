@@ -1,20 +1,14 @@
-package com.dam.proyecto.backend.service;
-import com.dam.proyecto.backend.model.Asistencia;
+package com.dam.proyecto.backend.service.impl;
 import com.dam.proyecto.backend.model.Tarea;
-import com.dam.proyecto.backend.model.users.Alumno;
-import com.dam.proyecto.backend.repository.AsistenciaRepository;
 import com.dam.proyecto.backend.repository.TareaRepository;
-import com.dam.proyecto.backend.repository.users.AlumnoRepository;
-import com.dam.proyecto.backend.service.IAsistenciaService;
+import com.dam.proyecto.backend.service.ITareaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.Duration;
+
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -24,17 +18,59 @@ public class TareaServiceImpl implements ITareaService {
 
     private final TareaRepository tareaRepository;
 
+    // 1. CREACIÓN PURA
     @Override
     @Transactional
-    public Tarea asignarTarea(Tarea tarea) {
-        log.info("Tutor de Empresa asignando nueva tarea: {}", tarea.getTitulo());
-        tarea.setEstado("ASIGNADA");
-        tarea.setFechaAsignacion(LocalDate.now());
-        tarea.setHorasReales(0.0);
-        // Aquí en el futuro llamarás al microservicio de ML para setear horasEstimadasIA
+    public Tarea crearTarea(Tarea tarea) {
+        log.info("Persistiendo nueva tarea en borrador: {}", tarea.getTitulo());
+        // Solo guarda, no dispara estados ni fechas aún
         return tareaRepository.save(tarea);
     }
 
+    // 2. ASIGNACIÓN (Lógica de Negocio)
+    @Override
+    @Transactional
+    public Tarea asignarTarea(Long idTarea) {
+        Tarea tarea = tareaRepository.findById(idTarea)
+                .orElseThrow(() -> new RuntimeException("No se puede asignar: Tarea no encontrada"));
+
+        log.info("Tutor de Empresa activando/asignando tarea ID: {}", idTarea);
+
+        tarea.setEstado("ASIGNADA");
+        tarea.setFechaAsignacion(LocalDate.now());
+        tarea.setHorasReales(0.0);
+
+        // Aquí es donde en el futuro integrarás el microservicio de IA para horas estimadas
+        return tareaRepository.save(tarea);
+    }
+
+    // 3. EDICIÓN
+    @Override
+    @Transactional
+    public Tarea modificarTarea(Long idTarea, Tarea tareaModificada) {
+        Tarea existente = tareaRepository.findById(idTarea)
+                .orElseThrow(() -> new RuntimeException("No se puede modificar: Tarea no encontrada"));
+
+        log.info("Modificando contenido de la tarea ID: {}", idTarea);
+        existente.setTitulo(tareaModificada.getTitulo());
+        existente.setDescripcion(tareaModificada.getDescripcion());
+        // Podrías añadir más campos editables según tu entidad
+
+        return tareaRepository.save(existente);
+    }
+
+    // 4. ELIMINACIÓN
+    @Override
+    @Transactional
+    public void eliminarTarea(Long idTarea) {
+        if (!tareaRepository.existsById(idTarea)) {
+            throw new RuntimeException("La tarea a eliminar no existe.");
+        }
+        log.warn("Eliminando tarea ID: {}", idTarea);
+        tareaRepository.deleteById(idTarea);
+    }
+
+    // 5. GESTIÓN DE ESTADOS (Tu lógica original de Alumno)
     @Override
     @Transactional
     public Tarea actualizarEstadoAlumno(Long idTarea, String nuevoEstado, Double horasReales) {
@@ -43,10 +79,9 @@ public class TareaServiceImpl implements ITareaService {
 
         log.info("Alumno cambiando estado de tarea {} a {}", idTarea, nuevoEstado);
 
-        // Lógica de negocio para las horas reales
         if ("COMPLETADA".equalsIgnoreCase(nuevoEstado)) {
             if (horasReales == null || horasReales <= 0) {
-                throw new IllegalArgumentException("Para completar la tarea debes indicar las horas reales invertidas.");
+                throw new IllegalArgumentException("Para completar la tarea debes indicar las horas reales.");
             }
             tarea.setHorasReales(horasReales);
         }
@@ -55,6 +90,7 @@ public class TareaServiceImpl implements ITareaService {
         return tareaRepository.save(tarea);
     }
 
+    // 6. VALIDACIÓN (Tu lógica original de Profesor)
     @Override
     @Transactional
     public Tarea revisarTarea(Long idTarea) {
@@ -62,13 +98,14 @@ public class TareaServiceImpl implements ITareaService {
                 .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
 
         if (!"COMPLETADA".equalsIgnoreCase(tarea.getEstado())) {
-            throw new IllegalStateException("El profesor solo puede revisar tareas que el alumno haya marcado como COMPLETADA.");
+            throw new IllegalStateException("Solo se pueden revisar tareas COMPLETADAS.");
         }
 
-        log.info("Profesor-Tutor validando tarea ID: {}", idTarea);
         tarea.setEstado("REVISADA");
         return tareaRepository.save(tarea);
     }
+
+    // --- MÉTODOS DE CONSULTA (Usando los métodos del Repo con @Query) ---
 
     @Override
     @ReadOnlyProperty
