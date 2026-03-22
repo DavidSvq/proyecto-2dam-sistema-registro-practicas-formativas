@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/empresas")
-@CrossOrigin(origins = "*") // Permite que tu futuro Frontend en React/Angular se conecte sin bloqueos
+@CrossOrigin(origins = "*")
 public class EmpresaController {
 
     private final IEmpresaService empresaService;
@@ -19,51 +19,53 @@ public class EmpresaController {
         this.empresaService = empresaService;
     }
 
-    // LISTAR TODAS: GET http://localhost:8088/api/empresas
-    @GetMapping
-    public ResponseEntity<List<Empresa>> listarTodas() {
-        List<Empresa> lista = empresaService.listarTodas();
-        return ResponseEntity.ok(lista);
-    }
-
-    // BUSCAR UNA: GET http://localhost:8088/api/empresas/{cif}
+    // 1. BUSCAR POR CIF (DETALLE): GET /api/empresas/{cif}
     @GetMapping("/{cif}")
     public ResponseEntity<Empresa> obtenerPorCif(@PathVariable String cif) {
-        return empresaService.buscarPorCif(cif)
+        return empresaService.obtenerPorCif(cif)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // CREAR: POST http://localhost:8088/api/empresas
-    @PostMapping
-    public ResponseEntity<Empresa> crear(@RequestBody Empresa empresa) {
-        try {
-            Empresa nueva = empresaService.guardar(empresa);
-            return new ResponseEntity<>(nueva, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    // 2. BUSCADOR POR NOMBRE: GET /api/empresas/buscar?nombre=Tech
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Empresa>> buscarPorNombre(@RequestParam String nombre) {
+        return ResponseEntity.ok(empresaService.buscarPorNombre(nombre));
     }
 
-    // ACTUALIZAR: PUT http://localhost:8088/api/empresas/{cif}
+    // 3. LISTAR POR CENTRO: GET /api/empresas/centro/CEN01
+    @GetMapping("/centro/{codigoCentro}")
+    public ResponseEntity<List<Empresa>> listarPorCentro(@PathVariable String codigoCentro) {
+        return ResponseEntity.ok(empresaService.listarEmpresasPorCentro(codigoCentro));
+    }
+
+    // 4. EMPRESA DE UN ALUMNO: GET /api/empresas/alumno/ALU01
+    @GetMapping("/alumno/{idAlumno}")
+    public ResponseEntity<Empresa> obtenerEmpresaDeAlumno(@PathVariable String idAlumno) {
+        return empresaService.obtenerEmpresaDeAlumno(idAlumno)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 5. CREAR: POST /api/empresas
+    @PostMapping
+    public ResponseEntity<Empresa> crear(@RequestBody Empresa empresa) {
+        return new ResponseEntity<>(empresaService.guardar(empresa), HttpStatus.CREATED);
+    }
+
+    // 6. ACTUALIZAR: PUT /api/empresas/{cif}
     @PutMapping("/{cif}")
     public ResponseEntity<Empresa> actualizar(@PathVariable String cif, @RequestBody Empresa empresa) {
         try {
-            Empresa actualizada = empresaService.actualizar(cif, empresa);
-            return ResponseEntity.ok(actualizada);
+            return ResponseEntity.ok(empresaService.actualizar(cif, empresa));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // ELIMINAR: DELETE http://localhost:8088/api/empresas/{cif}
     @DeleteMapping("/{cif}")
     public ResponseEntity<Void> eliminar(@PathVariable String cif) {
-        try {
-            empresaService.eliminar(cif);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        empresaService.eliminar(cif);
+        return ResponseEntity.noContent().build();
     }
 }

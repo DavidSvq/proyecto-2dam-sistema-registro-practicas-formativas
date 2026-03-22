@@ -14,23 +14,11 @@ public class EmpresaServiceImpl implements IEmpresaService {
 
     private final EmpresaRepository empresaRepository;
 
-    // Inyección por constructor (la forma recomendada en Spring)
     public EmpresaServiceImpl(EmpresaRepository empresaRepository) {
         this.empresaRepository = empresaRepository;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Empresa> listarTodas() {
-        return empresaRepository.findAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Empresa> buscarPorCif(String cif) {
-        return empresaRepository.findById(cif);
-    }
-
+    // 1. GUARDAR / ACTUALIZAR
     @Override
     @Transactional
     public Empresa guardar(Empresa empresa) {
@@ -40,9 +28,8 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Override
     @Transactional
     public Empresa actualizar(String cif, Empresa empresaActualizada) {
-        return empresaRepository.findById(cif)
+        return empresaRepository.findByCif(cif)
                 .map(empresa -> {
-                    // Actualizamos campo a campo para mayor seguridad
                     empresa.setRazonSocial(empresaActualizada.getRazonSocial());
                     empresa.setDireccion(empresaActualizada.getDireccion());
                     empresa.setLocalidad(empresaActualizada.getLocalidad());
@@ -51,12 +38,43 @@ public class EmpresaServiceImpl implements IEmpresaService {
                     empresa.setPersonaContacto(empresaActualizada.getPersonaContacto());
                     return empresaRepository.save(empresa);
                 })
-                .orElseThrow(() -> new RuntimeException("No se encontró la empresa con CIF: " + cif));
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada con CIF: " + cif));
     }
 
     @Override
     @Transactional
     public void eliminar(String cif) {
+        if (!empresaRepository.existsById(cif)) {
+            throw new RuntimeException("No se puede eliminar: Empresa con CIF " + cif + " no encontrada.");
+        }
         empresaRepository.deleteById(cif);
+    }
+
+    // 2. OBTENER POR CIF (EL DETALLE)
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Empresa> obtenerPorCif(String cif) {
+        return empresaRepository.findByCif(cif);
+    }
+
+    // 3. BUSCADOR POR NOMBRE
+    @Override
+    @Transactional(readOnly = true)
+    public List<Empresa> buscarPorNombre(String nombre) {
+        return empresaRepository.findByRazonSocialContainingIgnoreCase(nombre);
+    }
+
+    // 4. LISTAR POR CENTRO (USANDO LA NATIVE QUERY)
+    @Override
+    @Transactional(readOnly = true)
+    public List<Empresa> listarEmpresasPorCentro(String codigoCentro) {
+        return empresaRepository.findEmpresasByCodigoCentro(codigoCentro);
+    }
+
+    // 5. OBTENER LA EMPRESA DE UN ALUMNO (USANDO LA NATIVE QUERY)
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Empresa> obtenerEmpresaDeAlumno(String idAlumno) {
+        return empresaRepository.findByAlumnoId(idAlumno);
     }
 }

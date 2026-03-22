@@ -2,12 +2,13 @@ package com.dam.proyecto.backend.controller;
 
 import com.dam.proyecto.backend.model.CentroDocente;
 import com.dam.proyecto.backend.service.ICentroDocenteService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/centros") // Todas las URLs de este controlador empezarán por aquí
-@CrossOrigin(origins = "*")    // Para que React no tenga problemas de permisos (CORS)
+@RequestMapping("/api/centros")
+@CrossOrigin(origins = "*")
 public class CentroDocenteController {
 
     private final ICentroDocenteService centroService;
@@ -16,18 +17,49 @@ public class CentroDocenteController {
         this.centroService = centroService;
     }
 
-    // GET: http://localhost:8088/api/centros/{codigo}
-    @GetMapping("/{codigo}")
-    public ResponseEntity<CentroDocente> obtenerCentro(@PathVariable String codigo) {
-        return centroService.buscarPorCodigo(codigo)
-                .map(centro -> ResponseEntity.ok().body(centro)) // Si existe, devuelve 200 OK + el centro
-                .orElse(ResponseEntity.notFound().build());      // Si no existe, devuelve 404 Not Found
+    // 1. ACCESO RÁPIDO AL CENTRO PRINCIPAL: GET /api/centros/principal
+    // Ideal para cargar la cabecera de la App sin saber el código.
+    @GetMapping("/principal")
+    public ResponseEntity<CentroDocente> obtenerCentroPrincipal() {
+        return centroService.obtenerCentroPrincipal()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // POST: http://localhost:8088/api/centros (Para guardar o actualizar)
+    // 2. DETALLE POR CÓDIGO: GET /api/centros/CEN01
+    @GetMapping("/{codigo}")
+    public ResponseEntity<CentroDocente> obtenerPorCodigo(@PathVariable String codigo) {
+        return centroService.obtenerPorCodigo(codigo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 3. CENTRO DE UN ALUMNO: GET /api/centros/alumno/ALU01
+    @GetMapping("/alumno/{idAlumno}")
+    public ResponseEntity<CentroDocente> obtenerCentroDeAlumno(@PathVariable String idAlumno) {
+        return centroService.obtenerCentroDeAlumno(idAlumno)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 4. CREAR: POST /api/centros
     @PostMapping
-    public ResponseEntity<CentroDocente> guardarCentro(@RequestBody CentroDocente centro) {
-        CentroDocente guardado = centroService.guardarOActualizar(centro);
-        return ResponseEntity.ok(guardado);
+    public ResponseEntity<CentroDocente> crear(@RequestBody CentroDocente centro) {
+        return new ResponseEntity<>(centroService.guardar(centro), HttpStatus.CREATED);
+    }
+
+    // 5. ACTUALIZAR: PUT /api/centros/{codigo}
+    @PutMapping("/{codigo}")
+    public ResponseEntity<CentroDocente> actualizar(@PathVariable String codigo, @RequestBody CentroDocente centro) {
+        try {
+            return ResponseEntity.ok(centroService.actualizar(codigo, centro));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable String id) {
+        centroService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
