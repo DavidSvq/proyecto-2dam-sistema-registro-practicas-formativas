@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS empresas (
     direccion VARCHAR(255),
     localidad VARCHAR(100),
     telefono_contacto VARCHAR(20),
-    email_contacto VARCHAR(100),
+    email_contacto VARCHAR(100),. RESP
     persona_contacto VARCHAR(100)
 );
 
@@ -93,9 +93,9 @@ CREATE TABLE IF NOT EXISTS tareas (
     horas_reales DECIMAL(5,2) DEFAULT 0.0,
 
     -- RELACIONES (FKs)
-    fk_tutor_empresa VARCHAR(50) NOT NULL, -- EL QUE CREA Y ASIGNA
-    fk_alumno VARCHAR(50) NOT NULL,        -- EL QUE REALIZA Y MARCA COMO COMPLETADA
-    fk_profesor_tutor VARCHAR(50),         -- EL QUE REVISA Y VALIDA FINALMENTE
+    fk_tutor_empresa VARCHAR(20) NOT NULL, -- EL QUE CREA Y ASIGNA
+    fk_alumno VARCHAR(20) NOT NULL,        -- EL QUE REALIZA Y MARCA COMO COMPLETADA
+    fk_profesor_tutor VARCHAR(20),         -- EL QUE REVISA Y VALIDA FINALMENTE
 
     CONSTRAINT fk_tarea_tutor_empresa FOREIGN KEY (fk_tutor_empresa) 
         REFERENCES tutores_empresa(codigo_tutor),
