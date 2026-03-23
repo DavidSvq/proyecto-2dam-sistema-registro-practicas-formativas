@@ -1,0 +1,19 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_dam_project
+    restart: always
+    environment:
+      # Estos 4 nombres son los que usan en el application.properties de Spring
+      MYSQL_DATABASE: dam_project_db
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: dam_user
+      MYSQL_PASSWORD: dam_password
+    ports:
+      - "3308:3306"
+    volumes:
+      - ../database/mysql/init:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
