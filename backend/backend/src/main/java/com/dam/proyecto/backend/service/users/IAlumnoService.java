@@ -1,6 +1,9 @@
 package com.dam.proyecto.backend.service.users;
 
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Alumno;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +20,14 @@ public interface IAlumnoService {
     void eliminar(String idAlumno);
 
 
+    // --- Login ---
+    Alumno login(String email, String password, RolUsuario rol);
+
+    // --- Recuperar / actualizar contraseña ---
+    void recuperarPassword(String email, String nuevaPassword);
+
     // --- BÚSQUEDAS CRÍTICAS ---
+    //Optional<Alumno> findByEmail(String email);
     Optional<Alumno> obtenerPorId(String idAlumno);
 
     // Para que el Gestor vea a TODOS sus alumnos

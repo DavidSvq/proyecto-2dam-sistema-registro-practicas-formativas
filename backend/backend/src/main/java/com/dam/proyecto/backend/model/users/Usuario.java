@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.model.users;
 
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +26,11 @@ public abstract class Usuario {
     @Column(nullable = false, length = 255)
     private String password;
 
+    @Enumerated(EnumType.STRING) // Guardará el nombre del enum en la BD
+    @Column(nullable = false, length = 50)
+    private RolUsuario rol;
+
     // Métodos de lógica (se implementarán en el Service)
-    public abstract void login(String email, String password);
-    public abstract void recuperarPassword(String email);
+    public abstract void login(String email, String password, RolUsuario rol);
+    public abstract void recuperarPassword(String email, String nuevaPassword);
 }

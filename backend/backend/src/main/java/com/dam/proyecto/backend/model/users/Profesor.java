@@ -1,7 +1,7 @@
 package com.dam.proyecto.backend.model.users;
 
 import com.dam.proyecto.backend.model.CentroDocente;
-import com.dam.proyecto.backend.model.enums.RolDocente;
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,9 +16,9 @@ import lombok.*;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Profesor extends Usuario {
 
-    @Enumerated(EnumType.STRING)
+   /* @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RolDocente rol;
+    private RolDocente rol;*/
 
     @Column(name = "num_alumnos")
     private Integer numAlumnos = 0;
@@ -29,12 +29,12 @@ public class Profesor extends Usuario {
     private CentroDocente centro;
 
     @Override
-    public void login(String email, String password) {
+    public void login(String email, String password, RolUsuario rol) {
         // Lógica de autenticación
     }
 
     @Override
-    public void recuperarPassword(String email) {
+    public void recuperarPassword(String email, String nuevaPassword) {
         // Lógica de recuperación
     }
 }

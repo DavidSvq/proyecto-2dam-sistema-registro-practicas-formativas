@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/alumnos")
@@ -18,6 +19,34 @@ public class AlumnoController {
 
     public AlumnoController(IAlumnoService alumnoService) {
         this.alumnoService = alumnoService;
+    }
+
+    // LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<Alumno> login(@RequestBody Alumno alumno) {
+        try {
+            Alumno logged = alumnoService.login(
+                    alumno.getEmail(),
+                    alumno.getPassword(),
+                    alumno.getRol()
+            );
+            return ResponseEntity.ok(logged);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    // --- Recuperar / Actualizar contraseña ---
+    @PutMapping("/recuperar-password")
+    public ResponseEntity<Void> recuperarPassword(@RequestBody Map<String, String> body) {
+        try {
+            String email = body.get("email");
+            String nuevaPassword = body.get("nuevaPassword");
+            alumnoService.recuperarPassword(email, nuevaPassword);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     // 1. CREAR ALUMNO: POST /api/alumnos

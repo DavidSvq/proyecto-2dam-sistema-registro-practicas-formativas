@@ -1,6 +1,7 @@
 package com.dam.proyecto.backend.service.impl.users;
 
 import com.dam.proyecto.backend.model.Empresa;
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.model.users.TutorEmpresa;
 import com.dam.proyecto.backend.repository.EmpresaRepository;
@@ -66,6 +67,31 @@ public class TutorEmpresaServiceImpl implements ITutorEmpresaService {
     @Override
     public List<TutorEmpresa> listarPorEmpresa(String cifEmpresa) {
         return tutorRepository.findByEmpresaCif(cifEmpresa);
+    }
+
+    // LOGIN
+    @Override
+    @Transactional(readOnly = true)
+    public TutorEmpresa login(String email, String password, RolUsuario rol) {
+        TutorEmpresa tutor = tutorRepository.findByEmailAndRol(email, rol)
+                .orElseThrow(() -> new RuntimeException("TutorEmpresa no encontrado"));
+
+        if (!tutor.getPassword().equals(password)) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        return tutor;
+    }
+
+    // --- Recuperar / cambiar contraseña ---
+    @Override
+    @Transactional
+    public void recuperarPassword(String email, String nuevaPassword) {
+        TutorEmpresa tutor = tutorRepository.findByEmailAndRol(email, RolUsuario.TUTOR_EMPRESA)
+                .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
+
+        tutor.setPassword(nuevaPassword);
+        tutorRepository.save(tutor);
     }
 
     // --- MÉTODOS PARA EL TUTOR DE EMPRESA ---

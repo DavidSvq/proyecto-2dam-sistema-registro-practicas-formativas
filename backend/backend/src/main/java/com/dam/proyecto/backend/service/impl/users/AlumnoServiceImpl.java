@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.service.impl.users;
 
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.repository.users.AlumnoRepository;
 import com.dam.proyecto.backend.service.users.IAlumnoService;
@@ -66,6 +67,30 @@ public class AlumnoServiceImpl implements IAlumnoService {
                 }).orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
     }
 
+    // LOGIN
+    @Override
+    @Transactional(readOnly = true)
+    public Alumno login(String email, String password, RolUsuario rol) {
+        Alumno alumno = alumnoRepository.findByEmailAndRol(email, rol)
+                .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+         /*Alumno alumno = alumnoRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));*/
+         //System.out.println("Alumno encontrado: " + alumno);
+        if (!alumno.getPassword().equals(password)) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        return alumno;
+    }
+
+    @Override
+    public void recuperarPassword(String email, String nuevaPassword) {
+        Alumno alumno = alumnoRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
+
+        alumno.setPassword(nuevaPassword);
+        alumnoRepository.save(alumno); // actualiza en BBDD
+    }
     // 3. BUSCADORES FILTRADOS
 
     @Override

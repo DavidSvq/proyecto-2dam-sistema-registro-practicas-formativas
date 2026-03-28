@@ -1,6 +1,6 @@
 package com.dam.proyecto.backend.controller.users;
 
-import com.dam.proyecto.backend.model.enums.RolDocente;
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Profesor;
 import com.dam.proyecto.backend.service.users.IProfesorService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/profesores")
@@ -17,6 +18,33 @@ import java.util.List;
 public class ProfesorController {
 
     private final IProfesorService profesorService;
+
+    // --- LOGIN ---
+    @PostMapping("/login")
+    public ResponseEntity<Profesor> login(@RequestBody Profesor profesor) {
+        try {
+            Profesor logged = profesorService.login(
+                    profesor.getEmail(),
+                    profesor.getPassword(),
+                    profesor.getRol()
+            );
+            return ResponseEntity.ok(logged);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PutMapping("/recuperar-password")
+    public ResponseEntity<Void> recuperarPassword(@RequestBody Map<String, String> body) {
+        try {
+            String email = body.get("email");
+            String nuevaPassword = body.get("nuevaPassword");
+            profesorService.recuperarPassword(email, nuevaPassword);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 
     // 1. REGISTRO: POST /api/profesores
     @PostMapping
@@ -38,7 +66,7 @@ public class ProfesorController {
     @GetMapping("/centro/{codCentro}")
     public ResponseEntity<List<Profesor>> listarEquipo(
             @PathVariable String codCentro,
-            @RequestParam(required = false) RolDocente rol) {
+            @RequestParam(required = false) RolUsuario rol) {
 
         if (rol != null) {
             // Llama a: listarTutoresPorCentro(String codCentro, RolDocente rol)

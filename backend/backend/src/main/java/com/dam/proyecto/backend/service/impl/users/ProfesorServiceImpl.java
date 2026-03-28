@@ -1,7 +1,7 @@
 package com.dam.proyecto.backend.service.impl.users;
 
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Profesor;
-import com.dam.proyecto.backend.model.enums.RolDocente;
 import com.dam.proyecto.backend.repository.users.ProfesorRepository;
 import com.dam.proyecto.backend.service.users.IProfesorService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,28 @@ import java.util.Optional;
 public class ProfesorServiceImpl implements IProfesorService {
 
     private final ProfesorRepository profesorRepository;
+
+    // --- Login ---
+    @Override
+    @Transactional(readOnly = true)
+    public Profesor login(String email, String password, RolUsuario rol) {
+        Profesor profesor = profesorRepository.findByEmailAndRol(email, rol)
+                .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+
+        if (!profesor.getPassword().equals(password)) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        return profesor;
+    }
+    @Override
+    @Transactional
+    public void recuperarPassword(String email, String nuevaPassword) {
+        Profesor profesor = profesorRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+        profesor.setPassword(nuevaPassword);
+        profesorRepository.save(profesor); // Actualiza la BBDD
+    }
 
     // 1. EL GESTOR CREA UN PROFESOR (Con su email y pass inicial)
     @Override
@@ -56,11 +78,11 @@ public class ProfesorServiceImpl implements IProfesorService {
         profesorRepository.deleteById(idProfesor);
     }
     // 3. BUSCADORES (Para el Login y Perfil)
-    @Override
+    /*@Override
     @Transactional(readOnly = true)
     public Optional<Profesor> buscarPorEmail(String email) {
         return profesorRepository.findByEmail(email);
-    }
+    }*/
 
     @Override
     @Transactional(readOnly = true)
@@ -77,9 +99,9 @@ public class ProfesorServiceImpl implements IProfesorService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Profesor> listarTutoresPorCentro(String codCentro, RolDocente rol) {
+    public List<Profesor> listarTutoresPorCentro(String codCentro, RolUsuario rol) {
         // Usamos el RolDocente.TUTOR para filtrar la lista
-        return profesorRepository.findByCentroAndRol(codCentro, RolDocente.TUTOR);
+        return profesorRepository.findByCentroAndRol(codCentro, RolUsuario.PROFESOR_TUTOR);
     }
 
     // 5. RELACIÓN CON EL ALUMNO (Native Query)

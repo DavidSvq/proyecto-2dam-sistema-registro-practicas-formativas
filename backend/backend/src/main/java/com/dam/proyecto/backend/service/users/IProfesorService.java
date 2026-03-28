@@ -1,7 +1,8 @@
 package com.dam.proyecto.backend.service.users;
 
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Profesor;
-import com.dam.proyecto.backend.model.enums.RolDocente;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +19,12 @@ public interface IProfesorService {
 
     // 2. MÉTODOS DE BÚSQUEDA (Basados en nuestro Repository)
 
+    // --- Login ---
+    Profesor login(String email, String password, RolUsuario rol);
     // LOGIN: Para que el sistema verifique las credenciales al entrar
-    Optional<Profesor> buscarPorEmail(String email);
+    //Optional<Profesor> buscarPorEmail(String email);
+
+    void recuperarPassword(String email, String nuevaPassword);
 
     // PERFIL: Para ver el detalle de un profesor concreto (por su ID/Código)
     Optional<Profesor> obtenerPorId(String idProfesor);
@@ -28,7 +33,7 @@ public interface IProfesorService {
     List<Profesor> listarPorCentro(String codCentro);
 
     // ASIGNACIÓN: El Gestor busca solo a los TUTORES para asignarles alumnos
-    List<Profesor> listarTutoresPorCentro(String codCentro, RolDocente rol);
+    List<Profesor> listarTutoresPorCentro(String codCentro, RolUsuario rol);
 
     // VISTA DEL ALUMNO: Para que el alumno sepa quién es su tutor docente
     Optional<Profesor> obtenerProfesorDeAlumno(String idAlumno);

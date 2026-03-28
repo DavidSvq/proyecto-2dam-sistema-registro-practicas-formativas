@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.repository.users;
 
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Alumno;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,8 @@ public interface AlumnoRepository extends JpaRepository<Alumno, String> {
 
     @Query("SELECT a FROM Alumno a WHERE a.email = :email")
     Optional<Alumno> findByEmail(@Param("email") String email);
+
+    Optional<Alumno> findByEmailAndRol(String email, RolUsuario rol);
 
     // Ajustado para que coincida con el atributo de la clase CentroDocente
     @Query("SELECT a FROM Alumno a WHERE a.centro.id = :codigoCentro")

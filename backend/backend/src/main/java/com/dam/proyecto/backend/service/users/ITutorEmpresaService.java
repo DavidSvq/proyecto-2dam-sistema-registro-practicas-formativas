@@ -1,8 +1,12 @@
 package com.dam.proyecto.backend.service.users;
 
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.model.users.TutorEmpresa;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
+import java.util.Optional;
 
 public interface ITutorEmpresaService {
 
@@ -23,11 +27,17 @@ public interface ITutorEmpresaService {
      */
     void eliminarTutor(String idTutor);
 
+
     /**
      * Recupera todos los tutores que pertenecen a una misma empresa (CIF).
      */
     List<TutorEmpresa> listarPorEmpresa(String cifEmpresa);
 
+    // --- Login ---
+    TutorEmpresa login(String email, String password, RolUsuario rol);
+
+    // --- Recuperar / cambiar contraseña ---
+    void recuperarPassword(String email, String nuevaPassword);
 
     // --- ACCIONES DEL TUTOR DE EMPRESA ---
 

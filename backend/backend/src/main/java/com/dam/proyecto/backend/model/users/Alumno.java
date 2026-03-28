@@ -1,6 +1,7 @@
 package com.dam.proyecto.backend.model.users;
 
 import com.dam.proyecto.backend.model.*;
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,12 +42,12 @@ public class Alumno extends Usuario {
     private TutorEmpresa tutorEmpresa;
 
     @Override
-    public void login(String email, String password) {
+    public void login(String email, String password, RolUsuario rol) {
         // Lógica de acceso específica para el alumno
     }
 
     @Override
-    public void recuperarPassword(String email) {
+    public void recuperarPassword(String email, String nuevaPassword) {
         // Lógica de recuperación
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tutores-empresa")
@@ -17,6 +18,30 @@ import java.util.List;
 public class TutorEmpresaController {
 
     private final ITutorEmpresaService tutorService;
+
+    // --- LOGIN ---
+    @PostMapping("/login")
+    public ResponseEntity<TutorEmpresa> login(@RequestBody TutorEmpresa tutor) {
+        try {
+            TutorEmpresa logged = tutorService.login(
+                    tutor.getEmail(),
+                    tutor.getPassword(),
+                    tutor.getRol()
+            );
+            return ResponseEntity.ok(logged);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    // --- CAMBIO / RECUPERACIÓN DE CONTRASEÑA ---
+    @PutMapping("/recuperar-password")
+    public ResponseEntity<Void> recuperarPassword(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String nuevaPassword = body.get("nuevaPassword");
+        tutorService.recuperarPassword(email, nuevaPassword);
+        return ResponseEntity.ok().build();
+    }
 
     // --- ACCIONES DEL PROFESOR GESTOR ---
 
