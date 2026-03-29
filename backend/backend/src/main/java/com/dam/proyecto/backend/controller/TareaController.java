@@ -1,4 +1,5 @@
 package com.dam.proyecto.backend.controller;
+import com.dam.proyecto.backend.dto.tarea.TareaDTO;
 import com.dam.proyecto.backend.model.Tarea;
 import com.dam.proyecto.backend.service.ITareaService;
 import lombok.RequiredArgsConstructor;
@@ -60,15 +61,17 @@ public class TareaController {
 
     // Listado por Alumno
     @GetMapping("/alumno/{idAlumno}")
-    public ResponseEntity<List<Tarea>> listarPorAlumno(@PathVariable String idAlumno) {
-        return ResponseEntity.ok(tareaService.obtenerTodasPorAlumno(idAlumno));
+    public ResponseEntity<List<TareaDTO>> listarPorAlumno(@PathVariable String idAlumno) {
+        List<TareaDTO> tareasDTO = tareaService.obtenerTodasPorAlumno(idAlumno);
+        return ResponseEntity.ok(tareasDTO);
     }
 
     // Listado por Tutor de Empresa y Estado
     @GetMapping("/tutor/{idTutor}/estado/{estado}")
-    public ResponseEntity<List<Tarea>> listarPorTutorYEstado(
+    public ResponseEntity<List<TareaDTO>> listarPorTutorYEstado(
             @PathVariable String idTutor,
             @PathVariable String estado) {
-        return ResponseEntity.ok(tareaService.obtenerPorTutorEmpresaYEstado(idTutor, estado));
+        List<TareaDTO> tareasDTO = tareaService.obtenerPorTutorEmpresaYEstado(idTutor, estado);
+        return ResponseEntity.ok(tareasDTO);
     }
 }

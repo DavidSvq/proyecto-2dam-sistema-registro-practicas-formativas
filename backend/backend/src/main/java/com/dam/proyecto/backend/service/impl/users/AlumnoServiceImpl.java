@@ -1,5 +1,9 @@
 package com.dam.proyecto.backend.service.impl.users;
 
+import com.dam.proyecto.backend.dto.alumno.AlumnoDTO;
+import com.dam.proyecto.backend.dto.alumno.AlumnoMapper;
+import com.dam.proyecto.backend.dto.login.LoginMapper;
+import com.dam.proyecto.backend.dto.login.LoginResponseDTO;
 import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.repository.users.AlumnoRepository;
@@ -11,17 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class AlumnoServiceImpl implements IAlumnoService {
 
     private final AlumnoRepository alumnoRepository;
     private final IProfesorService profesorService; // Para actualizar el contador de alumnos
-
-    public AlumnoServiceImpl(AlumnoRepository alumnoRepository, IProfesorService profesorService) {
-        this.alumnoRepository = alumnoRepository;
-        this.profesorService = profesorService;
-    }
+    private final AlumnoMapper alumnoMapper;
 
     // 1. EL GESTOR CREA AL ALUMNO
     @Override
@@ -70,17 +72,15 @@ public class AlumnoServiceImpl implements IAlumnoService {
     // LOGIN
     @Override
     @Transactional(readOnly = true)
-    public Alumno login(String email, String password, RolUsuario rol) {
+    public LoginResponseDTO login(String email, String password, RolUsuario rol) {
         Alumno alumno = alumnoRepository.findByEmailAndRol(email, rol)
                 .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));
-         /*Alumno alumno = alumnoRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Alumno no encontrado"));*/
-         //System.out.println("Alumno encontrado: " + alumno);
+
         if (!alumno.getPassword().equals(password)) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
-        return alumno;
+        return LoginMapper.toDTO(alumno);
     }
 
     @Override
@@ -95,26 +95,46 @@ public class AlumnoServiceImpl implements IAlumnoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Alumno> obtenerPorId(String idAlumno) {
-        return alumnoRepository.findById(idAlumno);
+    public Optional<AlumnoDTO> obtenerPorId(String idAlumno) {
+        // Recupera el Alumno desde el repositorio y convierte a AlumnoDTO
+        return alumnoRepository.findById(idAlumno)
+                .map(alumnoMapper::convertirAAlumnoDTO);  // Aquí se convierte Alumno a AlumnoDTO
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Alumno> listarPorCentro(String codCentro) {
-        return alumnoRepository.findByCentroCodigoCentro(codCentro);
+    public List<AlumnoDTO> listarPorCentro(String codCentro) {
+        // Obtenemos la lista de Alumnos desde el repositorio
+        List<Alumno> alumnos = alumnoRepository.findByCentroCodigoCentro(codCentro);
+
+        // Convertimos cada Alumno a AlumnoDTO usando el mapper
+        return alumnos.stream()
+                .map(alumnoMapper::convertirAAlumnoDTO)  // Usamos el método del mapper para la conversión
+                .collect(Collectors.toList());           // Recopilamos los resultados en una lista
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Alumno> listarPorTutorDocente(String idProfesor) {
-        return alumnoRepository.findByProfesorId(idProfesor);
+    public List<AlumnoDTO> listarPorTutorDocente(String idProfesor) {
+        // Obtenemos la lista de Alumnos desde el repositorio, filtrados por el id del Profesor
+        List<Alumno> alumnos = alumnoRepository.findByProfesorId(idProfesor);
+
+        // Convertimos cada Alumno a AlumnoDTO usando el mapper
+        return alumnos.stream()
+                .map(alumnoMapper::convertirAAlumnoDTO)  // Usamos el método del mapper para la conversión
+                .collect(Collectors.toList());           // Recopilamos los resultados en una lista
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Alumno> listarPorEmpresa(String cif) {
-        return alumnoRepository.findByEmpresaCif(cif);
+    public List<AlumnoDTO> listarPorEmpresa(String cif) {
+        // Obtenemos la lista de Alumnos desde el repositorio, filtrados por el CIF de la Empresa
+        List<Alumno> alumnos = alumnoRepository.findByEmpresaCif(cif);
+
+        // Convertimos cada Alumno a AlumnoDTO usando el mapper
+        return alumnos.stream()
+                .map(alumnoMapper::convertirAAlumnoDTO)  // Usamos el método del mapper para la conversión
+                .collect(Collectors.toList());           // Recopilamos los resultados en una lista
     }
 
     // 4. ELIMINAR (Baja del alumno)
@@ -141,8 +161,13 @@ public class AlumnoServiceImpl implements IAlumnoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Alumno> listarHuerfanos() {
-        // Retorna la lista de alumnos donde la FK_PROFESOR es NULL
-        return alumnoRepository.findByProfesorIsNull();
+    public List<AlumnoDTO> listarHuerfanos() {
+        // Obtenemos la lista de Alumnos donde la FK_PROFESOR es NULL
+        List<Alumno> alumnosHuerfanos = alumnoRepository.findByProfesorIsNull();
+
+        // Convertimos cada Alumno en AlumnoDTO usando el mapper
+        return alumnosHuerfanos.stream()
+                .map(alumnoMapper::convertirAAlumnoDTO)  // Usamos el método del mapper para la conversión
+                .collect(Collectors.toList());           // Recopilamos los resultados en una lista
     }
 }

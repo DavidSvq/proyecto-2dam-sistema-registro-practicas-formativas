@@ -1,5 +1,8 @@
 package com.dam.proyecto.backend.controller.users;
 
+import com.dam.proyecto.backend.dto.login.LoginRequestDTO;
+import com.dam.proyecto.backend.dto.login.LoginResponseDTO;
+import com.dam.proyecto.backend.dto.profesor.ProfesorDTO;
 import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Profesor;
 import com.dam.proyecto.backend.service.users.IProfesorService;
@@ -21,12 +24,12 @@ public class ProfesorController {
 
     // --- LOGIN ---
     @PostMapping("/login")
-    public ResponseEntity<Profesor> login(@RequestBody Profesor profesor) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
         try {
-            Profesor logged = profesorService.login(
-                    profesor.getEmail(),
-                    profesor.getPassword(),
-                    profesor.getRol()
+            LoginResponseDTO logged = profesorService.login(
+                    request.getEmail(),
+                    request.getPassword(),
+                    request.getRol()
             );
             return ResponseEntity.ok(logged);
         } catch (RuntimeException e) {
@@ -55,21 +58,21 @@ public class ProfesorController {
 
     // 2. BUSCAR POR ID: GET /api/profesores/DOC001
     @GetMapping("/{id}")
-    public ResponseEntity<Profesor> obtenerPorId(@PathVariable String id) {
-        // Llama a: obtenerPorId(String idProfesor)
-        return profesorService.obtenerPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ProfesorDTO> obtenerProfesorPorId(@PathVariable String id) {
+        // Llama a: obtenerProfesorPorId(String idProfesor)
+        return profesorService.obtenerProfesorPorId(id)
+                .map(ResponseEntity::ok) // Devolver el DTO si lo encuentra
+                .orElse(ResponseEntity.notFound().build()); // Si no lo encuentra, devolver un 404
     }
 
     // 3. LISTAR POR CENTRO Y ROL: GET /api/profesores/centro/CEN01?rol=TUTOR
     @GetMapping("/centro/{codCentro}")
-    public ResponseEntity<List<Profesor>> listarEquipo(
+    public ResponseEntity<List<ProfesorDTO>> listarPorCentro(
             @PathVariable String codCentro,
             @RequestParam(required = false) RolUsuario rol) {
 
         if (rol != null) {
-            // Llama a: listarTutoresPorCentro(String codCentro, RolDocente rol)
+            // Llama a: listarTutoresPorCentro(String codCentro, RolUsuario rol)
             return ResponseEntity.ok(profesorService.listarTutoresPorCentro(codCentro, rol));
         }
         // Llama a: listarPorCentro(String codCentro)
@@ -97,7 +100,7 @@ public class ProfesorController {
 
     // 6. VER EL PROFESOR DE UN ALUMNO: GET /api/profesores/alumno/ALU01
     @GetMapping("/alumno/{idAlumno}")
-    public ResponseEntity<Profesor> obtenerTutorDeAlumno(@PathVariable String idAlumno) {
+    public ResponseEntity<ProfesorDTO> obtenerTutorDeAlumno(@PathVariable String idAlumno) {
         // Llama a: obtenerProfesorDeAlumno(String idAlumno)
         return profesorService.obtenerProfesorDeAlumno(idAlumno)
                 .map(ResponseEntity::ok)

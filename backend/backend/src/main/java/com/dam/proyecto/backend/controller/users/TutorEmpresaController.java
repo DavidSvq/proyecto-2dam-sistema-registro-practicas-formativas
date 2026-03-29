@@ -1,5 +1,9 @@
 package com.dam.proyecto.backend.controller.users;
 
+import com.dam.proyecto.backend.dto.alumno.AlumnoDTO;
+import com.dam.proyecto.backend.dto.login.LoginRequestDTO;
+import com.dam.proyecto.backend.dto.login.LoginResponseDTO;
+import com.dam.proyecto.backend.dto.tutor.TutorEmpresaDTO;
 import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.model.users.TutorEmpresa;
 import com.dam.proyecto.backend.service.users.ITutorEmpresaService;
@@ -21,12 +25,12 @@ public class TutorEmpresaController {
 
     // --- LOGIN ---
     @PostMapping("/login")
-    public ResponseEntity<TutorEmpresa> login(@RequestBody TutorEmpresa tutor) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
         try {
-            TutorEmpresa logged = tutorService.login(
-                    tutor.getEmail(),
-                    tutor.getPassword(),
-                    tutor.getRol()
+            LoginResponseDTO logged = tutorService.login(
+                    request.getEmail(),
+                    request.getPassword(),
+                    request.getRol()
             );
             return ResponseEntity.ok(logged);
         } catch (RuntimeException e) {
@@ -65,22 +69,26 @@ public class TutorEmpresaController {
     }
 
     @GetMapping("/empresa/{cifEmpresa}")
-    public ResponseEntity<List<TutorEmpresa>> listarPorEmpresa(@PathVariable String cifEmpresa) {
-        // Llama a: listarTutoresPorEmpresa(String cifEmpresa)
-        return ResponseEntity.ok(tutorService.listarPorEmpresa(cifEmpresa));
+    public ResponseEntity<List<TutorEmpresaDTO>> listarPorEmpresa(@PathVariable String cifEmpresa) {
+        List<TutorEmpresaDTO> tutores = tutorService.listarPorEmpresa(cifEmpresa);
+        return ResponseEntity.ok(tutores);
     }
 
     // --- ACCIONES DEL TUTOR DE EMPRESA ---
 
-    @GetMapping("/{idTutor}/alumnos")
-    public ResponseEntity<List<Alumno>> listarMisAlumnos(@PathVariable String idTutor) {
-        // Llama a: listarMisAlumnos(String idTutor)
-        return ResponseEntity.ok(tutorService.listarMisAlumnos(idTutor));
+    @GetMapping("/alumnos/{idTutor}")
+    public ResponseEntity<List<AlumnoDTO>> listarAlumnos(@PathVariable String idTutor) {
+        List<AlumnoDTO> alumnos = tutorService.listarMisAlumnos(idTutor);
+        return ResponseEntity.ok(alumnos);
     }
 
-    @GetMapping("/{idTutor}/perfil")
-    public ResponseEntity<TutorEmpresa> obtenerPerfil(@PathVariable String idTutor) {
-        // Llama a: obtenerPerfil(String idTutor)
-        return ResponseEntity.ok(tutorService.obtenerPerfil(idTutor));
+    @GetMapping("/perfil/{idTutor}")
+    public ResponseEntity<TutorEmpresaDTO> obtenerPerfil(@PathVariable String idTutor) {
+        try {
+            TutorEmpresaDTO tutorPerfil = tutorService.obtenerPerfil(idTutor);
+            return ResponseEntity.ok(tutorPerfil);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

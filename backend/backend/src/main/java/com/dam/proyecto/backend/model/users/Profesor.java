@@ -16,10 +16,6 @@ import lombok.*;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Profesor extends Usuario {
 
-   /* @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RolDocente rol;*/
-
     @Column(name = "num_alumnos")
     private Integer numAlumnos = 0;
 

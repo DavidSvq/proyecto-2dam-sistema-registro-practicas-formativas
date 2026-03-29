@@ -1,5 +1,7 @@
 package com.dam.proyecto.backend.service.users;
 
+import com.dam.proyecto.backend.dto.alumno.AlumnoDTO;
+import com.dam.proyecto.backend.dto.login.LoginResponseDTO;
 import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Alumno;
 import org.springframework.data.repository.query.Param;
@@ -21,26 +23,26 @@ public interface IAlumnoService {
 
 
     // --- Login ---
-    Alumno login(String email, String password, RolUsuario rol);
+    LoginResponseDTO login(String email, String password, RolUsuario rol);
 
     // --- Recuperar / actualizar contraseña ---
     void recuperarPassword(String email, String nuevaPassword);
 
     // --- BÚSQUEDAS CRÍTICAS ---
     //Optional<Alumno> findByEmail(String email);
-    Optional<Alumno> obtenerPorId(String idAlumno);
+    Optional<AlumnoDTO> obtenerPorId(String idAlumno);
 
     // Para que el Gestor vea a TODOS sus alumnos
-    List<Alumno> listarPorCentro(String codCentro);
+    List<AlumnoDTO> listarPorCentro(String codCentro);
 
     // Para que el Gestor vea quién NO tiene tutor docente aún
-    List<Alumno> listarHuerfanos();
+    List<AlumnoDTO> listarHuerfanos();
 
     // Para que un Profesor vea solo a SUS alumnos
-    List<Alumno> listarPorTutorDocente(String idProfesor);
+    List<AlumnoDTO> listarPorTutorDocente(String idProfesor);
 
     // Para que la Empresa vea a sus alumnos en prácticas
-    List<Alumno> listarPorEmpresa(String cif);
+    List<AlumnoDTO> listarPorEmpresa(String cif);
 
 
     // --- LÓGICA DE HORAS ---

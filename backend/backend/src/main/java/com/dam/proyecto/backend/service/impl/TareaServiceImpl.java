@@ -1,4 +1,6 @@
 package com.dam.proyecto.backend.service.impl;
+import com.dam.proyecto.backend.dto.tarea.TareaDTO;
+import com.dam.proyecto.backend.dto.tarea.TareaMapper;
 import com.dam.proyecto.backend.model.Tarea;
 import com.dam.proyecto.backend.repository.TareaRepository;
 import com.dam.proyecto.backend.service.ITareaService;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ import java.util.List;
 public class TareaServiceImpl implements ITareaService {
 
     private final TareaRepository tareaRepository;
+    private final TareaMapper tareaMapper;
 
     // 1. CREACIÓN PURA
     @Override
@@ -108,20 +112,29 @@ public class TareaServiceImpl implements ITareaService {
     // --- MÉTODOS DE CONSULTA (Usando los métodos del Repo con @Query) ---
 
     @Override
-    @ReadOnlyProperty
-    public List<Tarea> obtenerTodasPorAlumno(String idAlumno) {
-        return tareaRepository.findByAlumno_IdOrderByFechaAsignacionDesc(idAlumno);
+    @Transactional(readOnly = true)
+    public List<TareaDTO> obtenerTodasPorAlumno(String idAlumno) {
+        List<Tarea> tareas = tareaRepository.findByAlumno_IdOrderByFechaAsignacionDesc(idAlumno);
+        return tareas.stream()
+                .map(tareaMapper::convertirATareaDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    @ReadOnlyProperty
-    public List<Tarea> obtenerPorAlumnoYEstado(String idAlumno, String estado) {
-        return tareaRepository.findByAlumno_IdAndEstado(idAlumno, estado.toUpperCase());
+    @Transactional(readOnly = true)
+    public List<TareaDTO> obtenerPorAlumnoYEstado(String idAlumno, String estado) {
+        List<Tarea> tareas = tareaRepository.findByAlumno_IdAndEstado(idAlumno, estado);
+        return tareas.stream()
+                .map(tareaMapper::convertirATareaDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    @ReadOnlyProperty
-    public List<Tarea> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, String estado) {
-        return tareaRepository.findByTutorEmpresa_IdAndEstado(idTutorEmpresa, estado.toUpperCase());
+    @Transactional(readOnly = true)
+    public List<TareaDTO> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, String estado) {
+        List<Tarea> tareas = tareaRepository.findByTutorEmpresa_IdAndEstado(idTutorEmpresa, estado);
+        return tareas.stream()
+                .map(tareaMapper::convertirATareaDTO)
+                .collect(Collectors.toList());
     }
 }

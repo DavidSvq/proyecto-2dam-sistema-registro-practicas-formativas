@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.controller;
 
+import com.dam.proyecto.backend.dto.centro.CentroDocenteDTO;
 import com.dam.proyecto.backend.model.CentroDocente;
 import com.dam.proyecto.backend.service.ICentroDocenteService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class CentroDocenteController {
     // 1. ACCESO RÁPIDO AL CENTRO PRINCIPAL: GET /api/centros/principal
     // Ideal para cargar la cabecera de la App sin saber el código.
     @GetMapping("/principal")
-    public ResponseEntity<CentroDocente> obtenerCentroPrincipal() {
+    public ResponseEntity<CentroDocenteDTO> obtenerCentroPrincipal() {
         return centroService.obtenerCentroPrincipal()
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -28,7 +29,7 @@ public class CentroDocenteController {
 
     // 2. DETALLE POR CÓDIGO: GET /api/centros/CEN01
     @GetMapping("/{codigo}")
-    public ResponseEntity<CentroDocente> obtenerPorCodigo(@PathVariable String codigo) {
+    public ResponseEntity<CentroDocenteDTO> obtenerPorCodigo(@PathVariable String codigo) {
         return centroService.obtenerPorCodigo(codigo)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -36,11 +37,12 @@ public class CentroDocenteController {
 
     // 3. CENTRO DE UN ALUMNO: GET /api/centros/alumno/ALU01
     @GetMapping("/alumno/{idAlumno}")
-    public ResponseEntity<CentroDocente> obtenerCentroDeAlumno(@PathVariable String idAlumno) {
+    public ResponseEntity<CentroDocenteDTO> obtenerCentroDeAlumno(@PathVariable String idAlumno) {
         return centroService.obtenerCentroDeAlumno(idAlumno)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     // 4. CREAR: POST /api/centros
     @PostMapping

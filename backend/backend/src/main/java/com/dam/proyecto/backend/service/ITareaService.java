@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.service;
 
+import com.dam.proyecto.backend.dto.tarea.TareaDTO;
 import com.dam.proyecto.backend.model.Tarea;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -27,7 +28,7 @@ public interface ITareaService {
     Tarea revisarTarea(Long idTarea);
 
     // 6. CONSULTAS Y FILTROS - Respetando tus nombres de parámetros
-    List<Tarea> obtenerTodasPorAlumno(String idAlumno);
-    List<Tarea> obtenerPorAlumnoYEstado(String idAlumno, String estado);
-    List<Tarea> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, String estado);
+    List<TareaDTO> obtenerTodasPorAlumno(String idAlumno);
+    List<TareaDTO> obtenerPorAlumnoYEstado(String idAlumno, String estado);
+    List<TareaDTO> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, String estado);
 }

@@ -1,5 +1,7 @@
 package com.dam.proyecto.backend.service.impl;
 
+import com.dam.proyecto.backend.dto.centro.CentroDocenteDTO;
+import com.dam.proyecto.backend.dto.centro.CentroDocenteMapper;
 import com.dam.proyecto.backend.model.CentroDocente;
 import com.dam.proyecto.backend.repository.CentroDocenteRepository;
 import com.dam.proyecto.backend.service.ICentroDocenteService;
@@ -12,10 +14,11 @@ import java.util.Optional;
 public class CentroDocenteServiceImpl implements ICentroDocenteService {
 
     private final CentroDocenteRepository centroRepository;
-
+    private final CentroDocenteMapper centroDocenteMapper;
     // Inyección por constructor: La mejor práctica para testing y seguridad
-    public CentroDocenteServiceImpl(CentroDocenteRepository centroRepository) {
+    public CentroDocenteServiceImpl(CentroDocenteRepository centroRepository, CentroDocenteMapper centroDocenteMapper) {
         this.centroRepository = centroRepository;
+        this.centroDocenteMapper = centroDocenteMapper;
     }
 
     // 1. GESTIÓN (REEMPLAZA AL GUARDAR/ACTUALIZAR GENÉRICO)
@@ -53,29 +56,33 @@ public class CentroDocenteServiceImpl implements ICentroDocenteService {
     // 2. OBTENER POR CÓDIGO (EL "BUSCAR POR CÓDIGO" QUE YA TENÍAS)
     @Override
     @Transactional(readOnly = true)
-    public Optional<CentroDocente> obtenerPorCodigo(String codCentro) {
-        return centroRepository.findByCodCentro(codCentro);
+    public Optional<CentroDocenteDTO> obtenerPorCodigo(String codCentro) {
+        return centroRepository.findByCodCentro(codCentro)
+                .map(centroDocenteMapper::convertirACentroDocenteDTO);
     }
 
     // 3. ACCESO AL CENTRO PRINCIPAL (PARA TU CASO DE HIJO ÚNICO)
     @Override
     @Transactional(readOnly = true)
-    public Optional<CentroDocente> obtenerCentroPrincipal() {
-        // Simplemente cogemos el primer centro que exista en la tabla
-        return centroRepository.findAll().stream().findFirst();
+    public Optional<CentroDocenteDTO> obtenerCentroPrincipal() {
+        return centroRepository.findAll().stream()
+                .findFirst()
+                .map(centroDocenteMapper::convertirACentroDocenteDTO);
     }
 
     // 4. BÚSQUEDA POR CORREO (EL QUE DEJAMOS PARA VALIDACIONES)
     @Override
     @Transactional(readOnly = true)
-    public Optional<CentroDocente> buscarPorCorreo(String correo) {
-        return centroRepository.findByCorreoInstitucional(correo);
+    public Optional<CentroDocenteDTO> buscarPorCorreo(String correo) {
+        return centroRepository.findByCorreoInstitucional(correo)
+                .map(centroDocenteMapper::convertirACentroDocenteDTO);
     }
 
-    // 5. CENTRO DE UN ALUMNO (LLAMANDO A TU NATIVE QUERY)
+    // 5. CENTRO DE UN ALUMNO (DEVOLVER DTO)
     @Override
     @Transactional(readOnly = true)
-    public Optional<CentroDocente> obtenerCentroDeAlumno(String idAlumno) {
-        return centroRepository.findCentroByAlumnoId(idAlumno);
+    public Optional<CentroDocenteDTO> obtenerCentroDeAlumno(String idAlumno) {
+        return centroRepository.findCentroByAlumnoId(idAlumno)
+                .map(centroDocenteMapper::convertirACentroDocenteDTO);
     }
 }
