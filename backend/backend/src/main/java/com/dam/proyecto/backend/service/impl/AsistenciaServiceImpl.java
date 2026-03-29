@@ -1,5 +1,7 @@
 package com.dam.proyecto.backend.service.impl;
 
+import com.dam.proyecto.backend.dto.asistencia.AsistenciaDTO;
+import com.dam.proyecto.backend.dto.asistencia.AsistenciaMapper;
 import com.dam.proyecto.backend.model.Asistencia;
 import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.repository.AsistenciaRepository;
@@ -12,6 +14,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AsistenciaServiceImpl implements IAsistenciaService {
@@ -19,6 +22,8 @@ public class AsistenciaServiceImpl implements IAsistenciaService {
     @Autowired
     private AsistenciaRepository asistenciaRepository;
 
+    @Autowired
+    private AsistenciaMapper asistenciaMapper;
     @Autowired
     private AlumnoRepository alumnoRepository; // Necesario para actualizar el contador del alumno
 
@@ -75,13 +80,20 @@ public class AsistenciaServiceImpl implements IAsistenciaService {
     }
 
     @Override
-    public List<Asistencia> listarAsistenciasPorAlumno(String idAlumno) {
-        return asistenciaRepository.findByAlumno_IdOrderByFechaDesc(idAlumno);
+    public List<AsistenciaDTO> listarAsistenciasPorAlumno(String idAlumno) {
+        // Recuperamos la lista de Asistencia del repositorio
+        List<Asistencia> asistencias = asistenciaRepository.findByAlumno_IdOrderByFechaDesc(idAlumno);
+        // Mapeamos cada Asistencia a AsistenciaDTO usando el AsistenciaMapper
+        return asistencias.stream()
+                .map(asistencia -> asistenciaMapper.convertirAAsistenciaDTO(asistencia)) // Mapeo
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Asistencia buscarAsistenciaPorFecha(String idAlumno, LocalDate fecha) {
+    public AsistenciaDTO buscarAsistenciaPorFecha(String idAlumno, LocalDate fecha) {
+        // Buscamos la Asistencia por el ID del Alumno y la fecha
         return asistenciaRepository.findByAlumno_IdAndFecha(idAlumno, fecha)
-                .orElse(null);
+                .map(asistencia -> asistenciaMapper.convertirAAsistenciaDTO(asistencia)) // Mapeamos la Asistencia a AsistenciaDTO
+                .orElse(null); // Si no se encuentra, devolvemos null
     }
 }
