@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Container, Form, Button, Card, Row, Col, Alert } from 'react-bootstrap';
-import { loginService } from '../service/authService';
+import { loginService } from '../../../services/authService';
 import { useNavigate } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {

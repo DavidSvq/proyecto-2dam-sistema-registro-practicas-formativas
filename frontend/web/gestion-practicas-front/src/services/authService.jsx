@@ -1,4 +1,4 @@
-import api from '../../../api/axiosConfig';
+import api from '../api/axiosConfig';
 
 export const loginService = async (email, password, rol) => {
   const roleToEndpoint = {
