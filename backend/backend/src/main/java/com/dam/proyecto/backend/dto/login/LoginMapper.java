@@ -19,6 +19,8 @@ public class LoginMapper {
     public static LoginResponseDTO toDTO(Alumno alumno) {
         if (alumno == null) return null;
 
+        String rolTextoA = String.valueOf(alumno.getRol());
+
         LoginResponseDTO.AlumnoInfo alumnoInfo = new LoginResponseDTO.AlumnoInfo(
                 alumno.getProfesor() != null ? alumno.getProfesor().getNombre() : null,
                 alumno.getProfesor() != null ? alumno.getProfesor().getApellidos() : null,
@@ -33,7 +35,7 @@ public class LoginMapper {
                 alumno.getNombre(),
                 alumno.getApellidos(),
                 alumno.getEmail(),
-                "ALUMNO",
+                rolTextoA,
                 alumnoInfo,
                 null,
                 null
@@ -49,6 +51,8 @@ public class LoginMapper {
     public static LoginResponseDTO toDTO(Profesor profesor) {
         if (profesor == null) return null;
 
+        String rolTextoP = String.valueOf(profesor.getRol());
+
         LoginResponseDTO.ProfesorInfo profesorInfo = new LoginResponseDTO.ProfesorInfo(
                 profesor.getCentro() != null ? profesor.getCentro().getNombre() : null
         );
@@ -58,7 +62,7 @@ public class LoginMapper {
                 profesor.getNombre(),
                 profesor.getApellidos(),
                 profesor.getEmail(),
-                "PROFESOR",
+                rolTextoP,
                 null,
                 profesorInfo,
                 null
@@ -74,6 +78,8 @@ public class LoginMapper {
     public static LoginResponseDTO toDTO(TutorEmpresa tutor) {
         if (tutor == null) return null;
 
+        String rolTextoT = String.valueOf(tutor.getRol());
+
         LoginResponseDTO.TutorEmpresaInfo tutorInfo = new LoginResponseDTO.TutorEmpresaInfo(
                 tutor.getEmpresa() != null ? tutor.getEmpresa().getRazonSocial() : null
         );
@@ -83,7 +89,7 @@ public class LoginMapper {
                 tutor.getNombre(),
                 tutor.getApellidos(),
                 tutor.getEmail(),
-                "TUTOR_EMPRESA",
+                rolTextoT,
                 null,
                 null,
                 tutorInfo
