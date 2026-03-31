@@ -63,8 +63,8 @@ function App() {
         {/* TUTOR EMPRESA */}
         <Route path="/tutor-dashboard" element={<TutorEmpresaDashboard user={user} onLogout={handleLogout} />}>
           <Route index element={<InicioTutor user={user} />} />
-          <Route path="alumnos" element={<GestionAlumnosTutor />} />
-          <Route path="tareas" element={<GestionTareasTutor />} />
+          <Route path="alumnos" element={<GestionAlumnosTutor user={user} />} />
+          <Route path="tareas" element={<GestionTareasTutor user={user} />} />
         </Route>
 
         {/* ALUMNO */}
