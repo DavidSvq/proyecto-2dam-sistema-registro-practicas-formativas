@@ -24,7 +24,7 @@ public interface IEmpresaService {
 
     // 4. FILTRO POR CENTRO (Lógica de Gestor)
     // Para que cada instituto vea solo sus empresas colaboradoras
-    List<EmpresaDTO> listarEmpresasPorCentro(String codigoCentro);
+    List<EmpresaDTO> listarEmpresas();
 
     // 5. VÍNCULO CON ALUMNO
     // Para obtener los datos de la empresa donde el alumno hace prácticas
