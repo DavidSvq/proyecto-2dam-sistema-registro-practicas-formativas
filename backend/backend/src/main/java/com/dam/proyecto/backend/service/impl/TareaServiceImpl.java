@@ -48,21 +48,34 @@ public class TareaServiceImpl implements ITareaService {
         // Aquí es donde en el futuro integrarás el microservicio de IA para horas estimadas
         return tareaRepository.save(tarea);
     }
-
     // 3. EDICIÓN
     @Override
     @Transactional
     public Tarea modificarTarea(Long idTarea, Tarea tareaModificada) {
         Tarea existente = tareaRepository.findById(idTarea)
-                .orElseThrow(() -> new RuntimeException("No se puede modificar: Tarea no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Tarea no encontrada con ID: " + idTarea));
 
-        log.info("Modificando contenido de la tarea ID: {}", idTarea);
+        log.info("Actualizando tarea ID: {} con nuevo estado: {}", idTarea, tareaModificada.getEstado());
+
         existente.setTitulo(tareaModificada.getTitulo());
         existente.setDescripcion(tareaModificada.getDescripcion());
-        // Podrías añadir más campos editables según tu entidad
+
+        // Actualizamos el Estado (Esto es lo que te faltaba)
+        if (tareaModificada.getEstado() != null) {
+            existente.setEstado(tareaModificada.getEstado());
+        }
+
+        if (tareaModificada.getFechaLimite() != null) {
+            existente.setFechaLimite(tareaModificada.getFechaLimite());
+        }
+
+        if (tareaModificada.getAlumno() != null) {
+            existente.setAlumno(tareaModificada.getAlumno());
+        }
 
         return tareaRepository.save(existente);
     }
+
 
     // 4. ELIMINACIÓN
     @Override
@@ -107,6 +120,23 @@ public class TareaServiceImpl implements ITareaService {
         }
 
         tarea.setEstado(EstadoTarea.VALIDADA);
+        return tareaRepository.save(tarea);
+    }
+
+    @Override
+    @Transactional
+    public Tarea actualizarEstadoTutor(Long idTarea, EstadoTarea nuevoEstado) {
+        Tarea tarea = tareaRepository.findById(idTarea)
+                .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
+
+        // Lógica de negocio: Un tutor solo debería cancelar si no está VALIDADA
+        if (tarea.getEstado() == EstadoTarea.VALIDADA) {
+            throw new RuntimeException("No se puede cambiar el estado de una tarea ya validada por el profesor");
+        }
+
+        log.info("Tutor cambiando estado de tarea {} a {}", idTarea, nuevoEstado);
+        tarea.setEstado(nuevoEstado);
+
         return tareaRepository.save(tarea);
     }
 

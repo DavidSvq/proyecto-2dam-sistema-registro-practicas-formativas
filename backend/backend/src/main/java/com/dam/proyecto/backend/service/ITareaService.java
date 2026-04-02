@@ -25,6 +25,7 @@ public interface ITareaService {
     // 4. GESTIÓN DE ESTADOS (Alumno) - Manteniendo tus parámetros
     Tarea actualizarEstadoAlumno(Long idTarea, EstadoTarea nuevoEstado, Double horasReales);
 
+    Tarea actualizarEstadoTutor(Long idTarea, EstadoTarea nuevoEstado);
     // 5. VALIDACIÓN (Profesor-Tutor)
     Tarea revisarTarea(Long idTarea);
 

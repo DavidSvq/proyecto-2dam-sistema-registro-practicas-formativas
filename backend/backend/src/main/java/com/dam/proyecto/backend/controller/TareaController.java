@@ -60,6 +60,11 @@ public class TareaController {
         return ResponseEntity.ok(tareaService.revisarTarea(id));
     }
 
+    @PatchMapping("/{id}/estado-tutor")
+    public ResponseEntity<Tarea> cambiarEstado(@PathVariable Long id, @RequestParam EstadoTarea nuevoEstado) {
+        return ResponseEntity.ok(tareaService.actualizarEstadoTutor(id, nuevoEstado));
+    }
+
     // Listado por Alumno
     @GetMapping("/alumno/{idAlumno}")
     public ResponseEntity<List<TareaDTO>> listarPorAlumno(@PathVariable String idAlumno) {
