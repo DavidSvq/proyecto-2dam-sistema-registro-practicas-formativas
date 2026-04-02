@@ -4,6 +4,7 @@ import com.dam.proyecto.backend.dto.alumno.AlumnoMapper;
 import com.dam.proyecto.backend.dto.profesor.ProfesorMapper;
 import com.dam.proyecto.backend.dto.tutor.TutorEmpresaMapper;
 import com.dam.proyecto.backend.model.Tarea;
+import com.dam.proyecto.backend.model.enums.EstadoTarea;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,7 +32,7 @@ public class TareaMapper {
                 tarea.getDescripcion(),
                 tarea.getFechaAsignacion(),
                 tarea.getFechaLimite(),
-                tarea.getEstado(),
+                tarea.getEstado().name(),
                 tarea.getHorasEstimadasIA(),
                 tarea.getHorasReales(),
                 alumnoMapper.convertirAAlumnoDTO(tarea.getAlumno()),
@@ -52,7 +53,9 @@ public class TareaMapper {
         tarea.setDescripcion(tareaDTO.getDescripcion());
         tarea.setFechaAsignacion(tareaDTO.getFechaAsignacion());
         tarea.setFechaLimite(tareaDTO.getFechaLimite());
-        tarea.setEstado(tareaDTO.getEstado());
+        if (tareaDTO.getEstado() != null) {
+            tarea.setEstado(EstadoTarea.valueOf(tareaDTO.getEstado().toUpperCase()));
+        }
         tarea.setHorasEstimadasIA(tareaDTO.getHorasEstimadasIA());
         tarea.setHorasReales(tareaDTO.getHorasReales());
         tarea.setAlumno(alumnoMapper.convertirAAlumno(tareaDTO.getAlumno()));

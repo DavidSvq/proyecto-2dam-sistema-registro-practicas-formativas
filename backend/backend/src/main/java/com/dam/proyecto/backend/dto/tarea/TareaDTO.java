@@ -3,6 +3,7 @@ package com.dam.proyecto.backend.dto.tarea;
 import com.dam.proyecto.backend.dto.alumno.AlumnoDTO;
 import com.dam.proyecto.backend.dto.profesor.ProfesorDTO;
 import com.dam.proyecto.backend.dto.tutor.TutorEmpresaDTO;
+import com.dam.proyecto.backend.model.enums.EstadoTarea;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

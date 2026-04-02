@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.model;
 
+import com.dam.proyecto.backend.model.enums.EstadoTarea;
 import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.model.users.Profesor;
 import com.dam.proyecto.backend.model.users.TutorEmpresa;
@@ -33,8 +34,9 @@ public class Tarea {
     @Column(name = "fecha_limite")
     private LocalDate fechaLimite;
 
-    @Column(length = 20)
-    private String estado = "ASIGNADA"; // ASIGNADA, COMPLETADA, VALIDADA
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", length = 20)
+    private EstadoTarea estado = EstadoTarea.ASIGNADA;
 
     @Column(name = "horas_estimadas_ia", columnDefinition = "DECIMAL(5,2)")
     private Double horasEstimadasIA; // Predicción de la Regresión (ML)

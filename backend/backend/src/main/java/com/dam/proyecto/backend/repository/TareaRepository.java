@@ -1,6 +1,7 @@
 package com.dam.proyecto.backend.repository;
 
 import com.dam.proyecto.backend.model.Tarea;
+import com.dam.proyecto.backend.model.enums.EstadoTarea;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,14 +18,14 @@ public interface TareaRepository extends JpaRepository<Tarea, Long> {
 
     // B. BÚSQUEDA POR ALUMNO Y ESTADO (Respetando 'idAlumno' y 'estado')
     @Query("SELECT t FROM Tarea t WHERE t.alumno.id = :idAlumno AND t.estado = :estado")
-    List<Tarea> findByAlumno_IdAndEstado(@Param("idAlumno") String idAlumno, @Param("estado") String estado);
+    List<Tarea> findByAlumno_IdAndEstado(@Param("idAlumno") String idAlumno, @Param("estado") EstadoTarea estado);
 
     // C. BÚSQUEDA PARA EL TUTOR DE EMPRESA (Respetando 'codigoTutor' y 'estado')
     @Query("SELECT t FROM Tarea t WHERE t.tutorEmpresa.id = :codigoTutor AND t.estado = :estado")
-    List<Tarea> findByTutorEmpresa_IdAndEstado(@Param("codigoTutor") String codigoTutor, @Param("estado") String estado);
+    List<Tarea> findByTutorEmpresa_IdAndEstado(@Param("codigoTutor") String codigoTutor, @Param("estado") EstadoTarea estado);
 
     // D. BÚSQUEDA PARA EL PROFESOR-TUTOR (Respetando 'idProfesor' y 'estado')
     @Query("SELECT t FROM Tarea t WHERE t.profesorTutor.id = :idProfesor AND t.estado = :estado")
-    List<Tarea> findByProfesorTutor_IdAndEstado(@Param("idProfesor") String idProfesor, @Param("estado") String estado);
+    List<Tarea> findByProfesorTutor_IdAndEstado(@Param("idProfesor") String idProfesor, @Param("estado") EstadoTarea estado);
     List<Tarea> findByTutorEmpresaId(String idTutor);
 }

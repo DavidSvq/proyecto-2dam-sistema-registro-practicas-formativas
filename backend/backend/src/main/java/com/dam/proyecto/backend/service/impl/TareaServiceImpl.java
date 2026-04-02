@@ -2,6 +2,7 @@ package com.dam.proyecto.backend.service.impl;
 import com.dam.proyecto.backend.dto.tarea.TareaDTO;
 import com.dam.proyecto.backend.dto.tarea.TareaMapper;
 import com.dam.proyecto.backend.model.Tarea;
+import com.dam.proyecto.backend.model.enums.EstadoTarea;
 import com.dam.proyecto.backend.repository.TareaRepository;
 import com.dam.proyecto.backend.service.ITareaService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class TareaServiceImpl implements ITareaService {
 
         log.info("Tutor de Empresa activando/asignando tarea ID: {}", idTarea);
 
-        tarea.setEstado("ASIGNADA");
+        tarea.setEstado(EstadoTarea.ASIGNADA);
         tarea.setFechaAsignacion(LocalDate.now());
         tarea.setHorasReales(0.0);
 
@@ -77,20 +78,20 @@ public class TareaServiceImpl implements ITareaService {
     // 5. GESTIÓN DE ESTADOS (Tu lógica original de Alumno)
     @Override
     @Transactional
-    public Tarea actualizarEstadoAlumno(Long idTarea, String nuevoEstado, Double horasReales) {
+    public Tarea actualizarEstadoAlumno(Long idTarea, EstadoTarea nuevoEstado, Double horasReales) {
         Tarea tarea = tareaRepository.findById(idTarea)
                 .orElseThrow(() -> new RuntimeException("Tarea no encontrada con ID: " + idTarea));
 
         log.info("Alumno cambiando estado de tarea {} a {}", idTarea, nuevoEstado);
 
-        if ("COMPLETADA".equalsIgnoreCase(nuevoEstado)) {
+        if (EstadoTarea.COMPLETADA.equals(nuevoEstado)) {
             if (horasReales == null || horasReales <= 0) {
                 throw new IllegalArgumentException("Para completar la tarea debes indicar las horas reales.");
             }
             tarea.setHorasReales(horasReales);
         }
 
-        tarea.setEstado(nuevoEstado.toUpperCase());
+        tarea.setEstado(nuevoEstado);
         return tareaRepository.save(tarea);
     }
 
@@ -101,11 +102,11 @@ public class TareaServiceImpl implements ITareaService {
         Tarea tarea = tareaRepository.findById(idTarea)
                 .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
 
-        if (!"COMPLETADA".equalsIgnoreCase(tarea.getEstado())) {
+        if (tarea.getEstado() != EstadoTarea.COMPLETADA) {
             throw new IllegalStateException("Solo se pueden revisar tareas COMPLETADAS.");
         }
 
-        tarea.setEstado("REVISADA");
+        tarea.setEstado(EstadoTarea.VALIDADA);
         return tareaRepository.save(tarea);
     }
 
@@ -133,7 +134,7 @@ public class TareaServiceImpl implements ITareaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TareaDTO> obtenerPorAlumnoYEstado(String idAlumno, String estado) {
+    public List<TareaDTO> obtenerPorAlumnoYEstado(String idAlumno, EstadoTarea estado) {
         List<Tarea> tareas = tareaRepository.findByAlumno_IdAndEstado(idAlumno, estado);
         return tareas.stream()
                 .map(tareaMapper::convertirATareaDTO)
@@ -142,7 +143,7 @@ public class TareaServiceImpl implements ITareaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TareaDTO> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, String estado) {
+    public List<TareaDTO> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, EstadoTarea estado) {
         List<Tarea> tareas = tareaRepository.findByTutorEmpresa_IdAndEstado(idTutorEmpresa, estado);
         return tareas.stream()
                 .map(tareaMapper::convertirATareaDTO)
