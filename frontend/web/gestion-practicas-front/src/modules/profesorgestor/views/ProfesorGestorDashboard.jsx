@@ -12,7 +12,7 @@ const ProfesorGestorDashboard = ({ user, onLogout }) => {
     { label: 'Gestión de Alumnos', path: '/dashboard/alumnos' },
     { label: 'Gestión de Profesores', path: '/dashboard/profesores' },
     { label: 'Gestión de Empresas', path: '/dashboard/empresas' },
-    { label: 'Tutores de Empresa', path: '/dashboard/tutores-empresa' },
+    { label: 'Gestión de Tutores de Empresa', path: '/dashboard/tutores-empresa' },
     { label: 'Gestión de Centros', path: '/dashboard/centros' }
 ];
 

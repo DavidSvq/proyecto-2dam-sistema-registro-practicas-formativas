@@ -7,10 +7,10 @@ import { Modal, Button } from 'react-bootstrap';
  * @param {string} title - Título de la ventana.
  * @param {ReactElement} children - El contenido que metamos dentro (ej: un AppForm).
  */
-const AppModal = ({ show, handleClose, title, children }) => {
+const AppModal = ({ show, handleClose, title, children, size = "md", closeLabel = "Cancelar" }) => {
   return (
-    <Modal show={show} onHide={handleClose} size="lg" centered backdrop="static">
-      <Modal.Header closeButton className="bg-light">
+    <Modal show={show} onHide={handleClose} size={size} centered>
+      <Modal.Header closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -18,11 +18,10 @@ const AppModal = ({ show, handleClose, title, children }) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Cancelar
+          {closeLabel} {/* <--- Aquí usamos la nueva prop */}
         </Button>
       </Modal.Footer>
     </Modal>
   );
 };
-
 export default AppModal;

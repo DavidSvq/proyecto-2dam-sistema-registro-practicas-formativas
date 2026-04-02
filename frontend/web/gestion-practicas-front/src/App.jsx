@@ -11,7 +11,7 @@ import TutorEmpresaDashboard from './modules/tutorempresa/views/TutorEmpresaDash
 
 // Vistas Gestor
 import GestionAlumnos from './modules/profesorgestor/views/GestionAlumnos';
-import GestionCentros from './modules/profesorgestor/views/GestionCentros';
+import GestionCentro from './modules/profesorgestor/views/GestionCentro';
 import GestionEmpresas from './modules/profesorgestor/views/GestionEmpresas';
 import GestionProfesores from './modules/profesorgestor/views/GestionProfesores';
 import GestionTutorEmpresa from './modules/profesorgestor/views/GestionTutorEmpresa';
@@ -52,12 +52,12 @@ function App() {
 
         {/* GESTOR */}
         <Route path="/dashboard" element={<ProfesorGestorDashboard user={user} onLogout={handleLogout} />}>
-          <Route index element={<Inicio />} /> 
-          <Route path="alumnos" element={<GestionAlumnos />} />
-          <Route path="profesores" element={<GestionProfesores />} />
-          <Route path="empresas" element={<GestionEmpresas />} />
-          <Route path="tutores-empresa" element={<GestionTutorEmpresa />} />
-          <Route path="centros" element={<GestionCentros />} />
+          <Route index element={<Inicio user={user}/>} /> 
+          <Route path="alumnos" element={<GestionAlumnos user={user}/>} />
+          <Route path="profesores" element={<GestionProfesores user={user}/>} />
+          <Route path="empresas" element={<GestionEmpresas user={user}/>} />
+          <Route path="tutores-empresa" element={<GestionTutorEmpresa user={user}/>} />
+          <Route path="centros" element={<GestionCentro user={user}/>} />
         </Route>
 
         {/* TUTOR EMPRESA */}

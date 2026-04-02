@@ -1,70 +1,170 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Row, Col, Button, Spinner, Form, InputGroup } from "react-bootstrap";
 import { empresaService } from '../../../services/empresaService';
-import AppTable from '../../../common/components/AppTable';
+import { centroService } from '../../../services/centroService';
+import AppTable from "../../../common/components/AppTable";
+import AppModal from "../../../common/components/AppModal";
+import AppForm from "../../../common/components/AppForm";
 
-const GestionEmpresas = () => {
+const GestionEmpresas = ({ user }) => {
   const [empresas, setEmpresas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedEmpresa, setSelectedEmpresa] = useState(null);
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  const [filtroTexto, setFiltroTexto] = useState('');
 
-  /* 2. Definimos por separado lo que pide tu componente */
-  const headers = ['CIF', 'Nombre Empresa', 'Localidad', 'Persona de Contacto', 'Teléfono', 'Email'];
-  const accessorKeys = ['cif', 'razonSocial', 'localidad', 'personaContacto', 'telefonoContacto', 'emailContacto'];
+  const columnas = ['CIF', 'Razón Social', 'Persona de Contacto', 'Teléfono'];
+  const llaves = ['cif', 'razonSocial', 'personaContacto', 'telefonoContacto'];
 
-  const acciones = [
+  const camposEmpresa = [
+    // FILA 1: CIF (4) + RAZÓN SOCIAL (8) = 12
     { 
-      label: 'Editar', 
-      variant: 'warning', 
-      handler: (row) => console.log("Editando empresa:", row.cif) 
+        name: 'cif', 
+        label: 'CIF', 
+        type: 'text', 
+        md: 4, 
+        disabled: !!selectedEmpresa, 
+        required: true 
     },
     { 
-      label: 'Eliminar', 
-      variant: 'danger', 
-      handler: (row) => console.log("Borrando empresa:", row.cif) 
-    }
+        name: 'razonSocial', 
+        label: 'Razón Social', 
+        type: 'text', 
+        md: 8, 
+        required: true 
+    },
+
+    // FILA 2: PERSONA DE CONTACTO (6) + LOCALIDAD (6) = 12
+    { name: 'personaContacto', label: 'Persona de Contacto', type: 'text', md: 6 },
+    { name: 'localidad', label: 'Localidad', type: 'text', md: 6 },
+
+    // FILA 3: TELÉFONO (4) + DIRECCIÓN (8) = 12
+    { name: 'telefonoContacto', label: 'Teléfono', type: 'text', md: 4 },
+    { name: 'direccion', label: 'Dirección', type: 'text', md: 8 },
+
+    // FILA 4: EMAIL DE CONTACTO (Fila completa)
+    { name: 'emailContacto', label: 'Email de Contacto', type: 'email', md: 12 },
   ];
 
-  useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        setLoading(true);
-        // Usamos el ID de centro que ya sabemos que funciona
-        const data = await empresaService.getEmpresasByCentro("CEN01");
-        setEmpresas(data);
-      } catch (error) {
-        console.error("Error al cargar la tabla:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const empresasFiltradas = empresas.filter(emp => 
+    emp.razonSocial.toLowerCase().includes(filtroTexto.toLowerCase()) || 
+    emp.cif.toLowerCase().includes(filtroTexto.toLowerCase())
+  );
 
-    cargarDatos();
-  }, []);
+  const cargarEmpresas = async () => {
+    try {
+      setLoading(true);
+      const data = await empresaService.getEmpresas();
+      setEmpresas(data);
+    } catch (err) {
+      console.error("Error al cargar empresas", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { cargarEmpresas(); }, []);
+
+  const abrirModalEditar = (empresa, readOnly = false) => {
+    setIsReadOnly(readOnly);
+    setSelectedEmpresa(empresa);
+    setShowModal(true);
+  };
+
+  const abrirModalCrear = () => {
+    setIsReadOnly(false);
+    setSelectedEmpresa(null);
+    setShowModal(true);
+  };
+
+  const manejarGuardar = async (formData) => {
+    try {
+      if (selectedEmpresa) {
+        await empresaService.updateEmpresa(selectedEmpresa.cif, formData);
+      } else {
+        await empresaService.createEmpresa(formData);
+      }
+      setShowModal(false);
+      cargarEmpresas();
+    } catch (err) {
+      alert("Error al procesar la solicitud. Revisa si el CIF ya existe.");
+    }
+  };
+
+  const manejarEliminar = async (empresa) => {
+    const { cif } = empresa;
+    if (window.confirm(`¿Estás seguro de que deseas eliminar la empresa con CIF: ${cif}?`)) {
+      try {
+        await empresaService.deleteEmpresa(cif);
+        alert("Empresa eliminada correctamente.");
+        cargarEmpresas();
+      } catch (err) {
+        console.error("Error al borrar:", err);
+        alert(
+          "NO SE PUEDE ELIMINAR:\n\n" +
+          "Esta empresa tiene alumnos, tutores o convenios asociados."
+        );
+      }
+    }
+  };
 
   return (
-    <div className="container-fluid mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
+    <>
+      <Row className="mb-4 align-items-center">
+        <Col>
           <h2 className="fw-bold">Gestión de Empresas</h2>
-          <p className="text-muted">Listado de empresas colaboradoras del centro.</p>
-        </div>
-        <button className="btn btn-primary">Nueva Empresa</button>
+          <p className="text-muted">Centro: {user?.profesorInfo?.centroNombre}</p>
+        </Col>
+        <Col className="text-end">
+          <Button variant="primary" onClick={abrirModalCrear}>Nueva Empresa</Button>
+        </Col>
+      </Row>
+
+      <Row className="mb-3 mx-0 bg-light p-3 rounded border">
+        <Col md={12}>
+          <Form.Label className="small fw-bold text-secondary">Buscar Empresa (Nombre o CIF)</Form.Label>
+          <InputGroup>
+            <InputGroup.Text className="bg-white"><i className="bi bi-search"></i></InputGroup.Text>
+            <Form.Control 
+              placeholder="Ej: Inditex o B12345678..." 
+              value={filtroTexto}
+              onChange={(e) => setFiltroTexto(e.target.value)}
+            />
+          </InputGroup>
+        </Col>
+      </Row>
+
+      <div className="bg-white p-4 rounded shadow-sm border">
+        {loading ? (
+          <div className="text-center"><Spinner animation="border" /></div>
+        ) : (
+          <AppTable 
+            headers={columnas} 
+            data={empresasFiltradas} 
+            accessorKeys={llaves} 
+            onView={(emp) => abrirModalEditar(emp, true)}
+            onEdit={(emp) => abrirModalEditar(emp, false)}
+            onDelete={manejarEliminar}
+          />
+        )}
       </div>
 
-      {loading ? (
-        <div className="text-center py-5">
-          <div className="spinner-border text-primary" role="status"></div>
-          <p className="mt-2">Cargando empresas...</p>
-        </div>
-      ) : (
-        /* LLAMADA CORREGIDA A TU APPTABLE */
-        <AppTable 
-          headers={headers} 
-          data={empresas} 
-          accessorKeys={accessorKeys}
-          actions={acciones}
+      <AppModal 
+        show={showModal} 
+        handleClose={() => setShowModal(false)} 
+        title={isReadOnly ? "Detalle de Empresa" : (selectedEmpresa ? "Editar Empresa" : "Nueva Empresa")}
+        size="lg"
+        closeLabel={isReadOnly ? "Volver" : "Cancelar"}
+      >
+        <AppForm 
+          fields={camposEmpresa.map(f => ({ ...f, disabled: isReadOnly || f.disabled }))} 
+          initialValues={selectedEmpresa || { cif: '', razonSocial: '', direccion: '', localidad: '', telefonoContacto: '', emailContacto: '', personaContacto: '' }} 
+          onSubmit={manejarGuardar} 
+          buttonLabel={isReadOnly ? null : "Guardar"} 
         />
-      )}
-    </div>
+      </AppModal>
+    </>
   );
 };
 

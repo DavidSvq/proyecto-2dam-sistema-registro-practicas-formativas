@@ -1,21 +1,45 @@
 import api from '../api/axiosConfig';
 
 export const profesorService = {
-    /**
-     * Obtiene la lista completa de profesores asociados a un centro.
-     * Endpoint: GET /api/profesores/centro/{idCentro}
-     */
     getProfesoresByCentro: async (idCentro) => {
-        try {
-            const response = await api.get(`profesores/centro/${idCentro}`);
-            
-            // Log para verificar en la consola que llegan los 8 profesores
-            console.log(`Paso 2: Datos recibidos para el centro ${idCentro}:`, response.data);
-            
-            return response.data; 
-        } catch (error) {
-            console.error(`Error en profesorService (getProfesoresByCentro):`, error);
-            throw error;
-        }
+        const response = await api.get(`profesores/centro/${idCentro}`);
+        return response.data; 
+    },
+    
+    getProfesorById: async (id) => {
+        const response = await api.get(`profesores/${id}`);
+        return response.data;
+    },
+
+    createProfesor: async (profesorData, codCentro) => {
+        const nuevoProfesor = {
+            ...profesorData,
+            password: '1234',
+            rol: 'PROFESOR_TUTOR',
+            numAlumnos: 0,
+            // AJUSTE CRÍTICO: Debe ser 'codCentro' para que el CentroDocenteDTO lo mapee
+            centro: { 
+                codCentro: codCentro 
+            }
+        };
+        const response = await api.post('profesores', nuevoProfesor);
+        return response.data;
+    },
+
+    updateProfesor: async (id, profesorData, codCentro) => {
+        const profesorActualizado = {
+            ...profesorData,
+            password: '1234',
+            rol: 'PROFESOR_TUTOR',
+            centro: { 
+                codCentro: codCentro 
+            }
+        };
+        const response = await api.put(`profesores/${id}`, profesorActualizado);
+        return response.data;
+    },
+
+    deleteProfesor: async (id) => {
+        await api.delete(`profesores/${id}`);
     }
 };

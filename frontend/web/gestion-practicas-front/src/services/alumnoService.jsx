@@ -10,5 +10,41 @@ export const alumnoService = {
             console.error(`Error al obtener alumnos del centro ${idCentro}:`, error);
             throw error;
         }
+    },
+
+    // 2. Crear un nuevo alumno
+    // alumnoData debe contener: { id, nombre, apellidos, email, rol: "ALUMNO", centro: { codCentro }, ... }
+    createAlumno: async (alumnoData) => {
+        try {
+            const response = await api.post('alumnos', alumnoData);
+            return response.data;
+        } catch (error) {
+            console.error("Error al crear el alumno:", error);
+            throw error;
+        }
+    },
+
+    // 3. Actualizar un alumno existente
+    // El ID se pasa en la URL y el objeto completo en el body
+    updateAlumno: async (id, alumnoData) => {
+        try {
+            const response = await api.put(`alumnos/${id}`, alumnoData);
+            return response.data;
+        } catch (error) {
+            console.error(`Error al actualizar el alumno ${id}:`, error);
+            throw error;
+        }
+    },
+
+    // 4. Eliminar un alumno (o desactivar, según decidamos)
+    deleteAlumno: async (id) => {
+        try {
+            const response = await api.delete(`alumnos/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error al eliminar el alumno ${id}:`, error);
+            throw error;
+        }
     }
+
 };

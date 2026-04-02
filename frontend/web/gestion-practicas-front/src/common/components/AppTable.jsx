@@ -1,6 +1,10 @@
-import { Table, Button } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
+import TableActions from './TableActtions'; // Mantengo tu falta de ortografía por si el archivo se llama así
 
-const AppTable = ({ headers, data, accessorKeys, actions }) => {
+const AppTable = ({ headers, data, accessorKeys, onView, onEdit, onDelete }) => {
+  // Determinamos si hay alguna acción para mostrar la columna
+  const hasActions = onView || onEdit || onDelete;
+
   return (
     <Table striped bordered hover responsive className="shadow-sm mt-3 bg-white">
       <thead className="table-dark">
@@ -8,39 +12,34 @@ const AppTable = ({ headers, data, accessorKeys, actions }) => {
           {headers.map((h, i) => (
             <th key={i}>{h}</th>
           ))}
-          {actions && <th className="text-center">Acciones</th>}
+          {hasActions && <th className="text-center">Acciones</th>}
         </tr>
       </thead>
       <tbody>
         {data.length > 0 ? (
           data.map((item, rowIndex) => (
             <tr key={rowIndex}>
-              {/* Usamos accessorKeys para sacar el dato exacto del objeto */}
+              {/* Celdas de datos */}
               {accessorKeys.map((key, cellIndex) => (
                 <td key={cellIndex}>{item[key] || '-'}</td>
               ))}
 
-              {/* Columna de botones (si existen) */}
-              {actions && (
+              {/* Columna de acciones usando el componente TableActions */}
+              {hasActions && (
                 <td className="text-center">
-                  {actions.map((action, actIndex) => (
-                    <Button
-                      key={actIndex}
-                      variant={action.variant || 'primary'}
-                      size="sm"
-                      className="me-2"
-                      onClick={() => action.handler(item)}
-                    >
-                      {action.label}
-                    </Button>
-                  ))}
+                  <TableActions 
+                    item={item}
+                    onView={onView}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                  />
                 </td>
               )}
             </tr>
           ))
         ) : (
           <tr>
-            <td colSpan={headers.length + (actions ? 1 : 0)} className="text-center">
+            <td colSpan={headers.length + (hasActions ? 1 : 0)} className="text-center">
               No hay datos disponibles
             </td>
           </tr>
