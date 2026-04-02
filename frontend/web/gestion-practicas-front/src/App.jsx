@@ -71,15 +71,15 @@ function App() {
         <Route path="/alumno-dashboard" element={<AlumnoDashboard user={user} onLogout={handleLogout} />}>
           <Route index element={<InicioAlumno user={user} />} />
           <Route path="perfil" element={<FichaAlumno user={user} />} />
-          <Route path="asistencia" element={<AsistenciaAlumno />} />
-          <Route path="tareas" element={<TareasAlumno />} />
+          <Route path="asistencia" element={<AsistenciaAlumno user={user}/>} />
+          <Route path="tareas" element={<TareasAlumno user={user}/>} />
         </Route>
 
         {/* PROFESOR TUTOR */}
         <Route path="/profesor-tutor-dashboard" element={<ProfesorTutorDashboard user={user} onLogout={handleLogout} />}>
           <Route index element={<InicioProfesorTutor user={user} />} />
-          <Route path="alumnos" element={<GestionAlumnosProfesorTutor />} />
-          <Route path="tareas" element={<SeguimientoTareasProfesorTutor />} />
+          <Route path="alumnos" element={<GestionAlumnosProfesorTutor user={user}/>} />
+          <Route path="tareas" element={<SeguimientoTareasProfesorTutor user={user}/>} />
         </Route>
 
         {/* REPARTIDOR DE RAÍZ: Redirige según el rol si ya está logueado */}

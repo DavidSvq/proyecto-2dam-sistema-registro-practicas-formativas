@@ -45,6 +45,12 @@ export const alumnoService = {
             console.error(`Error al eliminar el alumno ${id}:`, error);
             throw error;
         }
+    },
+
+    // 5. LISTAR POR TUTOR DOCENTE
+    getAlumnosByProfesor: async (id) => {
+        const response = await api.get(`/alumnos/tutor/${id}`);
+        return response.data;
     }
 
 };
