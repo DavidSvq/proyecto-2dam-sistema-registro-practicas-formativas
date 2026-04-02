@@ -26,4 +26,5 @@ public interface TareaRepository extends JpaRepository<Tarea, Long> {
     // D. BÚSQUEDA PARA EL PROFESOR-TUTOR (Respetando 'idProfesor' y 'estado')
     @Query("SELECT t FROM Tarea t WHERE t.profesorTutor.id = :idProfesor AND t.estado = :estado")
     List<Tarea> findByProfesorTutor_IdAndEstado(@Param("idProfesor") String idProfesor, @Param("estado") String estado);
+    List<Tarea> findByTutorEmpresaId(String idTutor);
 }

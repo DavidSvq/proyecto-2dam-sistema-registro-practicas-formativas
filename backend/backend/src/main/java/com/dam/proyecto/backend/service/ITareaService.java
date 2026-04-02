@@ -31,4 +31,5 @@ public interface ITareaService {
     List<TareaDTO> obtenerTodasPorAlumno(String idAlumno);
     List<TareaDTO> obtenerPorAlumnoYEstado(String idAlumno, String estado);
     List<TareaDTO> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, String estado);
+    List<TareaDTO> obtenerTodasPorTutorEmpresa(String idTutor);
 }

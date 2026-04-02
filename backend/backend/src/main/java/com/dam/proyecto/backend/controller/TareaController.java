@@ -74,4 +74,9 @@ public class TareaController {
         List<TareaDTO> tareasDTO = tareaService.obtenerPorTutorEmpresaYEstado(idTutor, estado);
         return ResponseEntity.ok(tareasDTO);
     }
+    @GetMapping("/tutor/{idTutor}")
+    public ResponseEntity<List<TareaDTO>> listarTodasPorTutor(@PathVariable String idTutor) {
+        List<TareaDTO> tareasDTO = tareaService.obtenerTodasPorTutorEmpresa(idTutor);
+        return ResponseEntity.ok(tareasDTO);
+    }
 }

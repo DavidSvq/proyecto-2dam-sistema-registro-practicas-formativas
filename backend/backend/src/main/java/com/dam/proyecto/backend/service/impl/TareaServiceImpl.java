@@ -112,6 +112,17 @@ public class TareaServiceImpl implements ITareaService {
     // --- MÉTODOS DE CONSULTA (Usando los métodos del Repo con @Query) ---
 
     @Override
+    public List<TareaDTO> obtenerTodasPorTutorEmpresa(String idTutor) {
+        // 1. Buscamos todas las tareas del tutor en la BD
+        List<Tarea> tareas = tareaRepository.findByTutorEmpresaId(idTutor);
+
+        // 2. Mapeamos la lista de entidades a una lista de DTOs
+        return tareas.stream()
+                .map(tareaMapper::convertirATareaDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<TareaDTO> obtenerTodasPorAlumno(String idAlumno) {
         List<Tarea> tareas = tareaRepository.findByAlumno_IdOrderByFechaAsignacionDesc(idAlumno);
