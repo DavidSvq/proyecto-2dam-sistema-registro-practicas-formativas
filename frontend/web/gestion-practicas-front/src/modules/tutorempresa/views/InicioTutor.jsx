@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Spinner, Alert } from "react-bootstrap";
+import { Row, Col, Spinner, Alert, Container } from "react-bootstrap";
 import InfoCard from "../../../common/components/InfoCard";
 import { tutorEmpresaService } from "../../../services/tutorEmpresaService";
 
@@ -10,7 +10,6 @@ const InicioTutor = ({ user }) => {
 
   useEffect(() => {
     const cargarDatos = async () => {
-      // 1. Verificamos que el ID existe antes de llamar
       if (!user?.id) {
         setError("No se encontró el ID del usuario.");
         setLoading(false);
@@ -20,17 +19,26 @@ const InicioTutor = ({ user }) => {
       try {
         const data = await tutorEmpresaService.getTutorPerfil(user.id);
         
-        // 2. Aplicamos el Flattening asegurando que no haya undefined
+        const listaAlumnos = await tutorEmpresaService.getMisAlumnos(user.id);
+        
         setDatosTutor({
           ...data,
-          razonSocial: data.empresa?.razonSocial || "No disponible",
+          // Forzamos la extracción de nombre y apellidos
+          nombreSolo: data.nombre || "Usuario", 
+          nombreCompleto: (data.nombre && data.apellidos) 
+            ? `${data.nombre} ${data.apellidos}` 
+            : "Nombre no disponible",
+          
+          // Datos de empresa
+          razonSocial: data.empresa?.razonSocial || "No asignada",
           localidad: data.empresa?.localidad || "No disponible",
           cif: data.empresa?.cif || "No disponible",
-          nombreDisplay: data.nombre || "Usuario",
-          numAlumnosDisplay: data.numAlumnos !== undefined ? data.numAlumnos : 0
+          
+          // Alumnos
+          numAlumnosDisplay: listaAlumnos ? listaAlumnos.length : 0
         });
       } catch (err) {
-        setError("Error de conexión con el servidor (8088)");
+        setError("Error al conectar con el servidor para obtener el perfil.");
         console.error(err);
       } finally {
         setLoading(false);
@@ -47,55 +55,95 @@ const InicioTutor = ({ user }) => {
   if (error) return <Alert variant="danger" className="m-4">{error}</Alert>;
 
   return (
-    <>
+    <Container fluid className="px-4">
       <Row className="mb-4">
         <Col>
           <h2 className="fw-bold">Panel de Inicio</h2>
-          {/* Aquí forzamos que si no hay dato, no pinte nada en blanco */}
           <p className="text-muted">
-            Bienvenido, <strong>{datosTutor?.nombreDisplay}</strong>. 
-            Gestionando FCT en <strong>{datosTutor?.razonSocial}</strong>.
+            Bienvenido, <strong>{datosTutor?.nombreSolo}</strong>. 
+            Consulta aquí la información de tu perfil y empresa.
           </p>
         </Col>
       </Row>
 
-      <Row className="mb-4">
-        <Col md={4} className="mb-3">
+      {/* FILA 1: RAZÓN SOCIAL */}
+      <Row className="mb-3">
+        <Col md={12}>
           <InfoCard 
-            titulo="Mis Alumnos" 
-            contenido={datosTutor?.numAlumnosDisplay} 
-            variante="primary" 
-            icono="bi bi-person-badge"
-          />
-        </Col>
-        <Col md={4} className="mb-3">
-          <InfoCard 
-            titulo="Ubicación" 
-            contenido={datosTutor?.localidad} 
-            variante="info" 
-            icono="bi bi-geo-alt"
-          />
-        </Col>
-        <Col md={4} className="mb-3">
-          <InfoCard 
-            titulo="Contacto" 
-            contenido={datosTutor?.email} 
-            variante="success" 
-            icono="bi bi-envelope"
+            titulo="Empresa / Entidad" 
+            contenido={datosTutor?.razonSocial} 
+            variante="dark" 
+            icono="bi bi-building"
           />
         </Col>
       </Row>
 
-      <Row>
-        <Col>
-          <div className="bg-white p-4 rounded shadow-sm border">
-            <h5>Detalles de la Empresa</h5>
-            <p className="mb-1"><strong>CIF:</strong> {datosTutor?.cif}</p>
-            <p className="text-muted small">ID de Tutor: {datosTutor?.id}</p>
-          </div>
+      {/* FILA 2: CIF Y LOCALIDAD */}
+      <Row className="mb-4">
+        <Col md={6} className="mb-3 mb-md-0">
+          <InfoCard 
+            titulo="CIF" 
+            contenido={datosTutor?.cif} 
+            variante="secondary" 
+            icono="bi bi-card-text"
+          />
+        </Col>
+        <Col md={6}>
+          <InfoCard 
+            titulo="Localidad" 
+            contenido={datosTutor?.localidad} 
+            variante="secondary" 
+            icono="bi bi-geo-alt"
+          />
         </Col>
       </Row>
-    </>
+
+      <hr className="my-4" />
+
+      {/* FILA 3: NOMBRE DEL TUTOR */}
+      <Row className="mb-3">
+        <Col md={12}>
+          <InfoCard 
+            titulo="Tutor de Empresa" 
+            contenido={datosTutor?.nombreCompleto} 
+            variante="primary" 
+            icono="bi bi-person-badge"
+          />
+        </Col>
+      </Row>
+
+      {/* FILA 4: CÓDIGO Y Nº ALUMNOS */}
+      <Row className="mb-3">
+        <Col md={6} className="mb-3 mb-md-0">
+          <InfoCard 
+            titulo="Código de Tutor" 
+            contenido={datosTutor?.id} 
+            variante="info" 
+            icono="bi bi-hash"
+          />
+        </Col>
+        <Col md={6}>
+          <InfoCard 
+            titulo="Alumnos Asignados" 
+            contenido={datosTutor?.numAlumnosDisplay} 
+            variante="info" 
+            icono="bi bi-people"
+          />
+        </Col>
+      </Row>
+
+      {/* FILA 5: EMAIL */}
+      <Row className="mb-5">
+        <Col md={12}>
+          <InfoCard 
+            titulo="Correo Electrónico" 
+            contenido={datosTutor?.email} 
+            variante="success" 
+            icono="bi bi-envelope-at"
+          />
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
