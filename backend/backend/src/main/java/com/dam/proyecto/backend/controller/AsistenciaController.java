@@ -62,4 +62,9 @@ public class AsistenciaController {
         // Devolvemos la lista de AsistenciaDTO con un HTTP 200 OK
         return ResponseEntity.ok(listaHistorial);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody AsistenciaDTO dto) {
+        return ResponseEntity.ok(asistenciaService.actualizarAsistencia(id, dto));
+    }
 }

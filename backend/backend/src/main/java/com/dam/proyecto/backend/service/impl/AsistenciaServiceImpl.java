@@ -96,4 +96,21 @@ public class AsistenciaServiceImpl implements IAsistenciaService {
                 .map(asistencia -> asistenciaMapper.convertirAAsistenciaDTO(asistencia)) // Mapeamos la Asistencia a AsistenciaDTO
                 .orElse(null); // Si no se encuentra, devolvemos null
     }
+
+    @Override
+    @Transactional
+    public Asistencia actualizarAsistencia(Long idAsistencia, AsistenciaDTO dto) {
+        Asistencia asis = asistenciaRepository.findById(idAsistencia)
+                .orElseThrow(() -> new RuntimeException("No existe el registro"));
+
+        asis.setHoraEntrada(dto.getHoraEntrada());
+        asis.setHoraSalida(dto.getHoraSalida());
+        asis.setObservaciones(dto.getObservaciones());
+
+        // IMPORTANTE: Recalcular las horas decimales antes de guardar
+        Duration duracion = Duration.between(asis.getHoraEntrada(), asis.getHoraSalida());
+        asis.setHorasDiarias(duracion.toMinutes() / 60.0);
+
+        return asistenciaRepository.save(asis);
+    }
 }
