@@ -47,7 +47,18 @@ export const alumnoService = {
         }
     },
 
-    // 5. LISTAR POR TUTOR DOCENTE
+    // 5. Obtener el perfil de un alumno por su ID
+    getAlumnoById: async (id) => {
+        try {
+            const response = await api.get(`alumnos/${id}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error al obtener el perfil del alumno ${id}:`, error);
+            throw error;
+        }
+    },
+
+    // 6. LISTAR POR TUTOR DOCENTE
     getAlumnosByProfesor: async (id) => {
         const response = await api.get(`/alumnos/tutor/${id}`);
         return response.data;

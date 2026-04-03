@@ -34,5 +34,12 @@ export const asistenciaService = {
     getHistorial: async (idAlumno) => {
         const response = await api.get(`/asistencias/historial/${idAlumno}`);
         return response.data;
+    }, 
+
+    // 5. Actualizar un registro existente (PUT)
+    actualizarAsistencia: async (idAsistencia, datos) => {
+        // La URL debe coincidir con el @PutMapping("/{id}") de tu Controller
+        const response = await api.put(`/asistencias/${idAsistencia}`, datos);
+        return response.data;
     }
 };

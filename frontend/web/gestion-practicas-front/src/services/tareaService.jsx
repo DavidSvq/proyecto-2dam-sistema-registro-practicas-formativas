@@ -52,14 +52,14 @@ export const tareaService = {
     },
 
     /**
-     * 7. ACCIÓN ALUMNO: Cambia el estado y añade horas reales obligatoriamente.
-     * Mapea con: actualizarEstadoAlumno(idTarea, nuevoEstado, horasReales)
+     * 7. ACCIÓN ALUMNO: Cambia el estado y añade horas.
      */
-    completarTareaAlumno: async (idTarea, nuevoEstado, horasReales) => {
-        const response = await api.patch(`/tareas/${idTarea}/alumno/estado`, null, {
+    completarTareaAlumno: async (idTarea, nuevoEstado, horas) => {
+        // Eliminamos "/alumno" de la URL y usamos "horas" como nombre de parámetro
+        const response = await api.patch(`/tareas/${idTarea}/estado`, null, {
             params: { 
                 nuevoEstado: nuevoEstado,
-                horasReales: horasReales 
+                horas: horas 
             }
         });
         return response.data;
