@@ -14,13 +14,13 @@ export const centroService = {
 
     // Para el futuro Paso de "Modificar"
     update: async (data) => {
-    try {
-        // Concatenamos el código para que coincida con el @PathVariable del Java
-        const response = await api.put(`centros/${data.codCentro}`, data); 
-        return response.data;
-    } catch (error) {
-        console.error("Error al actualizar el centro:", error);
-        throw error;
+        try {
+            // Concatenamos el código para que coincida con el @PathVariable del Java
+            const response = await api.put(`centros/${data.codCentro}`, data); 
+            return response.data;
+        } catch (error) {
+            console.error("Error al actualizar el centro:", error);
+            throw error;
+        }
     }
-}
 };
