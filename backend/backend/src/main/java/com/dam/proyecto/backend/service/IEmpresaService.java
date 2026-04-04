@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.service;
 
+import com.dam.proyecto.backend.dto.empresa.EmpresaDTO;
 import com.dam.proyecto.backend.model.Empresa;
 
 import java.util.List;
@@ -15,17 +16,17 @@ public interface IEmpresaService {
 
     // 2. EL "VER DETALLE"
     // Buscamos por el CIF que es la PK real
-    Optional<Empresa> obtenerPorCif(String cif);
+    Optional<EmpresaDTO> obtenerPorCif(String cif);
 
     // 3. EL BUSCADOR DE LA INTERFAZ
     // Para filtrar por nombre en el front-end
-    List<Empresa> buscarPorNombre(String nombre);
+    List<EmpresaDTO> buscarPorNombre(String nombre);
 
     // 4. FILTRO POR CENTRO (Lógica de Gestor)
     // Para que cada instituto vea solo sus empresas colaboradoras
-    List<Empresa> listarEmpresasPorCentro(String codigoCentro);
+    List<EmpresaDTO> listarEmpresas();
 
     // 5. VÍNCULO CON ALUMNO
     // Para obtener los datos de la empresa donde el alumno hace prácticas
-    Optional<Empresa> obtenerEmpresaDeAlumno(String idAlumno);
+    Optional<EmpresaDTO> obtenerEmpresaDeAlumno(String idAlumno);
 }

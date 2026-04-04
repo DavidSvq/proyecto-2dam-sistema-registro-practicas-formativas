@@ -1,13 +1,17 @@
 package com.dam.proyecto.backend.service.impl;
 
+import com.dam.proyecto.backend.dto.empresa.EmpresaDTO;
+import com.dam.proyecto.backend.dto.empresa.EmpresaMapper;
 import com.dam.proyecto.backend.model.Empresa;
 import com.dam.proyecto.backend.repository.EmpresaRepository;
 import com.dam.proyecto.backend.service.IEmpresaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmpresaServiceImpl implements IEmpresaService {
@@ -17,6 +21,9 @@ public class EmpresaServiceImpl implements IEmpresaService {
     public EmpresaServiceImpl(EmpresaRepository empresaRepository) {
         this.empresaRepository = empresaRepository;
     }
+
+    @Autowired
+    private EmpresaMapper empresaMapper;
 
     // 1. GUARDAR / ACTUALIZAR
     @Override
@@ -50,31 +57,39 @@ public class EmpresaServiceImpl implements IEmpresaService {
         empresaRepository.deleteById(cif);
     }
 
-    // 2. OBTENER POR CIF (EL DETALLE)
+    // 2. OBTENER POR CIF (EL DETALLE) - DEVUELVE EmpresaDTO
     @Override
     @Transactional(readOnly = true)
-    public Optional<Empresa> obtenerPorCif(String cif) {
-        return empresaRepository.findByCif(cif);
+    public Optional<EmpresaDTO> obtenerPorCif(String cif) {
+        Optional<Empresa> empresa = empresaRepository.findById(cif);
+        return empresa.map(empresaMapper::convertirAEmpresaDTO);
     }
 
-    // 3. BUSCADOR POR NOMBRE
+    // 3. BUSCADOR POR NOMBRE - DEVUELVE LISTA DE EmpresaDTO
     @Override
     @Transactional(readOnly = true)
-    public List<Empresa> buscarPorNombre(String nombre) {
-        return empresaRepository.findByRazonSocialContainingIgnoreCase(nombre);
+    public List<EmpresaDTO> buscarPorNombre(String nombre) {
+        List<Empresa> empresas = empresaRepository.findByRazonSocialContainingIgnoreCase(nombre);
+        return empresas.stream()
+                .map(empresaMapper::convertirAEmpresaDTO)
+                .collect(Collectors.toList());
     }
 
-    // 4. LISTAR POR CENTRO (USANDO LA NATIVE QUERY)
+    // 4. LISTAR POR CENTRO (USANDO LA NATIVE QUERY) - DEVUELVE LISTA DE EmpresaDTO
     @Override
     @Transactional(readOnly = true)
-    public List<Empresa> listarEmpresasPorCentro(String codigoCentro) {
-        return empresaRepository.findEmpresasByCodigoCentro(codigoCentro);
+    public List<EmpresaDTO> listarEmpresas() {
+        List<Empresa> empresas = empresaRepository.findAll();
+        return empresas.stream()
+                .map(empresaMapper::convertirAEmpresaDTO)
+                .collect(Collectors.toList());
     }
 
-    // 5. OBTENER LA EMPRESA DE UN ALUMNO (USANDO LA NATIVE QUERY)
+    // 5. OBTENER LA EMPRESA DE UN ALUMNO (USANDO LA NATIVE QUERY) - DEVUELVE EmpresaDTO
     @Override
     @Transactional(readOnly = true)
-    public Optional<Empresa> obtenerEmpresaDeAlumno(String idAlumno) {
-        return empresaRepository.findByAlumnoId(idAlumno);
+    public Optional<EmpresaDTO> obtenerEmpresaDeAlumno(String idAlumno) {
+        Optional<Empresa> empresa = empresaRepository.findByAlumnoId(idAlumno);
+        return empresa.map(empresaMapper::convertirAEmpresaDTO);
     }
 }

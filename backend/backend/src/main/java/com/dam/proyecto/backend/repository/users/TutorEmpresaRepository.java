@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.repository.users;
 
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Alumno;
 import com.dam.proyecto.backend.model.users.TutorEmpresa;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,5 +34,7 @@ public interface TutorEmpresaRepository extends JpaRepository<TutorEmpresa, Stri
      * Búsqueda por email para la lógica de Login/Seguridad
      */
     @Query("SELECT t FROM TutorEmpresa t WHERE t.email = :email")
-    Optional<TutorEmpresa> findByEmailManual(@Param("email") String email);
+    Optional<TutorEmpresa> findByEmail(@Param("email") String email);
+
+    Optional<TutorEmpresa> findByEmailAndRol(String email, RolUsuario rol);
 }

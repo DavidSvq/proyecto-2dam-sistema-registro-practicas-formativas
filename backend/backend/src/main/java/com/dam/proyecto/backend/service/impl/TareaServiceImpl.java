@@ -1,5 +1,8 @@
 package com.dam.proyecto.backend.service.impl;
+import com.dam.proyecto.backend.dto.tarea.TareaDTO;
+import com.dam.proyecto.backend.dto.tarea.TareaMapper;
 import com.dam.proyecto.backend.model.Tarea;
+import com.dam.proyecto.backend.model.enums.EstadoTarea;
 import com.dam.proyecto.backend.repository.TareaRepository;
 import com.dam.proyecto.backend.service.ITareaService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +21,7 @@ import java.util.List;
 public class TareaServiceImpl implements ITareaService {
 
     private final TareaRepository tareaRepository;
+    private final TareaMapper tareaMapper;
 
     // 1. CREACIÓN PURA
     @Override
@@ -36,28 +41,41 @@ public class TareaServiceImpl implements ITareaService {
 
         log.info("Tutor de Empresa activando/asignando tarea ID: {}", idTarea);
 
-        tarea.setEstado("ASIGNADA");
+        tarea.setEstado(EstadoTarea.ASIGNADA);
         tarea.setFechaAsignacion(LocalDate.now());
         tarea.setHorasReales(0.0);
 
         // Aquí es donde en el futuro integrarás el microservicio de IA para horas estimadas
         return tareaRepository.save(tarea);
     }
-
     // 3. EDICIÓN
     @Override
     @Transactional
     public Tarea modificarTarea(Long idTarea, Tarea tareaModificada) {
         Tarea existente = tareaRepository.findById(idTarea)
-                .orElseThrow(() -> new RuntimeException("No se puede modificar: Tarea no encontrada"));
+                .orElseThrow(() -> new RuntimeException("Tarea no encontrada con ID: " + idTarea));
 
-        log.info("Modificando contenido de la tarea ID: {}", idTarea);
+        log.info("Actualizando tarea ID: {} con nuevo estado: {}", idTarea, tareaModificada.getEstado());
+
         existente.setTitulo(tareaModificada.getTitulo());
         existente.setDescripcion(tareaModificada.getDescripcion());
-        // Podrías añadir más campos editables según tu entidad
+
+        // Actualizamos el Estado (Esto es lo que te faltaba)
+        if (tareaModificada.getEstado() != null) {
+            existente.setEstado(tareaModificada.getEstado());
+        }
+
+        if (tareaModificada.getFechaLimite() != null) {
+            existente.setFechaLimite(tareaModificada.getFechaLimite());
+        }
+
+        if (tareaModificada.getAlumno() != null) {
+            existente.setAlumno(tareaModificada.getAlumno());
+        }
 
         return tareaRepository.save(existente);
     }
+
 
     // 4. ELIMINACIÓN
     @Override
@@ -73,20 +91,20 @@ public class TareaServiceImpl implements ITareaService {
     // 5. GESTIÓN DE ESTADOS (Tu lógica original de Alumno)
     @Override
     @Transactional
-    public Tarea actualizarEstadoAlumno(Long idTarea, String nuevoEstado, Double horasReales) {
+    public Tarea actualizarEstadoAlumno(Long idTarea, EstadoTarea nuevoEstado, Double horasReales) {
         Tarea tarea = tareaRepository.findById(idTarea)
                 .orElseThrow(() -> new RuntimeException("Tarea no encontrada con ID: " + idTarea));
 
         log.info("Alumno cambiando estado de tarea {} a {}", idTarea, nuevoEstado);
 
-        if ("COMPLETADA".equalsIgnoreCase(nuevoEstado)) {
+        if (EstadoTarea.COMPLETADA.equals(nuevoEstado)) {
             if (horasReales == null || horasReales <= 0) {
                 throw new IllegalArgumentException("Para completar la tarea debes indicar las horas reales.");
             }
             tarea.setHorasReales(horasReales);
         }
 
-        tarea.setEstado(nuevoEstado.toUpperCase());
+        tarea.setEstado(nuevoEstado);
         return tareaRepository.save(tarea);
     }
 
@@ -97,31 +115,68 @@ public class TareaServiceImpl implements ITareaService {
         Tarea tarea = tareaRepository.findById(idTarea)
                 .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
 
-        if (!"COMPLETADA".equalsIgnoreCase(tarea.getEstado())) {
+        if (tarea.getEstado() != EstadoTarea.COMPLETADA) {
             throw new IllegalStateException("Solo se pueden revisar tareas COMPLETADAS.");
         }
 
-        tarea.setEstado("REVISADA");
+        tarea.setEstado(EstadoTarea.VALIDADA);
+        return tareaRepository.save(tarea);
+    }
+
+    @Override
+    @Transactional
+    public Tarea actualizarEstadoTutor(Long idTarea, EstadoTarea nuevoEstado) {
+        Tarea tarea = tareaRepository.findById(idTarea)
+                .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
+
+        // Lógica de negocio: Un tutor solo debería cancelar si no está VALIDADA
+        if (tarea.getEstado() == EstadoTarea.VALIDADA) {
+            throw new RuntimeException("No se puede cambiar el estado de una tarea ya validada por el profesor");
+        }
+
+        log.info("Tutor cambiando estado de tarea {} a {}", idTarea, nuevoEstado);
+        tarea.setEstado(nuevoEstado);
+
         return tareaRepository.save(tarea);
     }
 
     // --- MÉTODOS DE CONSULTA (Usando los métodos del Repo con @Query) ---
 
     @Override
-    @ReadOnlyProperty
-    public List<Tarea> obtenerTodasPorAlumno(String idAlumno) {
-        return tareaRepository.findByAlumno_IdOrderByFechaAsignacionDesc(idAlumno);
+    public List<TareaDTO> obtenerTodasPorTutorEmpresa(String idTutor) {
+        // 1. Buscamos todas las tareas del tutor en la BD
+        List<Tarea> tareas = tareaRepository.findByTutorEmpresaId(idTutor);
+
+        // 2. Mapeamos la lista de entidades a una lista de DTOs
+        return tareas.stream()
+                .map(tareaMapper::convertirATareaDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    @ReadOnlyProperty
-    public List<Tarea> obtenerPorAlumnoYEstado(String idAlumno, String estado) {
-        return tareaRepository.findByAlumno_IdAndEstado(idAlumno, estado.toUpperCase());
+    @Transactional(readOnly = true)
+    public List<TareaDTO> obtenerTodasPorAlumno(String idAlumno) {
+        List<Tarea> tareas = tareaRepository.findByAlumno_IdOrderByFechaAsignacionDesc(idAlumno);
+        return tareas.stream()
+                .map(tareaMapper::convertirATareaDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    @ReadOnlyProperty
-    public List<Tarea> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, String estado) {
-        return tareaRepository.findByTutorEmpresa_IdAndEstado(idTutorEmpresa, estado.toUpperCase());
+    @Transactional(readOnly = true)
+    public List<TareaDTO> obtenerPorAlumnoYEstado(String idAlumno, EstadoTarea estado) {
+        List<Tarea> tareas = tareaRepository.findByAlumno_IdAndEstado(idAlumno, estado);
+        return tareas.stream()
+                .map(tareaMapper::convertirATareaDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TareaDTO> obtenerPorTutorEmpresaYEstado(String idTutorEmpresa, EstadoTarea estado) {
+        List<Tarea> tareas = tareaRepository.findByTutorEmpresa_IdAndEstado(idTutorEmpresa, estado);
+        return tareas.stream()
+                .map(tareaMapper::convertirATareaDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.controller;
 
+import com.dam.proyecto.backend.dto.asistencia.AsistenciaDTO;
 import com.dam.proyecto.backend.model.Asistencia;
 import com.dam.proyecto.backend.service.IAsistenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,19 +41,30 @@ public class AsistenciaController {
     // 3. Consultar asistencia de un día concreto (para el Front)
     // GET http://localhost:8088/api/asistencias/buscar?idAlumno=ALU01&fecha=2026-03-21
     @GetMapping("/buscar")
-    public ResponseEntity<Asistencia> buscarPorFecha(
+    public ResponseEntity<AsistenciaDTO> buscarPorFecha(
             @RequestParam String idAlumno,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
 
-        Asistencia asistencia = asistenciaService.buscarAsistenciaPorFecha(idAlumno, fecha);
-        return asistencia != null ? ResponseEntity.ok(asistencia) : ResponseEntity.noContent().build();
+        // Buscamos la asistencia por fecha y alumno
+        AsistenciaDTO asistenciaDTO = asistenciaService.buscarAsistenciaPorFecha(idAlumno, fecha);
+
+        // Si encontramos la asistencia, la devolvemos, si no, respondemos con No Content
+        return asistenciaDTO != null ? ResponseEntity.ok(asistenciaDTO) : ResponseEntity.noContent().build();
     }
 
     // 4. Ver historial completo de un alumno
     // GET http://localhost:8088/api/asistencias/historial/ALU01
     @GetMapping("/historial/{idAlumno}")
-    public ResponseEntity<List<Asistencia>> listarHistorial(@PathVariable String idAlumno) {
-        List<Asistencia> lista = asistenciaService.listarAsistenciasPorAlumno(idAlumno);
-        return ResponseEntity.ok(lista);
+    public ResponseEntity<List<AsistenciaDTO>> listarHistorial(@PathVariable String idAlumno) {
+        // Llamamos al servicio que devuelve una lista de AsistenciaDTO
+        List<AsistenciaDTO> listaHistorial = asistenciaService.listarAsistenciasPorAlumno(idAlumno);
+
+        // Devolvemos la lista de AsistenciaDTO con un HTTP 200 OK
+        return ResponseEntity.ok(listaHistorial);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody AsistenciaDTO dto) {
+        return ResponseEntity.ok(asistenciaService.actualizarAsistencia(id, dto));
     }
 }

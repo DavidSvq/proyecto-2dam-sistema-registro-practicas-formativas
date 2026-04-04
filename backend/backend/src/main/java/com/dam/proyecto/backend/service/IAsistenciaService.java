@@ -1,5 +1,6 @@
 package com.dam.proyecto.backend.service;
 
+import com.dam.proyecto.backend.dto.asistencia.AsistenciaDTO;
 import com.dam.proyecto.backend.model.Asistencia;
 
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ public interface IAsistenciaService {
      * @param idAlumno El código único del alumno.
      * @return Lista de asistencias ordenadas cronológicamente.
      */
-    List<Asistencia> listarAsistenciasPorAlumno(String idAlumno);
+    List<AsistenciaDTO> listarAsistenciasPorAlumno(String idAlumno);
 
     /**
      * Busca si existe un fichaje activo para el día de hoy.
@@ -37,5 +38,6 @@ public interface IAsistenciaService {
      * @param fecha La fecha a consultar (normalmente hoy).
      * @return La asistencia si existe, o null/empty si no ha fichado.
      */
-    Asistencia buscarAsistenciaPorFecha(String idAlumno, LocalDate fecha);
+    AsistenciaDTO buscarAsistenciaPorFecha(String idAlumno, LocalDate fecha);
+    Asistencia actualizarAsistencia(Long idAsistencia, AsistenciaDTO dto);
 }

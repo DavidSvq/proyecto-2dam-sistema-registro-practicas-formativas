@@ -1,7 +1,10 @@
 package com.dam.proyecto.backend.service.users;
 
+import com.dam.proyecto.backend.dto.login.LoginResponseDTO;
+import com.dam.proyecto.backend.dto.profesor.ProfesorDTO;
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Profesor;
-import com.dam.proyecto.backend.model.enums.RolDocente;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,20 +21,22 @@ public interface IProfesorService {
 
     // 2. MÉTODOS DE BÚSQUEDA (Basados en nuestro Repository)
 
-    // LOGIN: Para que el sistema verifique las credenciales al entrar
-    Optional<Profesor> buscarPorEmail(String email);
+    // --- Login ---
+    LoginResponseDTO login(String email, String password, RolUsuario rol);
+
+    void recuperarPassword(String email, String nuevaPassword);
 
     // PERFIL: Para ver el detalle de un profesor concreto (por su ID/Código)
-    Optional<Profesor> obtenerPorId(String idProfesor);
+    Optional<ProfesorDTO> obtenerProfesorPorId(String idProfesor);
 
     // VISTA DE EQUIPO: El Gestor ve a todos los profesores de su centro
-    List<Profesor> listarPorCentro(String codCentro);
+    List<ProfesorDTO> listarPorCentro(String codCentro);
 
     // ASIGNACIÓN: El Gestor busca solo a los TUTORES para asignarles alumnos
-    List<Profesor> listarTutoresPorCentro(String codCentro, RolDocente rol);
+    List<ProfesorDTO> listarTutoresPorCentro(String codCentro, RolUsuario rol);
 
     // VISTA DEL ALUMNO: Para que el alumno sepa quién es su tutor docente
-    Optional<Profesor> obtenerProfesorDeAlumno(String idAlumno);
+    Optional<ProfesorDTO> obtenerProfesorDeAlumno(String idAlumno);
 
 
     // 3. LÓGICA DE CARGA DOCENTE

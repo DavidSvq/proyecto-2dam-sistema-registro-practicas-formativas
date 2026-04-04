@@ -1,7 +1,11 @@
 package com.dam.proyecto.backend.service.impl.users;
 
+import com.dam.proyecto.backend.dto.login.LoginMapper;
+import com.dam.proyecto.backend.dto.login.LoginResponseDTO;
+import com.dam.proyecto.backend.dto.profesor.ProfesorDTO;
+import com.dam.proyecto.backend.dto.profesor.ProfesorMapper;
+import com.dam.proyecto.backend.model.enums.RolUsuario;
 import com.dam.proyecto.backend.model.users.Profesor;
-import com.dam.proyecto.backend.model.enums.RolDocente;
 import com.dam.proyecto.backend.repository.users.ProfesorRepository;
 import com.dam.proyecto.backend.service.users.IProfesorService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +23,30 @@ import java.util.Optional;
 public class ProfesorServiceImpl implements IProfesorService {
 
     private final ProfesorRepository profesorRepository;
+    private final ProfesorMapper profesorMapper;
+
+    // --- Login ---
+    @Override
+    @Transactional(readOnly = true)
+    public LoginResponseDTO login(String email, String password, RolUsuario rol) {
+        Profesor profesor = profesorRepository.findByEmailAndRol(email, rol)
+                .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+
+        if (!profesor.getPassword().equals(password)) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        // Mapeamos a DTO antes de devolver
+        return LoginMapper.toDTO(profesor);
+    }
+    @Override
+    @Transactional
+    public void recuperarPassword(String email, String nuevaPassword) {
+        Profesor profesor = profesorRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Profesor no encontrado"));
+        profesor.setPassword(nuevaPassword);
+        profesorRepository.save(profesor); // Actualiza la BBDD
+    }
 
     // 1. EL GESTOR CREA UN PROFESOR (Con su email y pass inicial)
     @Override
@@ -56,37 +85,42 @@ public class ProfesorServiceImpl implements IProfesorService {
         profesorRepository.deleteById(idProfesor);
     }
     // 3. BUSCADORES (Para el Login y Perfil)
-    @Override
+    /*@Override
     @Transactional(readOnly = true)
     public Optional<Profesor> buscarPorEmail(String email) {
         return profesorRepository.findByEmail(email);
-    }
+    }*/
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<Profesor> obtenerPorId(String idProfesor) {
-        return profesorRepository.findById(idProfesor);
+    public Optional<ProfesorDTO> obtenerProfesorPorId(String idProfesor) {
+        return profesorRepository.findById(idProfesor)
+                .map(profesorMapper::convertirAProfesorDTO);
     }
 
     // 4. VISTAS PARA EL GESTOR (Filtrado por Centro y Rol)
     @Override
-    @Transactional(readOnly = true)
-    public List<Profesor> listarPorCentro(String codCentro) {
-        return profesorRepository.findByCentro(codCentro);
+    public List<ProfesorDTO> listarPorCentro(String codCentro) {
+        List<Profesor> profesores = profesorRepository.findByCentro(codCentro);
+        return profesores.stream()
+                .map(profesorMapper::convertirAProfesorDTO) // Usamos el nombre correcto del método
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Profesor> listarTutoresPorCentro(String codCentro, RolDocente rol) {
-        // Usamos el RolDocente.TUTOR para filtrar la lista
-        return profesorRepository.findByCentroAndRol(codCentro, RolDocente.TUTOR);
+    public List<ProfesorDTO> listarTutoresPorCentro(String codCentro, RolUsuario rol) {
+        List<Profesor> profesores = profesorRepository.findByCentroAndRol(codCentro, rol);
+        return profesores.stream()
+                .map(profesorMapper::convertirAProfesorDTO) // Usamos el nombre correcto del método
+                .collect(Collectors.toList());
     }
 
     // 5. RELACIÓN CON EL ALUMNO (Native Query)
     @Override
     @Transactional(readOnly = true)
-    public Optional<Profesor> obtenerProfesorDeAlumno(String idAlumno) {
-        return profesorRepository.findProfesorByAlumnoId(idAlumno);
+    public Optional<ProfesorDTO> obtenerProfesorDeAlumno(String idAlumno) {
+        return profesorRepository.findProfesorByAlumnoId(idAlumno)
+                .map(profesorMapper::convertirAProfesorDTO); // Usamos el método correcto
     }
 
     // 6. LÓGICA DE CARGA (Para cuando asignemos alumnos en el futuro)
