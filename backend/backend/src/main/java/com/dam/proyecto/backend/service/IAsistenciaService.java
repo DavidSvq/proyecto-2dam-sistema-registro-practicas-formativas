@@ -39,4 +39,5 @@ public interface IAsistenciaService {
      * @return La asistencia si existe, o null/empty si no ha fichado.
      */
     AsistenciaDTO buscarAsistenciaPorFecha(String idAlumno, LocalDate fecha);
+    Asistencia actualizarAsistencia(Long idAsistencia, AsistenciaDTO dto);
 }

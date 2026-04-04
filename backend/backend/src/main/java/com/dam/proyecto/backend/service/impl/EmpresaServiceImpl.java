@@ -78,8 +78,8 @@ public class EmpresaServiceImpl implements IEmpresaService {
     // 4. LISTAR POR CENTRO (USANDO LA NATIVE QUERY) - DEVUELVE LISTA DE EmpresaDTO
     @Override
     @Transactional(readOnly = true)
-    public List<EmpresaDTO> listarEmpresasPorCentro(String codigoCentro) {
-        List<Empresa> empresas = empresaRepository.findEmpresasByCodigoCentro(codigoCentro);
+    public List<EmpresaDTO> listarEmpresas() {
+        List<Empresa> empresas = empresaRepository.findAll();
         return empresas.stream()
                 .map(empresaMapper::convertirAEmpresaDTO)
                 .collect(Collectors.toList());

@@ -1,6 +1,7 @@
 package com.dam.proyecto.backend.controller;
 import com.dam.proyecto.backend.dto.tarea.TareaDTO;
 import com.dam.proyecto.backend.model.Tarea;
+import com.dam.proyecto.backend.model.enums.EstadoTarea;
 import com.dam.proyecto.backend.service.ITareaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class TareaController {
     @PatchMapping("/{id}/estado")
     public ResponseEntity<Tarea> actualizarEstado(
             @PathVariable Long id,
-            @RequestParam String nuevoEstado,
+            @RequestParam EstadoTarea nuevoEstado,
             @RequestParam(required = false) Double horas) {
         return ResponseEntity.ok(tareaService.actualizarEstadoAlumno(id, nuevoEstado, horas));
     }
@@ -57,6 +58,11 @@ public class TareaController {
     @PatchMapping("/{id}/revisar")
     public ResponseEntity<Tarea> revisar(@PathVariable Long id) {
         return ResponseEntity.ok(tareaService.revisarTarea(id));
+    }
+
+    @PatchMapping("/{id}/estado-tutor")
+    public ResponseEntity<Tarea> cambiarEstado(@PathVariable Long id, @RequestParam EstadoTarea nuevoEstado) {
+        return ResponseEntity.ok(tareaService.actualizarEstadoTutor(id, nuevoEstado));
     }
 
     // Listado por Alumno
@@ -70,8 +76,13 @@ public class TareaController {
     @GetMapping("/tutor/{idTutor}/estado/{estado}")
     public ResponseEntity<List<TareaDTO>> listarPorTutorYEstado(
             @PathVariable String idTutor,
-            @PathVariable String estado) {
+            @PathVariable EstadoTarea estado) {
         List<TareaDTO> tareasDTO = tareaService.obtenerPorTutorEmpresaYEstado(idTutor, estado);
+        return ResponseEntity.ok(tareasDTO);
+    }
+    @GetMapping("/tutor/{idTutor}")
+    public ResponseEntity<List<TareaDTO>> listarTodasPorTutor(@PathVariable String idTutor) {
+        List<TareaDTO> tareasDTO = tareaService.obtenerTodasPorTutorEmpresa(idTutor);
         return ResponseEntity.ok(tareasDTO);
     }
 }

@@ -40,10 +40,10 @@ public class EmpresaController {
         return ResponseEntity.ok(empresas);
     }
 
-    // 3. LISTAR POR CENTRO: GET /api/empresas/centro/CEN01
-    @GetMapping("/centro/{codigoCentro}")
-    public ResponseEntity<List<EmpresaDTO>> listarPorCentro(@PathVariable String codigoCentro) {
-        List<EmpresaDTO> empresas = empresaService.listarEmpresasPorCentro(codigoCentro);
+    // 3. LISTAR POR CENTRO: GET /api/empresas/
+    @GetMapping
+    public ResponseEntity<List<EmpresaDTO>> listarEmpresas() {
+        List<EmpresaDTO> empresas = empresaService.listarEmpresas();
         return ResponseEntity.ok(empresas);
     }
 
