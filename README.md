@@ -20,7 +20,6 @@ Actualmente, el proyecto cubre el ciclo completo de gestión de entidades (**Cen
 
 El proyecto se encuentra en fase de expansión técnica, con las siguientes integraciones previstas:
 
-* **Interfaz de Usuario (Frontend):** Desarrollo de una aplicación **Web en React** para el consumo de la API y gestión visual de los datos.
 * **Módulo de Inteligencia Artificial:** Conexión con una **API de Python** especializada en modelos de **regresión**, orientada a la optimización y predicción del cálculo de horas.
 * **Integración con ERP (Odoo):** Desarrollo de módulos personalizados en **Odoo** para actuar como repositorio central de datos. Esta integración incluirá la adaptación de vistas e informes avanzados para la explotación de la información almacenada.
 
@@ -36,14 +35,14 @@ El repositorio se organiza en los siguientes módulos, reflejando el progreso ac
 
 ---
 
-### ⚙️ 2. Microservicio de Gestión (Backend)
+### ⚙️ 2. API Rest de Gestión (Backend)
 🟢 **Estado: Operativo / En desarrollo**. Núcleo lógico del proyecto encargado de la persistencia y exposición de la API REST. Desarrollado con **Java 17** y **Spring Boot 3.5.11**.
 
 * **Gestión Académica:** Control de centros, profesores y alumnos.
 * **Gestión de FCT:** Administración de empresas colaboradoras y tutores de empresa.
 * **Operativa:** Registro de asistencias y flujo de estados en tareas.
 
-👉 **[Documentación del Microservicio](./backend/backend/README.md)**
+👉 **[Documentación de la API Rest](./backend/backend/README.md)**
 
 ---
 
@@ -63,10 +62,29 @@ El repositorio se organiza en los siguientes módulos, reflejando el progreso ac
 * **Documento de Requisitos e Ingeniería:** Compendio técnico que incluye Requisitos Funcionales (**RF**), Requisitos de Información (**RI**), Casos de Uso (**CU**), Historias de Usuario (**HU**) y **Matriz de Trazabilidad**.
 * **Guía de Endpoints:** Manual detallado de la API REST con ejemplos de consulta, protocolos de respuesta y guía de pruebas.
 
+#### **Documentación de Interfaz y UX (Frontend):**
+* **Análisis y Diseño de Interfaz:** Documento detallado sobre la estructura de la aplicación, casos de uso por rol y diseño de componentes en React.
+* **Flujos de Usuario:** Definición de la experiencia para Alumnos, Tutores de Empresa y Profesores.
+* **Guía de Integración:** Detalles sobre el consumo de servicios, gestión de estados y validación de errores.
+
 ---
 
-### 📱 4. Módulo Frontend / Interfaz
-⚪ **Estado: Pendiente**. Fase de desarrollo prevista para etapas posteriores del proyecto.
+### 📱 4. Interfaz de Usuario (Frontend)
+🟢 **Estado: Operativo**. Interfaz web modular diseñada para la gestión integral de las prácticas, permitiendo una experiencia personalizada según el rol del usuario (Alumno, Tutor o Profesor). Desarrollada con **React** y **Vite**.
+
+* **Arquitectura Modular:** Organización por dominios para separar las vistas de Alumnos, Empresas y Gestión Docente.
+* **Gestión de Roles:** Interfaz adaptativa que filtra funcionalidades y accesos según el perfil de usuario.
+* **Consumo de API:** Integración centralizada con el microservicio backend para la gestión de tareas y asistencias.
+* **Experiencia de Usuario (UX):** Sistema de navegación mediante rutas anidadas y componentes reutilizables para optimizar la fluidez.
+
+👉 **[Documentación Detallada del Frontend](./frontend/README.md)**
+
+---
+
+### 💼 5. Módulo en Odoo (ERP)
+⚪ **Estado: Próximamente**. Integración prevista para actuar como repositorio central de datos y generación de informes avanzados. Se desarrollará un módulo personalizado para sincronizar la operativa de las prácticas con la gestión administrativa del centro.
+
+👉 **[Documentación de Integración Odoo (Pendiente)]()**
 
 ---
 
@@ -74,6 +92,6 @@ El repositorio se organiza en los siguientes módulos, reflejando el progreso ac
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/DavidSvq/proyecto-dam-sistemas-registros-practicas-formativas](https://github.com/DavidSvq/proyecto-dam-sistemas-registros-practicas-formativas)
+   git clone https://github.com/DavidSvq/proyecto-dam-sistemas-registros-practicas-formativas
 
 ## 📢 NOTA FINAL: ESTE PROYECTO SE ENCUENTRA ACTUALMENTE EN PLENO DESARROLLO, POR LO QUE EL CÓDIGO Y LA DOCUMENTACIÓN IRÁN SUFRIENDO MODIFICACIONES PERIÓDICAS.

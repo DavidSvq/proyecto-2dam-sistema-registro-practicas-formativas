@@ -36,7 +36,7 @@ export const recuperarPasswordService = async (email, nuevaPassword, rol) => {
   const folder = roleToEndpoint[rol];
 
   try {
-    // Coincide con tu @PutMapping("/recuperar-password") en Java
+    // Coincide con @PutMapping("/recuperar-password") en Java
     const response = await api.put(`/${folder}/recuperar-password`, {
       email,
       nuevaPassword
