@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- TREE VIEW PERSONAL DOCENTE -->
+    <record id="view_personal_docente_tree" model="ir.ui.view">
+        <field name="name">res.partner.docente.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Personal Docente">
+                <field name="name"/>
+                <field name="x_cod_docente"/>
+                <field name="function"/>
+                <field name="x_num_alumnos"/>
+                <field name="x_centro_id"/>
+                <field name="category_id"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- FORM VIEW PERSONAL DOCENTE -->
+    <record id="view_personal_docente_form" model="ir.ui.view">
+        <field name="name">res.partner.docente.form</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form string="Personal Docente">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="x_cod_docente"/>
+                        <field name="function"/>
+                        <field name="x_num_alumnos"/>
+                        <field name="x_centro_id"/>
+                        <field name="category_id"/>
+                        <field name="email"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACCIÓN DOCENTES -->
+    <record id="action_personal_docente" model="ir.actions.act_window">
+        <field name="name">Personal Docente</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5,0,0), (0,0,{'view_mode':'tree','view_id':ref('view_personal_docente_tree')}), (0,0,{'view_mode':'form','view_id':ref('view_personal_docente_form')})]"/>
+        <field name="domain">[('x_cod_docente','!=',False)]</field>
+    </record>
+
+    <!-- MENÚ DOCENTES -->
+    <menuitem id="menu_personal_docente"
+              name="Personal Docente"
+              parent="centro_docente.menu_gestion_academica_root"
+              action="action_personal_docente"
+              sequence="2"/>
+
+</odoo>
