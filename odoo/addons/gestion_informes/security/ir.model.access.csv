@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_informe_gestion_wizard,informe.gestion.wizard,model_informe_gestion_wizard,base.group_user,1,1,1,1
+access_report_modelo_sql_alumno,report.modelo.sql.alumno,model_report_modelo_sql_alumno,base.group_user,1,0,0,0
+access_report_modelo_sql_centro,report.modelo.sql.centro,model_report_modelo_sql_centro,base.group_user,1,0,0,0
