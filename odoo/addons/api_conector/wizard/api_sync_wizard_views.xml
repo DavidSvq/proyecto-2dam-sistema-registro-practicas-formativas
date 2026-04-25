@@ -1,0 +1,23 @@
+<odoo>
+    <record id="view_api_sync_wizard_form" model="ir.ui.view">
+        <field name="name">api.sync.wizard.form</field>
+        <field name="model">api.sync.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sincronizar con API">
+                <group>
+                    <field name="sync_type" widget="radio"/>
+                    <field name="centro_id" 
+                           invisible="sync_type not in ['docente', 'alumno']" 
+                           required="sync_type in ['docente', 'alumno']"/>
+                    <field name="alumno_id" 
+                           invisible="sync_type not in ['asistencia', 'tarea']" 
+                           required="sync_type in ['asistencia', 'tarea']"/>
+                </group>
+                <footer>
+                    <button name="action_sync" string="Iniciar Sincronización" type="object" class="btn-primary"/>
+                    <button string="Descartar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
