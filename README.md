@@ -88,7 +88,7 @@ El repositorio se organiza en los siguientes módulos, reflejando el progreso ac
 * **Sincronización de Entidades:** Implementación de Wizards de importación jerárquica para la carga automatizada de Centros, Docentes, Alumnos, Asistencias y Tareas.
 * **Centralización de Datos:** Asegura la trazabilidad y persistencia dual de la información operativa de las prácticas en el entorno ERP.
 
-👉 **[Documentación de Integración Odoo (Pendiente)]()**
+👉 **[Documentación de Integración Odoo](./odoo/README.md)**
 
 ---
 
