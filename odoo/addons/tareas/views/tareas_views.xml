@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tareas_alumno_tree" model="ir.ui.view">
+        <field name="name">tareas.alumno.tree</field>
+        <field name="model">tareas.alumno</field>
+        <field name="arch" type="xml">
+            <tree string="Tareas de Alumnos">
+                <field name="x_id_tarea"/>
+                <field name="x_titulo_tarea"/>
+                <field name="x_alumno_id"/>
+                <field name="x_fecha_asignacion"/>
+                <field name="x_fecha_limite"/>
+                <field name="x_estado_tarea"/>
+                <field name="x_horas_reales" sum="Total Horas"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="tareas_alumno_form" model="ir.ui.view">
+        <field name="name">tareas.alumno.form</field>
+        <field name="model">tareas.alumno</field>
+        <field name="arch" type="xml">
+            <form string="Tarea">
+                <sheet>
+                    <group>
+                        <group string="Información General">
+                            <field name="x_id_tarea"/>
+                            <field name="x_titulo_tarea"/>
+                            <field name="x_alumno_id"/>
+                            <field name="x_estado_tarea"/>
+                        </group>
+                        <group string="Planificación">
+                            <field name="x_fecha_asignacion"/>
+                            <field name="x_fecha_limite"/>
+                        </group>
+                    </group>
+                    <group string="Detalle de la Tarea">
+                        <field name="x_descripcion_tarea"/>
+                    </group>
+                    <group>
+                        <group string="Control de Horas">
+                            <field name="x_horas_estimadas_ia" widget="float_time"/>
+                            <field name="x_horas_reales" widget="float_time"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tareas_alumno" model="ir.actions.act_window">
+        <field name="name">Tareas de Alumnos</field>
+        <field name="res_model">tareas.alumno</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_tareas_alumno"
+              name="Tareas FCT"
+              parent="centro_docente.menu_gestion_academica_root"
+              action="action_tareas_alumno"
+              sequence="5"/>
+</odoo>

@@ -1,0 +1,16 @@
+x_id_tarea,x_titulo_tarea,x_descripcion_tarea,x_fecha_asignacion,x_fecha_limite,x_estado_tarea,x_horas_estimadas_ia,x_horas_reales,x_alumno_id
+101,Instalación de Servidor,Instalación y particionado de Ubuntu Server 24.04 LTS en entorno Proxmox.,2026-01-07,2026-01-08,Completada,4.0,4.5,Alumno Uno
+102,Configuración de Red,Configuración de interfaces estáticas y resolución DNS del servidor.,2026-01-09,2026-01-09,Completada,2.0,2.0,Alumno Uno
+103,Seguridad SSH,Securización de acceso mediante llaves RSA y desactivación de login root.,2026-01-12,2026-01-12,Completada,1.5,1.0,Alumno Uno
+104,Gestión de Usuarios,Creación de grupos de sistema y políticas de permisos con sudoers.,2026-01-14,2026-01-15,Completada,3.0,3.5,Alumno Uno
+105,Servidor Web Apache,Despliegue de Apache2 con configuración de VirtualHosts para desarrollo.,2026-01-16,2026-01-19,Completada,5.0,4.0,Alumno Uno
+106,Base de Datos SQL,Instalación de PostgreSQL y creación de base de datos de producción.,2026-01-20,2026-01-21,Completada,4.0,5.0,Alumno Uno
+107,Scripting Bash,Desarrollo de script para backups automáticos de la DB y rotación de logs.,2026-01-22,2026-01-23,Completada,6.0,7.5,Alumno Uno
+108,Contenedores Docker,Instalación de Docker y despliegue de imagen oficial de Nginx.,2026-01-26,2026-01-27,Completada,4.0,4.0,Alumno Uno
+109,Configuración Firewall,Implementación de reglas UFW para puertos 80 443 y 22 restrictivo.,2026-01-28,2026-01-28,Completada,2.0,2.5,Alumno Uno
+110,Monitorización Sistema,Instalación y configuración de Netdata para alertas de CPU y RAM.,2026-01-30,2026-02-02,Completada,3.0,3.0,Alumno Uno
+111,Soporte Hardware,Sustitución de módulos RAM en servidor de backup y test de estrés.,2026-02-03,2026-02-03,Completada,2.0,1.5,Alumno Uno
+112,Certificados SSL,Instalación de Let's Encrypt y renovación automática con Certbot.,2026-02-05,2026-02-05,Completada,1.5,2.0,Alumno Uno
+113,Optimización PHP,Ajustes de rendimiento en php.ini para aplicación interna.,2026-02-09,2026-02-10,Completada,3.0,3.0,Alumno Uno
+114,Documentación Técnica,Redacción de manual de procedimientos para recuperación ante desastres.,2026-02-12,2026-02-16,Completada,8.0,9.0,Alumno Uno
+115,Mantenimiento Preventivo,Limpieza de logs antiguos y revisión de espacio en discos SSD.,2026-02-18,2026-02-18,Completada,2.0,2.0,Alumno Uno
