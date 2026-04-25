@@ -1,0 +1,21 @@
+x_id_asistencia,x_fecha,x_hora_entrada,x_hora_salida,x_horas_diarias,x_fk_alumno,x_observaciones
+1001,2026-01-07,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1002,2026-01-08,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1003,2026-01-09,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1004,2026-01-12,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1005,2026-01-13,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1006,2026-01-14,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1007,2026-01-15,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1008,2026-01-16,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1009,2026-01-19,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1010,2026-01-20,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1011,2026-01-21,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1012,2026-01-22,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1013,2026-01-23,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1014,2026-01-26,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1015,2026-01-27,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1016,2026-01-28,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1017,2026-01-29,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1018,2026-01-30,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1019,2026-02-02,8.5,14.5,6.0,Alumno Uno,Asistencia normal
+1020,2026-02-03,8.5,14.5,6.0,Alumno Uno,Asistencia normal
