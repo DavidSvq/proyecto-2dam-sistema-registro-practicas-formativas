@@ -21,7 +21,7 @@ Actualmente, el proyecto cubre el ciclo completo de gestión de entidades (**Cen
 El proyecto se encuentra en fase de expansión técnica, con las siguientes integraciones previstas:
 
 * **Módulo de Inteligencia Artificial:** Conexión con una **API de Python** especializada en modelos de **regresión**, orientada a la optimización y predicción del cálculo de horas.
-* **Revisión final de documentación:** Revisar y actualizar toda la documentación para la entrega final.
+* **Integración con ERP (Odoo):** Desarrollo de módulos personalizados en **Odoo** para actuar como repositorio central de datos. Esta integración incluirá la adaptación de vistas e informes avanzados para la explotación de la información almacenada.
 
 ---
 
@@ -82,23 +82,9 @@ El repositorio se organiza en los siguientes módulos, reflejando el progreso ac
 ---
 
 ### 💼 5. Módulo en Odoo (ERP)
-🟢 **Estado: Operativo**. Integración de un conector personalizado (**api_connector**) en Odoo 17 que actúa como repositorio central de datos y herramienta de gestión administrativa.
+⚪ **Estado: Próximamente**. Integración prevista para actuar como repositorio central de datos y generación de informes avanzados. Se desarrollará un módulo personalizado para sincronizar la operativa de las prácticas con la gestión administrativa del centro.
 
-* **Arquitectura Híbrida:** Comunicación síncrona mediante protocolos REST entre Odoo (Docker/Linux) y la API principal (Local/Windows).
-* **Sincronización de Entidades:** Implementación de Wizards de importación jerárquica para la carga automatizada de Centros, Docentes, Alumnos, Asistencias y Tareas.
-* **Centralización de Datos:** Asegura la trazabilidad y persistencia dual de la información operativa de las prácticas en el entorno ERP.
-
-👉 **[Documentación de Integración Odoo](./odoo/README.md)**
-
----
-
-### 🤖 6. Microservicio de Inteligencia Artificial (API Python / ML)
-⚪ **Estado: Próximamente / En planificación**. Implementación de una API especializada en **Python** (FastAPI/Flask) para la integración de modelos de aprendizaje automático.
-
-* **Finalidad:** Entrenamiento y exposición de un modelo de **regresión** para la estimación predictiva de carga de trabajo.
-* **Interoperabilidad:** El sistema enviará descripciones técnicas de las tareas a la API de Python, la cual procesará la información y devolverá una estimación de horas basada en patrones históricos para su validación en el backend principal.
-
-👉 **[Documentación ML (Pendiente)]()**
+👉 **[Documentación de Integración Odoo (Pendiente)]()**
 
 ---
 
