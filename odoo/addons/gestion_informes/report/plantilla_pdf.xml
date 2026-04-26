@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="plantilla_alumno_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="text-center" style="border-bottom: 2px solid #dee2e6; margin-bottom: 20px;">
+                            <h2>INFORME DE SEGUIMIENTO ACADÉMICO</h2>
+                            <p class="text-muted">Expediente Histórico Consolidado</p>
+                            <p class="text-muted">
+                                <strong>Emitido el:</strong> <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/>
+                            </p>
+                        </div>
+
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Alumno:</strong> <span t-field="doc.name"/><br/>
+                                <strong>Email:</strong> <span t-field="doc.email"/><br/>
+                                <strong>Código:</strong> <span t-field="doc.x_cod_alumno"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Centro Docente:</strong> <span t-field="doc.centro_name"/><br/>
+                                <strong>Tutor Asignado:</strong> <span t-field="doc.docente_name"/><br/>
+                                <strong>Contacto Centro:</strong> <span t-field="doc.centro_email"/>
+                            </div>
+                        </div>
+
+                        <div class="row mt32 text-center" style="margin-top: 50px;">
+                            <div class="col-3" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin: 5px;">
+                                <h4 style="color: #7C7BAD;"><t t-esc="doc.x_horas_acumuladas"/></h4>
+                                <small class="text-uppercase text-muted">Horas Previstas</small>
+                            </div>
+                            <div class="col-3" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin: 5px;">
+                                <h4 style="color: #28a745;"><t t-esc="doc.total_horas_reales"/></h4>
+                                <small class="text-uppercase text-muted">Horas Reales</small>
+                            </div>
+                            <div class="col-2" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin: 5px;">
+                                <h4 style="color: #17a2b8;"><t t-esc="doc.total_asistencias"/></h4>
+                                <small class="text-uppercase text-muted">Asistencias</small>
+                            </div>
+                            <div class="col-2" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin: 5px;">
+                                <h4 style="color: #ffc107;"><t t-esc="doc.total_tareas"/></h4>
+                                <small class="text-uppercase text-muted">Tareas</small>
+                            </div>
+                        </div>
+
+                        <div class="row mt32" style="margin-top: 40px;">
+                            <div class="col-12">
+                                <table class="table table-sm table-striped">
+                                    <thead style="background-color: #f8f9fa;">
+                                        <tr>
+                                            <th>Concepto de Control</th>
+                                            <th class="text-right">Valor Consolidado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Total acumulado de asistencias registradas</td>
+                                            <td class="text-right"><span t-field="doc.total_asistencias"/> registros</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Horas totales de ejecución (Tareas aprobadas)</td>
+                                            <td class="text-right"><span t-field="doc.total_horas_reales"/> h</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Volumen total de entregas realizadas</td>
+                                            <td class="text-right"><span t-field="doc.total_tareas"/> tareas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 100px;">
+                            <div class="col-6 text-center">
+                                <div style="border-top: 1px solid black; width: 200px; margin: 0 auto;"></div>
+                                <p>Firma del Alumno</p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div style="border-top: 1px solid black; width: 200px; margin: 0 auto;"></div>
+                                <p>Sello del Centro / Tutor</p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="plantilla_centro_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="text-center" style="border-bottom: 2px solid #004687; margin-bottom: 25px; padding-bottom: 10px;">
+                            <h2 style="color: #004687;">INFORME DE ESTRUCTURA ORGANIZATIVA</h2>
+                            <p class="text-muted">Estado Actual de Recursos Docentes y Alumnado</p>
+                            <p class="text-muted">
+                                <strong>Emitido el:</strong> <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/>
+                            </p>
+                        </div>
+
+                        <div class="row mt32 mb32">
+                            <div class="col-7">
+                                <h4><span t-field="doc.name"/></h4>
+                                <p>
+                                    <i class="fa fa-map-marker"/> <span t-field="doc.street"/>, <span t-field="doc.city"/><br/>
+                                    <i class="fa fa-envelope"/> <span t-field="doc.email"/><br/>
+                                    <i class="fa fa-phone"/> <span t-field="doc.phone"/>
+                                </p>
+                            </div>
+                            <div class="col-5 text-right">
+                                <div style="border: 1px solid #dee2e6; padding: 10px; background-color: #fcfcfc;">
+                                    <strong>Código de Centro:</strong><br/>
+                                    <span style="font-size: 1.2em;" t-field="doc.x_cod_centro"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <div style="background-color: #e9ecef; padding: 20px; border-radius: 10px; text-align: center;">
+                                    <h3 style="margin: 0; color: #495057;"><t t-esc="doc.total_alumnos"/></h3>
+                                    <span class="text-uppercase" style="letter-spacing: 1px; font-size: 0.8em;">Alumnos Matriculados</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div style="background-color: #e9ecef; padding: 20px; border-radius: 10px; text-align: center;">
+                                    <h3 style="margin: 0; color: #495057;"><t t-esc="doc.total_docentes"/></h3>
+                                    <span class="text-uppercase" style="letter-spacing: 1px; font-size: 0.8em;">Personal Docente</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt32">
+                            <div class="col-12">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr style="background-color: #004687; color: white;">
+                                            <th>Indicador de Gestión</th>
+                                            <th class="text-center">Cuantía Actual</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Volumen de alumnos bajo tutela directa del centro</td>
+                                            <td class="text-center"><strong><t t-esc="doc.total_alumnos"/></strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Personal docente activo en la plataforma</td>
+                                            <td class="text-center"><strong><t t-esc="doc.total_docentes"/></strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <h5 style="border-bottom: 1px solid #004687; color: #004687; margin-top: 30px;">Personal Docente</h5>
+                        <div class="row">
+                            <t t-set="docentes" t-value="request.env['res.partner'].search([('x_centro_id', '=', doc.id), ('x_cod_docente', '!=', False)])"/>
+                            
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tbody>
+                                        <tr t-foreach="docentes[:len(docentes)//2 + len(docentes)%2]" t-as="docen">
+                                            <td style="width: 50%;"><strong><span t-field="docen.name"/></strong></td>
+                                            <td style="font-size: 0.85em; color: #666;"><span t-field="docen.email"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tbody>
+                                        <tr t-foreach="docentes[len(docentes)//2 + len(docentes)%2:]" t-as="docen">
+                                            <td style="width: 50%;"><strong><span t-field="docen.name"/></strong></td>
+                                            <td style="font-size: 0.85em; color: #666;"><span t-field="docen.email"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <h5 style="border-bottom: 1px solid #004687; color: #004687; margin-top: 20px;">Relación de Alumnos</h5>
+                        <div class="row">
+                            <t t-set="alumnos" t-value="request.env['res.partner'].search([('x_centro_id', '=', doc.id), ('x_cod_alumno', '!=', False)])"/>
+                            
+                            <div class="col-6">
+                                <table class="table table-sm" style="font-size: 0.9em;">
+                                    <thead class="thead-light"><tr><th>Nombre</th><th>Email</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="alumnos[:len(alumnos)//2 + len(alumnos)%2]" t-as="alu">
+                                            <td><span t-field="alu.name"/></td>
+                                            <td style="font-size: 0.8em;"><span t-field="alu.email"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-sm" style="font-size: 0.9em;">
+                                    <thead class="thead-light"><tr><th>Nombre</th><th>Email</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="alumnos[len(alumnos)//2 + len(alumnos)%2:]" t-as="alu">
+                                            <td><span t-field="alu.name"/></td>
+                                            <td style="font-size: 0.8em;"><span t-field="alu.email"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="row" style="margin-top: 50px;">
+                            <div class="col-12 text-muted small">
+                                <p>* Este informe se genera como un consolidado de estado actual basado en el repositorio interno de Odoo. Los datos reflejan la estructura organizativa activa en el momento de la emisión.</p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

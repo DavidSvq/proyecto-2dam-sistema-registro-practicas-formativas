@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_informe_gestion_wizard_form" model="ir.ui.view">
+        <field name="name">informe.gestion.wizard.form</field>
+        <field name="model">informe.gestion.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generar Informes Académicos">
+                <group>
+                    <field name="x_tipo_informe" widget="radio" options="{'horizontal': true}"/>
+                </group>
+                
+                <group>
+                    <field name="x_alumno_id" 
+                           invisible="x_tipo_informe != 'alumno'" 
+                           required="x_tipo_informe == 'alumno'"/>
+
+                    <field name="x_centro_id" 
+                           invisible="x_tipo_informe != 'centro'" 
+                           required="x_tipo_informe == 'centro'"/>
+                </group>
+
+                <footer>
+                    <button name="action_generar_pdf" string="Generar PDF" type="object" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_informe_gestion_wizard" model="ir.actions.act_window">
+        <field name="name">Generar Informes</field>
+        <field name="res_model">informe.gestion.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_gestion_informes_root"
+              name="Gestión de Informes"
+              parent="centro_docente.menu_gestion_academica_root" 
+              sequence="50"/>
+
+    <menuitem id="menu_generar_informes_action"
+              name="Generar Informes"
+              parent="menu_gestion_informes_root"
+              action="action_informe_gestion_wizard"
+              sequence="10"/>
+</odoo>

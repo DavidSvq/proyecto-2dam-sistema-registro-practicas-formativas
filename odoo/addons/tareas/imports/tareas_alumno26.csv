@@ -1,0 +1,16 @@
+x_id_tarea,x_titulo_tarea,x_descripcion_tarea,x_fecha_asignacion,x_fecha_limite,x_estado_tarea,x_horas_estimadas_ia,x_horas_reales,x_alumno_id
+201,Montaje de Puesto,Montaje de PC completo y organización de cableado en oficina.,2026-01-07,2026-01-07,Completada,3.0,3.0,Alumno Veintiséis
+202,Maquetación SO,Creación de imagen ISO personalizada con software corporativo.,2026-01-09,2026-01-12,Completada,4.0,5.0,Alumno Veintiséis
+203,Sustitución Pantallas,Cambio de paneles LCD en portátiles de la serie Latitude.,2026-01-14,2026-01-14,Completada,2.0,2.5,Alumno Veintiséis
+204,Inventario Hardware,Registro de números de serie y etiquetas para auditoría interna.,2026-01-16,2026-01-19,Completada,6.0,6.0,Alumno Veintiséis
+205,Limpieza de Equipos,Mantenimiento físico y soplado de servidores en rack secundario.,2026-01-21,2026-01-21,Completada,2.0,2.0,Alumno Veintiséis
+206,Configuración Impresoras,Instalación de drivers y configuración de colas de impresión.,2026-01-23,2026-01-23,Completada,1.5,1.0,Alumno Veintiséis
+207,Migración de Datos,Trasvase de perfiles de usuario de Windows 10 a Windows 11.,2026-01-26,2026-01-27,Completada,4.0,5.5,Alumno Veintiséis
+208,Test de Red,Comprobación de tomas RJ45 y certificación básica de latiguillos.,2026-01-29,2026-01-29,Completada,3.0,3.0,Alumno Veintiséis
+209,Gestión de Antivirus,Revisión de alertas en consola central y limpieza de troyanos.,2026-02-02,2026-02-02,Completada,2.0,2.0,Alumno Veintiséis
+210,Soporte Remoto,Resolución de incidencias mediante AnyDesk a sedes externas.,2026-02-04,2026-02-06,Completada,8.0,7.0,Alumno Veintiséis
+211,Actualización BIOS,Flasheo de seguridad en estaciones de trabajo críticas.,2026-02-09,2026-02-09,Completada,1.0,1.5,Alumno Veintiséis
+212,Ampliación Almacenamiento,Instalación de discos NVMe y clonado de sistema operativo.,2026-02-11,2026-02-12,Completada,3.0,3.5,Alumno Veintiséis
+213,Configuración VPN,Instalación de clientes OpenVPN en portátiles comerciales.,2026-02-16,2026-02-16,Completada,2.0,2.0,Alumno Veintiséis
+214,Formación Usuario,Explicación de uso básico de la suite de colaboración Office 365.,2026-02-18,2026-02-18,Completada,2.0,2.0,Alumno Veintiséis
+215,Reciclaje RAEE,Clasificación de componentes antiguos para envío a punto limpio.,2026-02-20,2026-02-20,Completada,4.0,4.0,Alumno Veintiséis

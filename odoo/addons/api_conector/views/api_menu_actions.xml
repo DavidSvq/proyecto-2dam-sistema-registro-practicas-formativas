@@ -1,0 +1,19 @@
+<odoo>
+    <record id="action_api_sync_wizard" model="ir.actions.act_window">
+        <field name="name">Asistente de Sincronización</field>
+        <field name="res_model">api.sync.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_api_connector_root"
+              name="Sincronización API"
+              parent="centro_docente.menu_gestion_academica_root"
+              sequence="50"/>
+
+    <menuitem id="menu_api_sync_wizard"
+              name="Importar Datos"
+              parent="menu_api_connector_root"
+              action="action_api_sync_wizard"
+              sequence="10"/>
+</odoo>

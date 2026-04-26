@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- VISTAS CENTROS DOCENTES -->
+
+    <!-- VISTA TREE -->
+    <record id="view_centros_docentes_tree" model="ir.ui.view">
+        <field name="name">res.partner.centro.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Centros Docentes">
+                <field name="x_cod_centro"/>
+                <field name="name"/>
+                <field name="street"/>
+                <field name="city"/>
+                <field name="phone"/>
+                <field name="email"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- VISTA FORM -->
+    <record id="view_centros_docentes_form" model="ir.ui.view">
+        <field name="name">res.partner.centro.form</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form string="Centro Docente">
+                <sheet>
+                    <group>
+                        <field name="x_cod_centro"/>
+                        <field name="name"/>
+                        <field name="street" string="Dirección"/>
+                        <field name="city" string="Localidad"/>
+                        <field name="phone"/>
+                        <field name="email"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACCIÓN CENTROS -->
+    <record id="action_centros_docentes" model="ir.actions.act_window">
+        <field name="name">Centros Docentes</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_centros_docentes_tree"/>
+        <!-- Solo empresas que tengan código de centro -->
+        <field name="domain">[('x_cod_centro','!=',False)]</field>
+    </record>
+
+    <!-- MENÚ RAÍZ -->
+    <menuitem id="menu_gestion_academica_root"
+              name="Gestión Académica"
+              sequence="10"/>
+
+    <!-- MENÚ CENTROS -->
+    <menuitem id="menu_centros_docentes"
+              name="Centros Docentes"
+              parent="menu_gestion_academica_root"
+              action="action_centros_docentes"
+              sequence="1"/>
+
+</odoo>
+
