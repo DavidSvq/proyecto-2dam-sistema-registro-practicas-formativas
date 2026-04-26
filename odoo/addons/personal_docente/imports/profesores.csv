@@ -1,0 +1,13 @@
+name,x_cod_docente,function,x_num_alumnos,x_centro_id,email,is_company
+Curro Romero,DOC001,Gestor,0,IES Triana,curro.romero@ies-sevilla.es,0
+Macarena García,DOC002,Tutor,0,IES Triana,maca.garcia@ies-sevilla.es,0
+Jesús del Gran Poder,DOC003,Tutor,0,IES Triana,jesus.gp@ies-sevilla.es,0
+Esperanza Triana,DOC004,Tutor,0,IES Triana,e.triana@ies-sevilla.es,0
+Rafa Serna,DOC005,Tutor,0,IES Triana,rafa.serna@ies-sevilla.es,0
+Rocío Jurado,DOC006,Tutor,0,IES Triana,rocio.j@ies-sevilla.es,0
+Joaquín Sánchez,DOC007,Gestor,0,IES Macarena,joaquin.betis@ies-sevilla.es,0
+Pastora Soler,DOC008,Tutor,0,IES Macarena,p.soler@ies-sevilla.es,0
+Carlos Herrera,DOC009,Tutor,0,IES Macarena,c.herrera@ies-sevilla.es,0
+María del Monte,DOC010,Tutor,0,IES Macarena,m.monte@ies-sevilla.es,0
+Alejandro Sanz,DOC011,Tutor,0,IES Macarena,ale.sanz@ies-sevilla.es,0
+Pepa Flores,DOC012,Tutor,0,IES Macarena,pepa.f@ies-sevilla.es,0

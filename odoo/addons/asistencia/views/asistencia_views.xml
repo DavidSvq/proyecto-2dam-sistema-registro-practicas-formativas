@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vistas -->
+    <record id="gestion_asistencia_tree" model="ir.ui.view">
+        <field name="name">gestion.asistencia.tree</field>
+        <field name="model">asistencia.gestion_asistencia</field>
+        <field name="arch" type="xml">
+            <tree string="Asistencias">
+                <field name="x_fk_alumno"/>
+                <field name="x_fecha"/>
+                <field name="x_hora_entrada"/>
+                <field name="x_hora_salida"/>
+                <field name="x_horas_diarias"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="gestion_asistencia_form" model="ir.ui.view">
+        <field name="name">gestion.asistencia.form</field>
+        <field name="model">asistencia.gestion_asistencia</field>
+        <field name="arch" type="xml">
+            <form string="Asistencia">
+                <sheet>
+                    <group>
+                        <field name="x_fk_alumno"/>
+                        <field name="x_fecha"/>
+                        <field name="x_hora_entrada" widget="float_time"/>
+                        <field name="x_hora_salida" widget="float_time"/>
+                        <field name="x_horas_diarias" widget="float_time"/>
+                        <field name="x_observaciones"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_asistencias" model="ir.actions.act_window">
+        <field name="name">Asistencias</field>
+        <field name="res_model">asistencia.gestion_asistencia</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_asistencias"
+              name="Asistencias"
+              parent="centro_docente.menu_gestion_academica_root"
+              action="action_asistencias"
+              sequence="4"/>
+</odoo>

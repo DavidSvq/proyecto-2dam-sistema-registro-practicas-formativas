@@ -1,0 +1,26 @@
+version: '3.1'
+services:
+  db:
+    image: postgres:15
+    user: root  # <--- Esto evita el problema de permisos en el volumen
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+
+  odoo:
+    image: odoo:17.0
+    user: root  # <--- Esto permite a Odoo escribir en 'odoo_data' y 'addons'
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      - ./odoo_data:/var/lib/odoo
+      - ./addons:/mnt/extra-addons

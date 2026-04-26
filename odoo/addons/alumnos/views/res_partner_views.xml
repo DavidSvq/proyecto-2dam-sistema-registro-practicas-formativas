@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- TREE VIEW ALUMNOS -->
+    <record id="view_alumnos_tree" model="ir.ui.view">
+        <field name="name">res.partner.alumno.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Alumnos">
+                <field name="x_cod_alumno"/>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="x_horas_acumuladas"/>
+                <field name="x_centro_id"/>
+                <field name="x_cod_docente_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- FORM VIEW ALUMNOS -->
+    <record id="view_alumnos_form" model="ir.ui.view">
+        <field name="name">res.partner.alumno.form</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <form string="Alumnos">
+                <sheet>
+                    <group string="Datos del Alumno">
+                        <field name="x_cod_alumno"/>
+                        <field name="name"/>
+                        <field name="email"/>
+                        <field name="x_horas_acumuladas"/>
+                    </group>
+                    <group string="Datos de Referencias Docentes">
+                        <field name="x_centro_id"/>
+                        <field name="x_cod_docente_id"/>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACCIÓN ALUMNOS -->
+    <record id="action_alumnos" model="ir.actions.act_window">
+        <field name="name">Alumnos</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[
+            (5,0,0),
+            (0,0,{'view_mode':'tree','view_id':ref('view_alumnos_tree')}),
+            (0,0,{'view_mode':'form','view_id':ref('view_alumnos_form')})
+        ]"/>
+        <field name="domain">[('x_cod_alumno','!=',False)]</field>
+    </record>
+
+    <!-- MENÚ ALUMNOS -->
+    <menuitem id="menu_alumnos"
+              name="Alumnos"
+              parent="centro_docente.menu_gestion_academica_root"
+              action="action_alumnos"
+              sequence="3"/>
+
+</odoo>
