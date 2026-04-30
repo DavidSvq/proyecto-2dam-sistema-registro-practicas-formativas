@@ -51,12 +51,19 @@ const GestionTareasTutor = ({ user }) => {
 
   // Manejador único para Crear y Editar
   const handleSubmitTarea = async (formData) => {
+    if (!formData.tecnologia || !formData.tipoTarea || !formData.dificultad) {
+      alert("AVISO: Debes seleccionar Tecnología, Tipo de Tarea y Dificultad para continuar.");
+      return; // Detiene la ejecución aquí
+    }
     try {
+      const prefijo = `${formData.tecnologia} ${formData.tipoTarea} ${formData.dificultad} `;
+      const descripcionFinal = prefijo + formData.descripcion;
+
       // Construimos el JSON limpio que el Backend espera recibir
       const payload = {
         ...(tareaSeleccionada && { idTarea: tareaSeleccionada.idTarea }),
         titulo: formData.titulo,
-        descripcion: formData.descripcion,
+        descripcion: descripcionFinal,
         fechaLimite: formData.fechaLimite,
         // Si no hay estado en el form (creación), ponemos ASIGNADA
         estado: formData.estado || "ASIGNADA",
@@ -106,6 +113,54 @@ const GestionTareasTutor = ({ user }) => {
   // Campos del formulario con ESTADO incluido para el Tutor
   const campos = [
     { name: 'titulo', label: 'Título de la Tarea', type: 'text', required: true, md: 12 },
+    // --- NUEVOS SELECTORES ---
+    ...(!tareaSeleccionada ? [
+      { 
+        name: 'tecnologia', 
+        label: 'Tecnología', 
+        type: 'select', 
+        required: true, 
+        md: 4, 
+        options: [
+          { value: 'Frontend', label: 'Frontend' },
+          { value: 'Backend', label: 'Backend' },
+          { value: 'Data', label: 'Data' },
+          { value: 'Data BBDD', label: 'Data BBDD' },
+          { value: 'Mobile', label: 'Mobile' },
+          { value: 'Testing', label: 'Testing' },
+          { value: 'Sistemas', label: 'Sistemas' },
+          { value: 'Gestión', label: 'Gestión' },
+          { value: 'Web', label: 'Web' }
+        ]
+      },
+      { 
+        name: 'tipoTarea', 
+        label: 'Tipo de Tarea', 
+        type: 'select', 
+        required: true, 
+        md: 4, 
+        options: [
+          { value: 'Desarrollo', label: 'Desarrollo' },
+          { value: 'Arreglo', label: 'Arreglo' },
+          { value: 'Documentación', label: 'Documentación' },
+          { value: 'Refactorización', label: 'Refactorización' },
+          { value: 'Investigación', label: 'Investigación' }
+        ]
+      },
+      { 
+        name: 'dificultad', 
+        label: 'Dificultad', 
+        type: 'select', 
+        required: true, 
+        md: 4, 
+        options: [
+          { value: 'Baja', label: 'Baja' },
+          { value: 'Media', label: 'Media' },
+          { value: 'Alta', label: 'Alta' }
+        ]
+      },
+    ] : []),
+    // -------------------------
     { name: 'descripcion', label: 'Descripción', type: 'textarea', required: true, md: 12 },
     { name: 'fechaLimite', label: 'Fecha Límite', type: 'date', required: true, md: 6 },
     { 
