@@ -55,11 +55,12 @@ export const tareaService = {
      * 7. ACCIÓN ALUMNO: Cambia el estado y añade horas.
      */
     completarTareaAlumno: async (idTarea, nuevoEstado, horas) => {
-        // Eliminamos "/alumno" de la URL y usamos "horas" como nombre de parámetro
+        const horasFinales = (horas === undefined || horas === null) ? 0 : horas;
+
         const response = await api.patch(`/tareas/${idTarea}/estado`, null, {
             params: { 
                 nuevoEstado: nuevoEstado,
-                horas: horas 
+                horas: horasFinales
             }
         });
         return response.data;

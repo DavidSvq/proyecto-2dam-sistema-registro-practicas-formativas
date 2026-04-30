@@ -54,7 +54,7 @@ const GestionTareasTutor = ({ user }) => {
     try {
       // Construimos el JSON limpio que el Backend espera recibir
       const payload = {
-        idTarea: tareaSeleccionada.idTarea,
+        ...(tareaSeleccionada && { idTarea: tareaSeleccionada.idTarea }),
         titulo: formData.titulo,
         descripcion: formData.descripcion,
         fechaLimite: formData.fechaLimite,
