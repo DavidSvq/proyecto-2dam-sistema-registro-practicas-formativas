@@ -10,6 +10,7 @@ import com.dam.proyecto.backend.repository.TareaRepository;
 import com.dam.proyecto.backend.repository.users.AlumnoRepository;
 import com.dam.proyecto.backend.repository.users.TutorEmpresaRepository;
 import com.dam.proyecto.backend.service.ITareaService;
+import com.dam.proyecto.backend.service.external.IARestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.ReadOnlyProperty;
@@ -29,6 +30,7 @@ public class TareaServiceImpl implements ITareaService {
     private final TareaMapper tareaMapper;
     private final AlumnoRepository alumnoRepository;
     private final TutorEmpresaRepository tutorEmpresaRepository;
+    private final IARestClient iaRestClient;
 
     @Override
     @Transactional
@@ -55,6 +57,13 @@ public class TareaServiceImpl implements ITareaService {
             tarea.setEstado(EstadoTarea.ASIGNADA);
         }
 
+        // --- BLOQUE DE LA IA ---
+        if (tarea.getDescripcion() != null && !tarea.getDescripcion().isBlank()) {
+            log.info("Solicitando estimación de IA antes de guardar...");
+            Double prediccion = iaRestClient.obtenerPrediccionHoras(tarea.getDescripcion());
+            tarea.setHorasEstimadasIA(prediccion);
+        }
+        // -----------------------
         return tareaRepository.save(tarea);
     }
 
