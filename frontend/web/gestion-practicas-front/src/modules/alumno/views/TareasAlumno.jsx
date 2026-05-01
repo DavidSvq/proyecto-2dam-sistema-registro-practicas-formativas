@@ -4,6 +4,7 @@ import { tareaService } from "../../../services/tareaService";
 import AppTable from "../../../common/components/AppTable";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const TareasAlumno = ({ user }) => {
   // --- ESTADOS DE DATOS ---
@@ -53,7 +54,6 @@ const TareasAlumno = ({ user }) => {
       setTareas(dataFormateada);
       setError(null);
     } catch (err) {
-      console.error("Error al cargar tareas:", err);
       setError("No se pudo conectar con el servidor de tareas.");
     } finally {
       setLoading(false);
@@ -82,7 +82,12 @@ const TareasAlumno = ({ user }) => {
       setTareaSeleccionada(null);
       await cargarDatos();
     } catch (err) {
-      alert("Error al actualizar el estado: " + (err.response?.data?.message || "Servidor no disponible"));
+      Swal.fire({
+        title: "Error de Actualización",
+        text: err.response?.data?.message || "Servidor no disponible",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     } finally {
       setActionLoading(false);
     }
@@ -103,10 +108,21 @@ const TareasAlumno = ({ user }) => {
       setShowFinalizarModal(false);
       setTareaSeleccionada(null);
       await cargarDatos();
-      alert("¡Tarea finalizada y horas registradas!");
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "¡Tarea finalizada y horas registradas!",
+        icon: "success",
+        confirmButtonColor: "#0d6efd",
+        timer: 2000
+      });
     } catch (err) {
       console.error(err);
-      alert("Error: " + (err.response?.data?.message || "No se pudo cerrar la tarea"));
+      Swal.fire({
+        title: "Error",
+        text: err.response?.data?.message || "No se pudo cerrar la tarea",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     } finally {
       setActionLoading(false);
     }

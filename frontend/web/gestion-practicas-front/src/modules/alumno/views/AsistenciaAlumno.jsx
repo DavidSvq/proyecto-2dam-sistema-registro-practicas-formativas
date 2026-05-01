@@ -5,6 +5,7 @@ import AppTable from "../../../common/components/AppTable";
 import InfoCard from "../../../common/components/InfoCard";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const AsistenciaAlumno = ({ user }) => {
   // Estados de datos
@@ -88,7 +89,13 @@ const AsistenciaAlumno = ({ user }) => {
       await asistenciaService.registrarEntrada(user.id, `${horaManual}:00`);
       await cargarDatos();
     } catch (err) {
-      alert(err.response?.data?.message || "Error al registrar entrada");
+      Swal.fire({
+        title: "Error de Registro",
+        text: err.response?.data?.message || "Error al registrar entrada",
+        icon: "error",
+        confirmButtonColor: "#dc3545",
+        confirmButtonText: "Aceptar"
+      });
     } finally {
       setActionLoading(false);
     }
@@ -100,7 +107,12 @@ const AsistenciaAlumno = ({ user }) => {
       await asistenciaService.registrarSalida(user.id, observaciones, `${horaManual}:00`);
       await cargarDatos();
     } catch (err) {
-      alert(err.response?.data?.message || "Error al registrar salida");
+      Swal.fire({
+        title: "Error de Registro",
+        text: err.response?.data?.message || "Error al registrar salida",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     } finally {
       setActionLoading(false);
     }
@@ -139,15 +151,24 @@ const AsistenciaAlumno = ({ user }) => {
       // 2. Cerramos el modal
       setShowEditModal(false);
       
-      // 3. RECARGAMOS LOS DATOS
-      // Esto es CRUCIAL: al llamar a cargarDatos(), el Front pide la lista nueva,
-      // y el Back le envía las horas ya recalculadas automáticamente.
+      // 3. RECARGAMOS LOS DATOS PARA VER LOS CAMBIOS REFLEJADOS
       await cargarDatos(); 
 
-      alert("¡Registro actualizado correctamente!");
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "¡Registro actualizado correctamente!",
+        icon: "success",
+        confirmButtonColor: "#0d6efd",
+        timer: 2000
+      });
     } catch (err) {
       console.error("Error al actualizar:", err);
-      alert("Error: " + (err.response?.data?.message || "No se pudo actualizar el registro"));
+      Swal.fire({
+        title: "Error",
+        text: err.response?.data?.message || "No se pudo actualizar el registro",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     } finally {
       setActionLoading(false);
     }

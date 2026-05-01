@@ -5,6 +5,7 @@ import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
 import { tareaService } from "../../../services/tareaService";
 import { tutorEmpresaService } from "../../../services/tutorEmpresaService";
+import Swal from 'sweetalert2';
 
 const GestionTareasTutor = ({ user }) => {
   const [todasLasTareas, setTodasLasTareas] = useState([]);
@@ -52,7 +53,12 @@ const GestionTareasTutor = ({ user }) => {
   // Manejador único para Crear y Editar
   const handleSubmitTarea = async (formData) => {
     if (!formData.tecnologia || !formData.tipoTarea || !formData.dificultad) {
-      alert("AVISO: Debes seleccionar Tecnología, Tipo de Tarea y Dificultad para continuar.");
+      Swal.fire({
+        title: "Atención",
+        text: "Debes seleccionar Tecnología, Tipo de Tarea y Dificultad para continuar.",
+        icon: "warning",
+        confirmButtonColor: "#ffc107"
+      });
       return; // Detiene la ejecución aquí
     }
     try {
@@ -82,10 +88,20 @@ const GestionTareasTutor = ({ user }) => {
 
       cerrarModal();
       cargarDatos();
-      alert("¡Tarea guardada con éxito!");
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "¡Tarea guardada con éxito!",
+        icon: "success",
+        confirmButtonColor: "#0d6efd",
+        timer: 2000
+      });
     } catch (err) {
-      console.error("Error completo:", err.response?.data);
-      alert("Error 400: Revisa que todos los campos estén rellenos correctamente.");
+      Swal.fire({
+        title: "Error al guardar",
+        text: "Ocurrió un error al guardar la tarea.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     }
   };
 

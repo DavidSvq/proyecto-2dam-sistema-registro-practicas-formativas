@@ -3,6 +3,7 @@ import { Row, Col, Spinner, Alert, Form, InputGroup, Container, Badge, Button, O
 import AppTable from "../../../common/components/AppTable";
 import { alumnoService } from "../../../services/alumnoService";
 import { tareaService } from "../../../services/tareaService";
+import Swal from 'sweetalert2';
 
 const SeguimientoTareasProfesor = ({ user }) => {
   const [alumnos, setAlumnos] = useState([]);
@@ -82,7 +83,12 @@ const SeguimientoTareasProfesor = ({ user }) => {
       await tareaService.revisarTareaProfesor(idTarea);
       handleVerTareas(alumnoSeleccionado);
     } catch (err) {
-      alert("No se pudo validar la tarea.");
+      Swal.fire({
+        title: "Error al validar",
+        text: "Ocurrió un error al validar la tarea.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     }
   };
 

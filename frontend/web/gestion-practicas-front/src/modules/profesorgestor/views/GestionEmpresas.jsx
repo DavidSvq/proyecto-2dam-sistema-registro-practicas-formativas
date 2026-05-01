@@ -5,6 +5,7 @@ import { centroService } from '../../../services/centroService';
 import AppTable from "../../../common/components/AppTable";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const GestionEmpresas = ({ user }) => {
   const [empresas, setEmpresas] = useState([]);
@@ -88,7 +89,12 @@ const GestionEmpresas = ({ user }) => {
       setShowModal(false);
       cargarEmpresas();
     } catch (err) {
-      alert("Error al procesar la solicitud. Revisa si el CIF ya existe.");
+      Swal.fire({
+        title: "Error",
+        text: "Error al procesar la solicitud. Revisa si el CIF ya existe.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     }
   };
 
@@ -97,14 +103,22 @@ const GestionEmpresas = ({ user }) => {
     if (window.confirm(`¿Estás seguro de que deseas eliminar la empresa con CIF: ${cif}?`)) {
       try {
         await empresaService.deleteEmpresa(cif);
-        alert("Empresa eliminada correctamente.");
+        Swal.fire({
+          title: "¡Eliminado!",
+          text: "Empresa eliminada correctamente.",
+          icon: "success",
+          confirmButtonColor: "#0d6efd",
+          timer: 2000
+        });
         cargarEmpresas();
       } catch (err) {
-        console.error("Error al borrar:", err);
-        alert(
-          "NO SE PUEDE ELIMINAR:\n\n" +
-          "Esta empresa tiene alumnos, tutores o convenios asociados."
-        );
+        Swal.fire({
+          title: "Error",
+          text: "NO SE PUEDE ELIMINAR:\n\n" +
+            "Esta empresa tiene alumnos, tutores o convenios asociados.",
+          icon: "error",
+          confirmButtonColor: "#dc3545"
+        });
       }
     }
   };

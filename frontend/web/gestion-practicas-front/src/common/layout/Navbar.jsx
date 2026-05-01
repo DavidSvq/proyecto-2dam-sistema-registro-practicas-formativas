@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AppModal from '../../common/components/AppModal'; // Asegúrate de que la ruta sea correcta
 import AppForm from '../../common/components/AppForm';   // Asegúrate de que la ruta sea correcta
 import { recuperarPasswordService } from '../../services/authService'; // La función que creamos antes
+import Swal from 'sweetalert2';
 
 const CustomNavbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
@@ -23,7 +24,13 @@ const CustomNavbar = ({ user, onLogout }) => {
   // 2. Lógica para procesar el cambio
   const manejarCambioPass = async (datos) => {
     if (datos.password !== datos.confirmPassword) {
-      alert("Las contraseñas no coinciden");
+      Swal.fire({
+        title: "Error",
+        text: "Las contraseñas no coinciden",
+        icon: "error",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#dc3545"
+      });
       return;
     }
 
@@ -31,12 +38,24 @@ const CustomNavbar = ({ user, onLogout }) => {
       // Llamamos al servicio usando el email y rol del usuario actual
       await recuperarPasswordService(user.email, datos.password, user.rol);
       
-      alert("Contraseña actualizada correctamente. Por seguridad, inicia sesión de nuevo.");
+      Swal.fire({
+        title: "¡Contraseña Actualizada!",
+        text: "Por seguridad, debes iniciar sesión de nuevo con tu nueva clave.",
+        icon: "success",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#0d6efd",
+        allowOutsideClick: false
+      })
       setShowModalPass(false);
       handleLogout(); // Forzamos el re-login
     } catch (error) {
-      console.error("Error al cambiar contraseña:", error);
-      alert("No se pudo actualizar la contraseña. Inténtalo de nuevo.");
+      Swal.fire({
+        title: "Error",
+        text: error.response?.data?.message || "No se pudo actualizar la contraseña. Inténtalo de nuevo.",
+        icon: "error",
+        confirmButtonColor: "#dc3545",
+        confirmButtonText: "Cerrar"
+      });
     }
   };
 

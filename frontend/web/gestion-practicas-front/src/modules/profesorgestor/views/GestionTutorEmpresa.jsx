@@ -5,6 +5,7 @@ import { empresaService } from '../../../services/empresaService';
 import AppTable from "../../../common/components/AppTable";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const GestionTutoresEmpresa = ({ user }) => {
   const [tutores, setTutores] = useState([]);
@@ -111,7 +112,14 @@ const GestionTutoresEmpresa = ({ user }) => {
       }
       setShowModal(false);
       cargarDatos();
-    } catch (err) { alert("Error al guardar."); }
+    } catch (err) { 
+      Swal.fire({
+        title: "Error al guardar",
+        text: "Ocurrió un error al guardar los datos del tutor.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
+    }
   };
 
   const manejarEliminar = async (tutor) => {
@@ -119,7 +127,14 @@ const GestionTutoresEmpresa = ({ user }) => {
       try {
         await tutorEmpresaService.eliminarTutor(tutor.id);
         cargarDatos();
-      } catch (err) { alert("Error al eliminar."); }
+      } catch (err) { 
+        Swal.fire({
+          title: "Error al eliminar",
+          text: "Ocurrió un error al eliminar el tutor.",
+          icon: "error",
+          confirmButtonColor: "#dc3545"
+        });
+      }
     }
   };
 

@@ -5,6 +5,7 @@ import AppTable from '../../../common/components/AppTable';
 import AppModal from '../../../common/components/AppModal';
 import AppForm from '../../../common/components/AppForm';
 import { Spinner, Button, Row, Col, Form, InputGroup} from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 const GestionProfesores = () => {
   const [profesores, setProfesores] = useState([]);
@@ -134,7 +135,12 @@ const GestionProfesores = () => {
       setShowModal(false);
       cargarDatos();
     } catch (error) {
-      alert("Error al procesar el docente. Verifica que el ID o Email no existan ya.");
+      Swal.fire({
+        title: "Error de Validación",
+        text: "Error al procesar el docente. Verifica que el ID o Email no existan ya.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     }
   };
 
@@ -144,7 +150,12 @@ const GestionProfesores = () => {
         await profesorService.deleteProfesor(id);
         cargarDatos();
       } catch (error) {
-        alert("No se puede eliminar el profesor (puede tener alumnos asignados).");
+        Swal.fire({
+          title: "Error",
+          text: "No se puede eliminar el profesor (puede tener alumnos asignados).",
+          icon: "error",
+          confirmButtonColor: "#dc3545"
+        });
       }
     }
   };

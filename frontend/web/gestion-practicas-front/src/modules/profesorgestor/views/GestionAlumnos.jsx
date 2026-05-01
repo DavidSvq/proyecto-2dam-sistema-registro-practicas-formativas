@@ -8,6 +8,7 @@ import { tutorEmpresaService } from '../../../services/tutorEmpresaService';
 import AppTable from "../../../common/components/AppTable";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const GestionAlumnos = ({ user }) => {
   const [alumnos, setAlumnos] = useState([]);
@@ -166,18 +167,35 @@ const GestionAlumnos = ({ user }) => {
       }
       setShowModal(false);
       cargarAlumnos();
-    } catch (err) { alert("Error al procesar la solicitud."); }
+    } catch (err) { 
+      Swal.fire({
+        title: "Error",
+        text: "Error al procesar la solicitud.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
+    }
   };
 
   const manejarEliminar = async (alumno) => {
     if (window.confirm(`¿Estás seguro de eliminar al alumno ${alumno.nombreCompleto}?`)) {
       try {
         await alumnoService.deleteAlumno(alumno.id);
-        alert("Alumno eliminado correctamente.");
+        Swal.fire({
+          title: "¡Eliminado!",
+          text: "Alumno eliminado correctamente.",
+          icon: "success",
+          confirmButtonColor: "#0d6efd",
+          timer: 2000
+        });
         cargarAlumnos();
       } catch (err) {
-        console.error("Error al eliminar", err);
-        alert("No se puede eliminar el alumno. Es probable que tenga registros asociados (asistencias, evaluaciones, etc).");
+        Swal.fire({
+          title: "Error",
+          text: "No se puede eliminar el alumno. Es probable que tenga registros asociados (asistencias, evaluaciones, etc).",
+          icon: "error",
+          confirmButtonColor: "#dc3545"
+        });
       }
     }
   };

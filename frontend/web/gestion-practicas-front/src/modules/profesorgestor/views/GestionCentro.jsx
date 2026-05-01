@@ -6,6 +6,7 @@ import { profesorService } from '../../../services/profesorService';
 import InfoCard from '../../../common/components/InfoCard';
 import AppModal from '../../../common/components/AppModal';
 import AppForm from '../../../common/components/AppForm';
+import Swal from 'sweetalert2';
 
 const GestionCentro = () => {
   const [centro, setCentro] = useState(null);
@@ -55,7 +56,12 @@ const GestionCentro = () => {
     try {
       // Verificamos que codCentro existe antes de enviar
       if (!centro?.codCentro) {
-          alert("Error: No se encuentra el código del centro.");
+          Swal.fire({
+            title: "Error",
+            text: "No se encuentra el código del centro.",
+            icon: "error",
+            confirmButtonColor: "#dc3545"
+          });
           return;
       }
 
@@ -64,12 +70,17 @@ const GestionCentro = () => {
         ...formData 
       };
 
-      await centroService.update(payload); // Ahora enviará api.put('centros/CEN01', payload)
+      await centroService.update(payload);
       setShowModal(false);
       setEditData(null);
       await cargarDatos(); 
     } catch (error) {
-      alert("Error al actualizar: Revisa la consola.");
+      Swal.fire({
+        title: "Error",
+        text: "Error al actualizar: Revisa la consola.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     }
   };
 
