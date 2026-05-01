@@ -63,38 +63,51 @@ const CustomNavbar = ({ user, onLogout, links }) => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="md" className="mb-4 py-12">
+      <Navbar bg="dark" variant="dark" expand={false} className="mb-4 py-2 shadow">
         <Container fluid className="px-3">
-          {/* 1. Botón Hamburguesa: SOLO visible en móvil (d-lg-none) */}
-          <Button 
-            variant="outline-light" 
-            className="d-md-none me-2" 
-            onClick={() => setShowOffcanvas(true)}
-          >
-            <i className="bi bi-list"></i>
-          </Button>
-          <Navbar.Brand href="#">FCT Gestión</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-
-            <Navbar.Text className="me-3">
-              Conectado como: <span className="text-white fw-bold">{user?.nombre}</span> 
-              <small className="ms-1 text-info">({user?.rol})</small>
-            </Navbar.Text>
-            
-            {/* Botón Amarillo de Cambiar Contraseña */}
+          <div className="d-flex align-items-center">
+            {/* 1. Botón Menú Lateral (SOLO MÓVIL) */}
             <Button 
-              variant="outline-warning" 
-              size="sm" 
-              className="me-2" 
-              onClick={() => setShowModalPass(true)}
+              variant="outline-light" 
+              className="d-md-none me-2" 
+              onClick={() => setShowOffcanvas(true)}
             >
-              Cambiar Contraseña
+              <i className="bi bi-list"></i>
             </Button>
+            
+            <Navbar.Brand href="#" className="fw-bold">FCT Gestión</Navbar.Brand>
+          </div>
 
-            <Button variant="outline-danger" size="sm" onClick={handleLogout}>
-              Cerrar Sesión
-            </Button>
+          {/* 2. Botón de Acciones de Usuario (PC y MÓVIL) */}
+          {/* Usamos Navbar.Toggle manual para que funcione siempre como un desplegable */}
+          <Navbar.Toggle 
+            aria-controls="acciones-usuario" 
+            className="border-0"
+          >
+            <i className="bi bi-person-circle fs-4"></i>
+          </Navbar.Toggle>
+
+          <Navbar.Collapse id="acciones-usuario" className="justify-content-end">
+            <Nav className="mt-3 mt-md-0 align-items-md-center bg-dark p-3 p-md-0 rounded">
+              <Navbar.Text className="me-md-3 mb-2 mb-md-0">
+                Conectado como: <span className="text-white fw-bold">{user?.nombre}</span> 
+                <small className="ms-1 text-info">({user?.rol})</small>
+              </Navbar.Text>
+              
+              <div className="d-flex flex-column flex-md-row gap-2">
+                <Button 
+                  variant="outline-warning" 
+                  size="sm" 
+                  onClick={() => setShowModalPass(true)}
+                >
+                  Cambiar Contraseña
+                </Button>
+
+                <Button variant="outline-danger" size="sm" onClick={handleLogout}>
+                  Cerrar Sesión
+                </Button>
+              </div>
+            </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
