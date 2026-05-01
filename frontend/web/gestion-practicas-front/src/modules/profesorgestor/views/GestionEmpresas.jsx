@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Row, Col, Button, Spinner, Form, InputGroup } from "react-bootstrap";
+import { Container, Row, Col, Button, Form, InputGroup, Spinner, Badge } from "react-bootstrap";
 import { empresaService } from '../../../services/empresaService';
 import { centroService } from '../../../services/centroService';
 import AppTable from "../../../common/components/AppTable";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const GestionEmpresas = ({ user }) => {
   const [empresas, setEmpresas] = useState([]);
@@ -88,7 +89,12 @@ const GestionEmpresas = ({ user }) => {
       setShowModal(false);
       cargarEmpresas();
     } catch (err) {
-      alert("Error al procesar la solicitud. Revisa si el CIF ya existe.");
+      Swal.fire({
+        title: "Error",
+        text: "Error al procesar la solicitud. Revisa si el CIF ya existe.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     }
   };
 
@@ -97,36 +103,55 @@ const GestionEmpresas = ({ user }) => {
     if (window.confirm(`¿Estás seguro de que deseas eliminar la empresa con CIF: ${cif}?`)) {
       try {
         await empresaService.deleteEmpresa(cif);
-        alert("Empresa eliminada correctamente.");
+        Swal.fire({
+          title: "¡Eliminado!",
+          text: "Empresa eliminada correctamente.",
+          icon: "success",
+          confirmButtonColor: "#0d6efd",
+          timer: 2000
+        });
         cargarEmpresas();
       } catch (err) {
-        console.error("Error al borrar:", err);
-        alert(
-          "NO SE PUEDE ELIMINAR:\n\n" +
-          "Esta empresa tiene alumnos, tutores o convenios asociados."
-        );
+        Swal.fire({
+          title: "Error",
+          text: "NO SE PUEDE ELIMINAR:\n\n" +
+            "Esta empresa tiene alumnos, tutores o convenios asociados.",
+          icon: "error",
+          confirmButtonColor: "#dc3545"
+        });
       }
     }
   };
 
   return (
-    <>
-      <Row className="mb-4 align-items-center">
-        <Col>
-          <h2 className="fw-bold">Gestión de Empresas</h2>
-          <p className="text-muted">Centro: {user?.profesorInfo?.centroNombre}</p>
+    <Container fluid className="px-2 px-md-4 pb-5">
+      {/* CABECERA ADAPTADA */}
+      <Row className="mb-4 align-items-center g-3 pt-3">
+        <Col xs={12} md={8} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Gestión de Empresas</h2>
+          <p className="text-muted small mb-0">Centro: {user?.profesorInfo?.centroNombre}</p>
         </Col>
-        <Col className="text-end">
-          <Button variant="primary" onClick={abrirModalCrear}>Nueva Empresa</Button>
+        <Col xs={12} md={4} className="text-center text-md-end">
+          <Button 
+            variant="primary" 
+            className="w-100 w-md-auto shadow-sm" 
+            onClick={abrirModalCrear}
+          >
+            <i className="bi bi-plus-circle me-2"></i>Nueva Empresa
+          </Button>
         </Col>
       </Row>
 
-      <Row className="mb-3 mx-0 bg-light p-3 rounded border">
-        <Col md={12}>
+      {/* BUSCADOR ADAPTADO */}
+      <Row className="mb-4 mx-0 bg-light p-3 rounded border shadow-sm">
+        <Col xs={12}>
           <Form.Label className="small fw-bold text-secondary">Buscar Empresa (Nombre o CIF)</Form.Label>
           <InputGroup>
-            <InputGroup.Text className="bg-white"><i className="bi bi-search"></i></InputGroup.Text>
+            <InputGroup.Text className="bg-white border-end-0">
+              <i className="bi bi-search text-primary"></i>
+            </InputGroup.Text>
             <Form.Control 
+              className="border-start-0"
               placeholder="Ej: Inditex o B12345678..." 
               value={filtroTexto}
               onChange={(e) => setFiltroTexto(e.target.value)}
@@ -135,9 +160,13 @@ const GestionEmpresas = ({ user }) => {
         </Col>
       </Row>
 
-      <div className="bg-white p-4 rounded shadow-sm border">
+      {/* TABLA CON SCROLL AUTOMÁTICO */}
+      <div className="bg-white rounded shadow-sm border overflow-hidden">
         {loading ? (
-          <div className="text-center"><Spinner animation="border" /></div>
+          <div className="text-center py-5">
+            <Spinner animation="border" variant="primary" />
+            <p className="mt-2 text-muted small">Cargando empresas...</p>
+          </div>
         ) : (
           <AppTable 
             headers={columnas} 
@@ -150,21 +179,38 @@ const GestionEmpresas = ({ user }) => {
         )}
       </div>
 
+      {/* MODAL DE EDICIÓN/CREACIÓN */}
       <AppModal 
         show={showModal} 
-        handleClose={() => setShowModal(false)} 
+        handleClose={() => {
+          setShowModal(false);
+          setSelectedEmpresa(null);
+        }} 
         title={isReadOnly ? "Detalle de Empresa" : (selectedEmpresa ? "Editar Empresa" : "Nueva Empresa")}
         size="lg"
         closeLabel={isReadOnly ? "Volver" : "Cancelar"}
       >
-        <AppForm 
-          fields={camposEmpresa.map(f => ({ ...f, disabled: isReadOnly || f.disabled }))} 
-          initialValues={selectedEmpresa || { cif: '', razonSocial: '', direccion: '', localidad: '', telefonoContacto: '', emailContacto: '', personaContacto: '' }} 
-          onSubmit={manejarGuardar} 
-          buttonLabel={isReadOnly ? null : "Guardar"} 
-        />
+        <div className="px-1">
+          <AppForm 
+            fields={camposEmpresa.map(f => ({ 
+              ...f, 
+              disabled: isReadOnly || f.disabled 
+            }))} 
+            initialValues={selectedEmpresa || { 
+              cif: '', 
+              razonSocial: '', 
+              direccion: '', 
+              localidad: '', 
+              telefonoContacto: '', 
+              emailContacto: '', 
+              personaContacto: '' 
+            }} 
+            onSubmit={manejarGuardar} 
+            buttonLabel={isReadOnly ? null : "Guardar Empresa"} 
+          />
+        </div>
       </AppModal>
-    </>
+    </Container>
   );
 };
 

@@ -22,7 +22,7 @@ const TableActions = ({ item, onView, onEdit, onDelete, viewLabel="Ver", editLab
   );
 
   return (
-    <div className="d-flex justify-content-center">
+    <div className="d-flex justify-content-center gap-2 gap-md-3 flex-wrap">
       {onView && (
         <BotonAccion onClick={onView} icon="bi-eye" variant="outline-info" label={viewLabel} />
       )}

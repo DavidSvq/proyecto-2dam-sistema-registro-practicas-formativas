@@ -52,92 +52,95 @@ const InicioProfesor = ({ user }) => {
   if (error) return <Alert variant="danger" className="m-4">{error}</Alert>;
 
   return (
-    <Container fluid className="px-4">
-      <Row className="mb-4">
-        <Col className="text-center mt-3">
-          <h2 className="fw-bold">Panel de Inicio</h2>
-          <p className="text-muted">
+    <Container fluid className="px-3 px-md-4 pb-5">
+      {/* CABECERA: Adaptable */}
+      <Row className="mb-4 align-items-center g-3 pt-2">
+        <Col xs={12} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Panel de Inicio</h2>
+          <p className="text-muted small mb-0">
             Bienvenido, <strong>{datosProfesor?.nombreSolo}</strong>. 
             Consulta aquí la información de tu perfil y centro educativo.
           </p>
         </Col>
       </Row>
 
-      {/* FILA 1: CENTRO EDUCATIVO */}
-      <Row className="mb-3">
-        <Col md={12}>
-          <InfoCard 
-            titulo="Centro Educativo / Entidad" 
-            contenido={datosProfesor?.nombreCentro} 
-            variante="dark" 
-            icono="bi bi-building"
-          />
+      {/* SECCIÓN: DATOS DEL CENTRO (Protección contra desbordamiento) */}
+      <Row className="g-3 mb-3">
+        <Col xs={12}>
+          <div className="shadow-sm rounded overflow-hidden">
+            <InfoCard 
+              titulo="Centro Educativo / Entidad" 
+              contenido={datosProfesor?.nombreCentro} 
+              variante="dark" 
+              icono="bi bi-building"
+            />
+          </div>
+        </Col>
+        <Col xs={12} md={6}>
+          <div className="shadow-sm rounded h-100 overflow-hidden">
+            <InfoCard 
+              titulo="Código del Centro" 
+              contenido={datosProfesor?.codCentro} 
+              variante="secondary" 
+              icono="bi bi-card-text"
+            />
+          </div>
+        </Col>
+        <Col xs={12} md={6}>
+          <div className="shadow-sm rounded h-100 overflow-hidden">
+            <InfoCard 
+              titulo="Localidad" 
+              contenido={datosProfesor?.localidadCentro} 
+              variante="secondary" 
+              icono="bi bi-geo-alt"
+            />
+          </div>
         </Col>
       </Row>
 
-      {/* FILA 2: CÓDIGO CENTRO Y LOCALIDAD */}
-      <Row className="mb-4">
-        <Col md={6} className="mb-3 mb-md-0">
-          <InfoCard 
-            titulo="Código del Centro" 
-            contenido={datosProfesor?.codCentro} 
-            variante="secondary" 
-            icono="bi bi-card-text"
-          />
-        </Col>
-        <Col md={6}>
-          <InfoCard 
-            titulo="Localidad" 
-            contenido={datosProfesor?.localidadCentro} 
-            variante="secondary" 
-            icono="bi bi-geo-alt"
-          />
-        </Col>
-      </Row>
+      <hr className="my-4 opacity-25" />
 
-      <hr className="my-4" />
-
-      {/* FILA 3: NOMBRE DEL PROFESOR */}
-      <Row className="mb-3">
-        <Col md={12}>
-          <InfoCard 
-            titulo="Profesor Tutor" 
-            contenido={datosProfesor?.nombreCompleto} 
-            variante="primary" 
-            icono="bi bi-person-badge"
-          />
+      {/* SECCIÓN: DATOS DEL PROFESOR */}
+      <Row className="g-3 mb-5">
+        <Col xs={12}>
+          <div className="shadow-sm rounded overflow-hidden">
+            <InfoCard 
+              titulo="Profesor Tutor" 
+              contenido={datosProfesor?.nombreCompleto} 
+              variante="primary" 
+              icono="bi bi-person-badge"
+            />
+          </div>
         </Col>
-      </Row>
-
-      {/* FILA 4: CÓDIGO DOCENTE Y Nº ALUMNOS */}
-      <Row className="mb-3">
-        <Col md={6} className="mb-3 mb-md-0">
-          <InfoCard 
-            titulo="Código de Profesor" 
-            contenido={datosProfesor?.id} 
-            variante="info" 
-            icono="bi bi-hash"
-          />
+        <Col xs={12} md={6}>
+          <div className="shadow-sm rounded h-100 overflow-hidden">
+            <InfoCard 
+              titulo="Código de Profesor" 
+              contenido={datosProfesor?.id} 
+              variante="info" 
+              icono="bi bi-hash"
+            />
+          </div>
         </Col>
-        <Col md={6}>
-          <InfoCard 
-            titulo="Alumnos Asignados" 
-            contenido={datosProfesor?.numAlumnosDisplay} 
-            variante="info" 
-            icono="bi bi-people"
-          />
+        <Col xs={12} md={6}>
+          <div className="shadow-sm rounded h-100 overflow-hidden">
+            <InfoCard 
+              titulo="Alumnos Asignados" 
+              contenido={datosProfesor?.numAlumnosDisplay} 
+              variante="info" 
+              icono="bi bi-people"
+            />
+          </div>
         </Col>
-      </Row>
-
-      {/* FILA 5: EMAIL */}
-      <Row className="mb-5">
-        <Col md={12}>
-          <InfoCard 
-            titulo="Correo Electrónico" 
-            contenido={datosProfesor?.email} 
-            variante="success" 
-            icono="bi bi-envelope-at"
-          />
+        <Col xs={12}>
+          <div className="shadow-sm rounded overflow-hidden">
+            <InfoCard 
+              titulo="Correo Electrónico" 
+              contenido={datosProfesor?.email} 
+              variante="success" 
+              icono="bi bi-envelope-at"
+            />
+          </div>
         </Col>
       </Row>
     </Container>

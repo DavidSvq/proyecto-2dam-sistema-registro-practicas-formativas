@@ -34,17 +34,17 @@ const FichaAlumno = ({ user }) => {
   if (error) return <Alert variant="danger" className="m-4">{error}</Alert>;
 
   return (
-    <Container fluid className="px-4">
-      <Row className="mb-4">
-        <Col>
-          <h2 className="fw-bold">Ficha Personal del Alumno</h2>
-          <p className="text-muted">Información detallada de registro y contacto oficial.</p>
+    <Container fluid className="px-2 px-md-4 pb-5">
+      <Row className="mb-4 pt-3">
+        <Col className="text-center text-md-start">
+          <h2 className="fw-bold text-primary fs-3 fs-md-2">Ficha Personal del Alumno</h2>
+          <p className="text-muted small">Información detallada de registro y contacto oficial.</p>
         </Col>
       </Row>
 
       {/* FILA 1: NOMBRE COMPLETO (Sola para evitar cortes) */}
-      <Row className="mb-4">
-        <Col md={12}>
+      <Row className="mb-3 mb-md-4">
+        <Col xs={12}>
           <InfoCard 
             titulo="Nombre y Apellidos" 
             contenido={`${perfil?.nombre} ${perfil?.apellidos}`} 
@@ -55,8 +55,8 @@ const FichaAlumno = ({ user }) => {
       </Row>
 
       {/* FILA 2: DATOS DE CONTROL (Triple columna con altura igualada) */}
-      <Row className="mb-4">
-        <Col md={4} className="mb-3 mb-md-0">
+      <Row className="mb-4 g-3">
+        <Col xs={12} sm={6} md={4}>
           <InfoCard 
             titulo="ID / Matrícula" 
             contenido={perfil?.id} 
@@ -64,7 +64,7 @@ const FichaAlumno = ({ user }) => {
             icono="bi bi-fingerprint"
           />
         </Col>
-        <Col md={4} className="mb-3 mb-md-0">
+        <Col xs={12} sm={6} md={4}>
           <InfoCard 
             titulo="Rol en Sistema" 
             contenido={perfil?.rol} 
@@ -72,7 +72,7 @@ const FichaAlumno = ({ user }) => {
             icono="bi bi-shield-lock"
           />
         </Col>
-        <Col md={4}>
+        <Col xs={12} md={4}>
           <InfoCard 
             titulo="Total Horas Registradas" 
             contenido={`${perfil?.horasTotales || 0} h`} 
@@ -83,11 +83,13 @@ const FichaAlumno = ({ user }) => {
       </Row>
 
       <hr className="my-4" />
-      <h5 className="mb-3 fw-bold text-uppercase small text-muted">Canales de Contacto</h5>
+      <h5 className="mb-3 fw-bold text-uppercase small text-muted text-center text-md-start">
+        Canales de Contacto
+      </h5>
 
       {/* FILA 3: EMAIL ALUMNO */}
-      <Row className="mb-3">
-        <Col md={12}>
+      <Row className="g-3 mb-5">
+        <Col xs={12}>
           <InfoCard 
             titulo="Tu Correo Electrónico" 
             contenido={perfil?.email} 
@@ -95,10 +97,8 @@ const FichaAlumno = ({ user }) => {
             icono="bi bi-envelope-at"
           />
         </Col>
-      </Row>
       {/* FILA: EMAIL INSTITUCIONAL (CENTRO) */}
-      <Row className="mb-3">
-        <Col md={12}>
+        <Col xs={12}>
           <InfoCard 
             titulo="Secretaría / Centro (Email Institucional)" 
             contenido={perfil?.centro?.correoInstitucional || "No disponible"} 
@@ -106,11 +106,9 @@ const FichaAlumno = ({ user }) => {
             icono="bi bi-building-check"
           />
         </Col>
-      </Row>
 
       {/* FILA 4: EMAIL PROFESOR */}
-      <Row className="mb-3">
-        <Col md={12}>
+        <Col xs={12}>
           <InfoCard 
             titulo="Correo del Profesor Tutor" 
             contenido={perfil?.profesor?.email || "No disponible"} 
@@ -118,11 +116,9 @@ const FichaAlumno = ({ user }) => {
             icono="bi bi-person-workspace"
           />
         </Col>
-      </Row>
 
       {/* FILA 5: EMAIL TUTOR EMPRESA */}
-      <Row className="mb-5">
-        <Col md={12}>
+        <Col xs={12}>
           <InfoCard 
             titulo="Correo del Tutor de Empresa" 
             contenido={perfil?.tutorEmpresa?.email || "No disponible"} 

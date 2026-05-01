@@ -18,7 +18,7 @@ const ProfesorGestorDashboard = ({ user, onLogout }) => {
 
   return (
     <div className="d-flex flex-column vh-100">
-      <CustomNavbar user={user} onLogout={onLogout} />
+      <CustomNavbar user={user} onLogout={onLogout} links={menuLinks} />
 
       <div className="d-flex flex-grow-1 overflow-hidden">
         <Sidebar links={menuLinks} />

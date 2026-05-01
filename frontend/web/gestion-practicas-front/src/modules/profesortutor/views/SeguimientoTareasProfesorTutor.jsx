@@ -3,6 +3,7 @@ import { Row, Col, Spinner, Alert, Form, InputGroup, Container, Badge, Button, O
 import AppTable from "../../../common/components/AppTable";
 import { alumnoService } from "../../../services/alumnoService";
 import { tareaService } from "../../../services/tareaService";
+import Swal from 'sweetalert2';
 
 const SeguimientoTareasProfesor = ({ user }) => {
   const [alumnos, setAlumnos] = useState([]);
@@ -82,7 +83,12 @@ const SeguimientoTareasProfesor = ({ user }) => {
       await tareaService.revisarTareaProfesor(idTarea);
       handleVerTareas(alumnoSeleccionado);
     } catch (err) {
-      alert("No se pudo validar la tarea.");
+      Swal.fire({
+        title: "Error al validar",
+        text: "Ocurrió un error al validar la tarea.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     }
   };
 
@@ -155,20 +161,25 @@ const SeguimientoTareasProfesor = ({ user }) => {
   if (loading) return <div className="text-center p-5"><Spinner animation="border" variant="primary" /></div>;
 
   return (
-    <Container fluid className="px-4 pb-5">
-      <Row className="mb-4">
-        <Col className="mt-3">
-          <h2 className="fw-bold">Seguimiento de Tareas</h2>
-          <p className="text-muted">Supervisión y validación de los diarios de trabajo de los alumnos.</p>
+    <Container fluid className="px-3 px-md-4 pb-5">
+      {/* CABECERA: Adaptable */}
+      <Row className="mb-4 align-items-center g-3 pt-2">
+        <Col xs={12} md={8} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Seguimiento de Tareas</h2>
+          <p className="text-muted small mb-0">Supervisión y validación de los diarios de trabajo.</p>
         </Col>
       </Row>
 
-      <Row className="mb-3 g-3 bg-light p-3 rounded border mx-0">
-        <Col md={12}>
+      {/* BUSCADOR ALUMNO: Estilo consistente */}
+      <Row className="mb-4 g-3 bg-light p-3 rounded border mx-0 shadow-sm">
+        <Col xs={12}>
           <Form.Label className="small fw-bold text-secondary">Buscar alumno</Form.Label>
           <InputGroup>
-            <InputGroup.Text className="bg-white"><i className="bi bi-person-search"></i></InputGroup.Text>
+            <InputGroup.Text className="bg-white border-end-0">
+              <i className="bi bi-person-search text-primary"></i>
+            </InputGroup.Text>
             <Form.Control 
+              className="border-start-0"
               placeholder="Nombre o código..." 
               value={filtroAlumno}
               onChange={(e) => setFiltroAlumno(e.target.value)}
@@ -177,9 +188,10 @@ const SeguimientoTareasProfesor = ({ user }) => {
         </Col>
       </Row>
 
+      {/* TABLA PRINCIPAL: Con scroll horizontal preventivo */}
       <Row className="mb-5">
-        <Col>
-          <div className="bg-white p-4 rounded shadow-sm border">
+        <Col xs={12}>
+          <div className="bg-white rounded shadow-sm border overflow-hidden">
             <AppTable 
               headers={columnasAlu} 
               data={alumnosFiltrados} 
@@ -190,19 +202,24 @@ const SeguimientoTareasProfesor = ({ user }) => {
         </Col>
       </Row>
 
+      {/* SECCIÓN DETALLE TAREAS */}
       {alumnoSeleccionado && (
         <Row className="mt-4 animate__animated animate__fadeIn">
-          <Col>
-            <div className="bg-white p-4 rounded shadow-sm border border-primary">
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h4 className="fw-bold text-primary mb-0">Tareas de: {alumnoSeleccionado.nombreCompleto}</h4>
-                <Button variant="outline-danger" size="sm" onClick={() => setAlumnoSeleccionado(null)}>Cerrar</Button>
+          <Col xs={12}>
+            <div className="bg-white p-3 p-md-4 rounded shadow-sm border border-primary">
+              <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+                <h4 className="fw-bold text-primary mb-0 fs-5 fs-md-4 text-center text-md-start text-break">
+                  Tareas de: {alumnoSeleccionado.nombreCompleto}
+                </h4>
+                <Button variant="outline-danger" size="sm" onClick={() => setAlumnoSeleccionado(null)} className="w-100 w-md-auto">
+                  <i className="bi bi-x-lg me-1"></i>Cerrar Detalle
+                </Button>
               </div>
 
-              {/* FILTROS TAREAS: TAMAÑOS OPTIMIZADOS */}
-              <Row className="mb-3 g-2">
-                <Col md={5}> {/* Estado intermedio y texto corto */}
-                  <Form.Label className="small fw-bold">Estado</Form.Label>
+              {/* FILTROS TAREAS: Optimizados para apilamiento */}
+              <Row className="mb-3 g-3">
+                <Col xs={12} md={5}>
+                  <Form.Label className="small fw-bold text-secondary">Estado</Form.Label>
                   <Form.Select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
                     <option value="">Todos los estados</option>
                     <option value="ASIGNADA">ASIGNADA</option>
@@ -212,8 +229,8 @@ const SeguimientoTareasProfesor = ({ user }) => {
                     <option value="CANCELADA">CANCELADA</option>
                   </Form.Select>
                 </Col>
-                <Col md={7}> {/* Buscador grande para títulos largos */}
-                  <Form.Label className="small fw-bold">Título de la actividad</Form.Label>
+                <Col xs={12} md={7}>
+                  <Form.Label className="small fw-bold text-secondary">Título de la actividad</Form.Label>
                   <Form.Control 
                     placeholder="Buscar tarea..." 
                     value={filtroTextoTarea} 
@@ -225,59 +242,62 @@ const SeguimientoTareasProfesor = ({ user }) => {
               {loadingTareas ? (
                 <div className="text-center p-4"><Spinner animation="grow" variant="primary" /></div>
               ) : (
-                <AppTable 
-                  headers={columnasTareas} 
-                  data={tareasFiltradas} 
-                  accessorKeys={llavesTareas} 
-                />
+                <div className="overflow-hidden border rounded mt-2">
+                  <AppTable 
+                    headers={columnasTareas} 
+                    data={tareasFiltradas} 
+                    accessorKeys={llavesTareas} 
+                  />
+                </div>
               )}
             </div>
           </Col>
         </Row>
       )}
-      {/* PANEL LATERAL DE DETALLES */}
-      <Offcanvas show={showDetalle} onHide={() => setShowDetalle(false)} placement="end" className="shadow-lg">
+
+      {/* PANEL LATERAL: Ajustado para lectura móvil */}
+      <Offcanvas show={showDetalle} onHide={() => setShowDetalle(false)} placement="end" className="shadow-lg w-100-mobile">
         <Offcanvas.Header closeButton className="bg-light border-bottom">
-          <Offcanvas.Title className="fw-bold text-primary">
-            Detalle de la Tarea #{tareaSeleccionada?.idTarea}
+          <Offcanvas.Title className="fw-bold text-primary fs-5">
+            Detalle Tarea #{tareaSeleccionada?.idTarea}
           </Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body>
+        <Offcanvas.Body className="p-3 p-md-4">
           {tareaSeleccionada && (
-            <div className="d-flex flex-column gap-4">
+            <div className="d-flex flex-column gap-4 text-break">
               <div>
-                <label className="text-muted small fw-bold text-uppercase">Título de la Actividad</label>
-                <p className="fs-5 fw-semibold">{tareaSeleccionada.titulo}</p>
+                <label className="text-muted small fw-bold text-uppercase d-block mb-1">Título de la Actividad</label>
+                <p className="fs-5 fw-semibold mb-0">{tareaSeleccionada.titulo}</p>
               </div>
 
               <div>
-                <label className="text-muted small fw-bold text-uppercase">Descripción (Tutor)</label>
-                <div className="p-3 bg-light rounded border">
-                  {tareaSeleccionada.descripcion || 'Sin descripción detallada.'}
+                <label className="text-muted small fw-bold text-uppercase d-block mb-1">Descripción</label>
+                <div className="p-3 bg-light rounded border small">
+                  {tareaSeleccionada.description || 'Sin descripción.'}
                 </div>
               </div>
 
-              <Row>
-                <Col>
-                  <label className="text-muted small fw-bold text-uppercase">Horas Previstas</label>
-                  <p className="fw-bold text-secondary">{tareaSeleccionada.horasPrevistas || 0}h</p>
+              <Row className="g-2">
+                <Col xs={6}>
+                  <label className="text-muted small fw-bold text-uppercase d-block mb-1">Previstas</label>
+                  <p className="fw-bold text-secondary mb-0">{tareaSeleccionada.horasPrevistas || 0}h</p>
                 </Col>
-                <Col>
-                  <label className="text-muted small fw-bold text-uppercase">Horas Reales</label>
-                  <p className="fw-bold text-primary">{tareaSeleccionada.horasReales || 0}h</p>
+                <Col xs={6}>
+                  <label className="text-muted small fw-bold text-uppercase d-block mb-1">Reales</label>
+                  <p className="fw-bold text-primary mb-0">{tareaSeleccionada.horasReales || 0}h</p>
                 </Col>
               </Row>
 
               <div>
-                <label className="text-muted small fw-bold text-uppercase">Observaciones del Alumno</label>
-                <p className="fst-italic text-dark">
-                  {tareaSeleccionada.observaciones || 'El alumno no ha dejado comentarios.'}
+                <label className="text-muted small fw-bold text-uppercase d-block mb-1">Observaciones</label>
+                <p className="fst-italic text-dark small border-start ps-2 border-primary">
+                  "{tareaSeleccionada.observaciones || 'Sin comentarios.'}"
                 </p>
               </div>
 
-              <div className="mt-auto border-top pt-3">
-                <Badge bg={tareaSeleccionada.estado === 'VALIDADA' ? 'success' : 'primary'} className="p-2 w-100">
-                  Estado Actual: {tareaSeleccionada.estado}
+              <div className="mt-auto pt-3">
+                <Badge bg={tareaSeleccionada.estado === 'VALIDADA' ? 'success' : 'primary'} className="p-3 w-100 fs-6">
+                  {tareaSeleccionada.estado}
                 </Badge>
               </div>
             </div>
