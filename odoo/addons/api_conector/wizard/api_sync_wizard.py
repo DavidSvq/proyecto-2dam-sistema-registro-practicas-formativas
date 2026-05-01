@@ -28,7 +28,7 @@ class ApiSyncWizard(models.TransientModel):
 
     def action_sync(self):
         # Configuración de URL (IP de Windows desde Docker)
-        base_url = "http://192.168.1.140:8088/api"
+        base_url = "http://api-spring:8088/api"
         
         try:
             if self.sync_type == 'centro':
