@@ -47,7 +47,7 @@ const TareasAlumno = ({ user }) => {
       // Formateo de datos para la tabla (Estilo Asistencia)
       const dataFormateada = (lista || []).map(item => ({
         ...item,
-        horasReales: item.horasReales ? `${Number(item.horasReales).toFixed(2)} h` : "0.00 h"
+        horasRealesFormateadas: item.horasReales ? `${Number(item.horasReales).toFixed(2)} h` : "0.00 h"
       }));
       
       setTareas(dataFormateada);
@@ -67,9 +67,11 @@ const TareasAlumno = ({ user }) => {
   // --- LÓGICA DE NEGOCIO ---
   
   // Identificamos la tarea en curso
-  const tareaActiva = tareas.find(t => 
+  const tareaActivaAuto = tareas.find(t => 
     t.estado === "EN_PROGRESO" || t.estado === "ASIGNADA" || t.estado === "REASIGNADA"
   );
+
+  const tareaAMostrar = tareaSeleccionada || tareaActivaAuto || null;
 
   // Cambios de estado sin horas (Iniciar / Pedir Ayuda)
   const handleCambiarEstadoSimple = async (id, nuevoEstado) => {
@@ -77,6 +79,7 @@ const TareasAlumno = ({ user }) => {
       setActionLoading(true);
       // Mapea con el Controller: @RequestParam EstadoTarea nuevoEstado, @RequestParam Double horas
       await tareaService.completarTareaAlumno(id, nuevoEstado, 0);
+      setTareaSeleccionada(null);
       await cargarDatos();
     } catch (err) {
       alert("Error al actualizar el estado: " + (err.response?.data?.message || "Servidor no disponible"));
@@ -87,16 +90,18 @@ const TareasAlumno = ({ user }) => {
 
   // Cierre de tarea con horas desde AppForm
   const handleFinalizarTarea = async (formData) => {
+    if (!tareaAMostrar) return;
     try {
       setActionLoading(true);
       // Usamos el campo "horas" que definimos en camposFinalizar
       await tareaService.completarTareaAlumno(
-        tareaActiva.idTarea, 
+        tareaActivaAuto.idTarea, 
         "COMPLETADA", 
         formData.horas 
       );
       
       setShowFinalizarModal(false);
+      setTareaSeleccionada(null);
       await cargarDatos();
       alert("¡Tarea finalizada y horas registradas!");
     } catch (err) {
@@ -145,54 +150,47 @@ const TareasAlumno = ({ user }) => {
         </Col>
       </Row>
 
-      {/* PANEL DE ACCIÓN (TAREA ACTUAL) */}
-      <Card className={`border-0 shadow-sm mb-5 ${tareaActiva?.estado === 'EN_PROGRESO' ? 'border-start border-4 border-primary' : ''}`}>
+      {/* CARD DINÁMICA */}
+      <Card className={`border-0 shadow-sm mb-5 ${tareaAMostrar?.estado === 'EN_PROGRESO' ? 'border-start border-4 border-primary' : ''}`}>
         <Card.Body className="py-4">
-          {tareaActiva ? (
+          {tareaAMostrar ? (
             <Row className="align-items-center">
               <Col lg={8}>
                 <Stack direction="horizontal" gap={2} className="mb-2">
-                  <h3 className="fw-bold mb-0">{tareaActiva.titulo}</h3>
-                  {getBadgeEstado(tareaActiva.estado)}
+                  <h3 className="fw-bold mb-0">{tareaAMostrar.titulo}</h3>
+                  {getBadgeEstado(tareaAMostrar.estado)}
                 </Stack>
-                <p className="text-muted fs-5">{tareaActiva.descripcion}</p>
+                <p className="text-muted fs-5">{tareaAMostrar.descripcion}</p>
                 <div className="d-flex gap-4 small fw-bold text-secondary">
-                  <span><i className="bi bi-calendar-x me-1"></i> Límite: {tareaActiva.fechaLimite}</span>
-                  <span><i className="bi bi-clock-history me-1"></i> Estimación IA: {tareaActiva.horasEstimadasIA}h</span>
+                  <span><i className="bi bi-calendar-x me-1"></i> Límite: {tareaAMostrar.fechaLimite}</span>
+                  <span><i className="bi bi-clock-history me-1"></i> Estimación: {tareaAMostrar.horasEstimadasIA}h</span>
+                  {tareaAMostrar.horasRealesFormateadas !== "0.00 h" && (
+                    <span className="text-success"><i className="bi bi-clock-fill me-1"></i> {tareaAMostrar.horasRealesFormateadas}</span>
+                  )}
                 </div>
               </Col>
               <Col lg={4} className="text-lg-end mt-4 mt-lg-0">
                 <Stack direction="horizontal" gap={2} className="justify-content-lg-end">
-                  {tareaActiva.estado === "ASIGNADA" && (
-                    <Button variant="primary" size="lg" className="px-4" onClick={() => handleCambiarEstadoSimple(tareaActiva.idTarea, "EN_PROGRESO")} disabled={actionLoading}>
+                  {tareaAMostrar.estado === "ASIGNADA" && (
+                    <Button variant="primary" onClick={() => handleCambiarEstadoSimple(tareaAMostrar.idTarea, "EN_PROGRESO")} disabled={actionLoading}>
                       Iniciar Tarea
                     </Button>
                   )}
-
-                  {tareaActiva.estado === "EN_PROGRESO" && (
+                  {tareaAMostrar.estado === "EN_PROGRESO" && (
                     <>
-                      <Button variant="outline-danger" onClick={() => handleCambiarEstadoSimple(tareaActiva.idTarea, "ASIGNADA")} disabled={actionLoading}>
+                      <Button variant="outline-danger" onClick={() => handleCambiarEstadoSimple(tareaAMostrar.idTarea, "ASIGNADA")} disabled={actionLoading}>
                         Pedir Ayuda
                       </Button>
-                      <Button variant="success" size="lg" className="px-4" onClick={() => setShowFinalizarModal(true)}>
+                      <Button variant="success" onClick={() => setShowFinalizarModal(true)}>
                         Finalizar Tarea
                       </Button>
                     </>
-                  )}
-
-                  {tareaActiva.estado === "REASIGNADA" && (
-                    <Alert variant="warning" className="mb-0 py-2 border-0 shadow-sm">
-                      <i className="bi bi-exclamation-triangle-fill me-2"></i>
-                      Ayuda solicitada al tutor.
-                    </Alert>
                   )}
                 </Stack>
               </Col>
             </Row>
           ) : (
-            <div className="text-center py-3">
-              <p className="text-muted mb-0 font-italic">No tienes tareas activas asignadas en este momento.</p>
-            </div>
+            <div className="text-center py-3 text-muted">No hay tareas seleccionadas o activas.</div>
           )}
         </Card.Body>
       </Card>
@@ -232,38 +230,20 @@ const TareasAlumno = ({ user }) => {
             headers={tableHeaders} 
             accessorKeys={tableKeys} 
             data={tareasFiltradas} 
-            onView={(t) => { setTareaSeleccionada(t); setShowViewModal(true); }}
+            onView={(t) => { 
+              setTareaSeleccionada(t); 
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         </Card.Body>
       </Card>
-
-      {/* MODAL: VER DETALLES */}
-      <AppModal show={showViewModal} handleClose={() => setShowViewModal(false)} title="Información de la Tarea">
-        {tareaSeleccionada && (
-          <div className="px-2">
-            <h4 className="fw-bold text-primary">{tareaSeleccionada.titulo}</h4>
-            <div className="mb-3">{getBadgeEstado(tareaSeleccionada.estado)}</div>
-            <p className="p-3 bg-light rounded border">{tareaSeleccionada.descripcion}</p>
-            <Row className="mt-4">
-              <Col xs={6}>
-                <label className="text-muted small d-block">LÍMITE DE ENTREGA</label>
-                <span className="fw-bold">{tareaSeleccionada.fechaLimite}</span>
-              </Col>
-              <Col xs={6}>
-                <label className="text-muted small d-block">HORAS REPORTADAS</label>
-                <span className="fw-bold text-success">{tareaSeleccionada.horasReales}</span>
-              </Col>
-            </Row>
-          </div>
-        )}
-      </AppModal>
 
       {/* MODAL: FINALIZAR TAREA (REPORTE DE HORAS) */}
       <AppModal show={showFinalizarModal} handleClose={() => setShowFinalizarModal(false)} title="Finalizar Entrega">
         <div className="px-2">
           <Alert variant="primary" className="border-0 shadow-sm py-2 mb-4">
              <i className="bi bi-info-circle-fill me-2"></i>
-             Indica el tiempo real que te ha tomado completar: <strong>{tareaActiva?.titulo}</strong>
+             Indica el tiempo real que te ha tomado completar: <strong>{tareaAMostrar?.titulo}</strong>
           </Alert>
           <AppForm 
             fields={camposFinalizar} 
