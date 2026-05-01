@@ -4,6 +4,7 @@ import com.dam.proyecto.backend.dto.ia.PrediccionRequest;
 import com.dam.proyecto.backend.dto.ia.PrediccionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,8 +15,8 @@ public class IARestClient {
 
     private final RestTemplate restTemplate;
 
-    // URL de tu FastAPI (en el futuro esto irá al application.properties)
-    private final String IA_URL = "http://localhost:8000/predict";
+    @Value("${ml.api.url}")
+    private String iaUrl;
 
     public Double obtenerPrediccionHoras(String descripcion) {
         try {
@@ -24,7 +25,7 @@ public class IARestClient {
 
             // 2. Enviamos el POST y recibimos la respuesta
             log.info("Enviando descripción a FastAPI para predicción...");
-            PrediccionResponse response = restTemplate.postForObject(IA_URL, request, PrediccionResponse.class);
+            PrediccionResponse response = restTemplate.postForObject(iaUrl + "/predict", request, PrediccionResponse.class);
 
             if (response != null && response.getHoras_estimadas() != null) {
                 log.info("Predicción recibida con éxito: {} horas", response.getHoras_estimadas());

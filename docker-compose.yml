@@ -1,0 +1,86 @@
+services:
+  # --- CORE: BASE DE DATOS MYSQL ---
+  db-mysql:
+    image: mysql:8.0
+    container_name: mysql_dam_project
+    restart: always
+    environment:
+      MYSQL_DATABASE: dam_project_db
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: dam_user
+      MYSQL_PASSWORD: dam_password
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./database/mysql/init:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    networks:
+      - red-global-dam
+
+  # --- CORE: API SPRING BOOT ---
+  api-spring:
+    image: backend-spring:latest
+    container_name: api-spring-core
+    build: ./backend/backend
+    restart: on-failure
+    depends_on:
+      - db-mysql
+    ports:
+      - "8088:8088"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-mysql:3306/dam_project_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: dam_user
+      SPRING_DATASOURCE_PASSWORD: dam_password
+      ML_API_URL: http://api-ml:8000
+    networks:
+      - red-global-dam
+
+  # --- CORE: API PYTHON ML ---
+  api-ml:
+    build:
+      context: ./ML
+    container_name: api-ml-python
+    ports:
+      - "8000:8000"
+    networks:
+      - red-global-dam
+
+  # --- SGE: BASE DE DATOS POSTGRES (ODOO) ---
+  db-odoo-pg:
+    image: postgres:15
+    container_name: db-postgres-odoo
+    user: root
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+    volumes:
+      - ./odoo/db_data:/var/lib/postgresql/data
+    networks:
+      - red-global-dam
+
+  # --- SGE: ODOO ---
+  odoo:
+    image: odoo:17.0
+    container_name: odoo_sge
+    user: root
+    depends_on:
+      - db-odoo-pg
+    ports:
+      - "8069:8069"
+    environment:
+      - HOST=db-odoo-pg
+      - USER=odoo
+      - PASSWORD=odoo
+    volumes:
+      - ./odoo/odoo_data:/var/lib/odoo
+      - ./odoo/addons:/mnt/extra-addons
+    networks:
+      - red-global-dam
+
+networks:
+  red-global-dam:
+    driver: bridge
+
+volumes:
+  mysql-data:

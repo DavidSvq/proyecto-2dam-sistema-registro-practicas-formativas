@@ -14,10 +14,7 @@ local.properties
 **/*.class
 **/out/
 .mvn/wrapper/maven-wrapper.jar
-# Solo ignorar los ejecutables si no quieres usarlos, 
-# pero mvnw suele subirse para que otros puedan compilar.
-# mvnw
-# mvnw.cmd
+# No ignoramos mvnw para permitir builds en otros entornos
 
 # --- ANDROID (Mobile) ---
 **/capture/
@@ -50,12 +47,17 @@ yarn-error.log*
 **/ENV/
 
 # --- DOCKER & DATABASES ---
-# Ignora las carpetas donde los contenedores guardan los datos persistentes
+# Carpetas de datos persistentes (crucial para evitar commits masivos)
 **/pgdata/
 **/mysql-data/
 **/data/
+**/db_data/
+**/odoo_data/
+**/odoo/db_data/
 **/*.db
 **/*.sqlite3
+# Ignora archivos de volúmenes de Docker específicos
+**/var/lib/postgresql/data/*
 
 # --- FIREBASE ---
 .firebase/
