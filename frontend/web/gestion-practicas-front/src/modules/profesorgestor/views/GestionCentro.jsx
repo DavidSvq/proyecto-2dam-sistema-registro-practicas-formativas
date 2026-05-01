@@ -91,14 +91,15 @@ const GestionCentro = () => {
   );
 
   return (
-    <div className="container-fluid mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2 className="fw-bold">Configuración del Centro</h2>
-          <p className="text-muted">Gestión de datos institucionales y contacto.</p>
+    <div className="container-fluid px-2 px-md-4 pb-5"> {/* Padding lateral consistente */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pt-3 gap-3">
+        <div className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Configuración del Centro</h2>
+          <p className="text-muted small">Gestión de datos institucionales y contacto.</p>
         </div>
         <Button 
-          variant="outline-primary" 
+          variant="primary" // Cambiado a primary para mejor visibilidad en móvil
+          className="w-100 w-md-auto shadow-sm"
           onClick={() => {
             setEditData(centro); 
             setShowModal(true);
@@ -110,33 +111,35 @@ const GestionCentro = () => {
 
       {centro && (
         <>
-          <Row className="g-4">
-            <Col md={12}>
+          <Row className="g-3"> {/* Gutter consistente g-3 */}
+            <Col xs={12}>
               <InfoCard titulo="Nombre Institucional" contenido={centro.nombre} variante="dark" icono="bi bi-building" />
             </Col>
 
-            <Col md={12}>
+            <Col xs={12}>
               <InfoCard titulo="Dirección" contenido={centro.direccion || 'No especificada'} variante="secondary" icono="bi bi-geo" />
             </Col>
 
-            <Col md={4}>
+            {/* Fila triple que se apila en móvil y se divide en tablets */}
+            <Col xs={12} sm={6} md={4}>
               <InfoCard titulo="Código Centro" contenido={centro.codCentro} variante="primary" icono="bi bi-hash" />
             </Col>
-            <Col md={4}>
+            <Col xs={12} sm={6} md={4}>
               <InfoCard titulo="Localidad" contenido={centro.localidad} variante="info" icono="bi bi-geo-alt" />
             </Col>
-            <Col md={4}>
+            <Col xs={12} md={4}>
               <InfoCard titulo="Teléfono" contenido={centro.telefono || 'No asignado'} variante="success" icono="bi bi-telephone" />
             </Col>
 
-            <Col md={12}>
-              <InfoCard titulo="Correo Electrónico Oficial" contenido={centro.correoInstitucional} variante="warning" icono="bi bi-envelope-at" />
+            <Col xs={12}>
+              <InfoCard titulo="Correo Oficial" contenido={centro.correoInstitucional} variante="warning" icono="bi bi-envelope-at" />
             </Col>
 
-            <Col md={6}>
+            {/* Estadísticas en paralelo para tablets, apiladas en móvil */}
+            <Col xs={12} sm={6}>
               <InfoCard titulo="Total Alumnos" contenido={stats.alumnos.toString()} variante="secondary" icono="bi bi-people" />
             </Col>
-            <Col md={6}>
+            <Col xs={12} sm={6}>
               <InfoCard titulo="Total Profesores" contenido={stats.profesores.toString()} variante="secondary" icono="bi bi-person-badge" />
             </Col>
           </Row>
@@ -150,19 +153,21 @@ const GestionCentro = () => {
             title="Editar Datos de Contacto"
             size="lg"
           >
-            {showModal && editData && (
-              <AppForm 
-                key={editData.codCentro} 
-                fields={fields} 
-                initialValues={editData} 
-                onSubmit={handleGuardar} 
-                onCancel={() => {
-                  setShowModal(false);
-                  setEditData(null);
-                }} 
-                buttonLabel="Guardar Cambios"
-              />
-            )}
+            <div className="px-1">
+              {showModal && editData && (
+                <AppForm 
+                  key={editData.codCentro} 
+                  fields={fields} 
+                  initialValues={editData} 
+                  onSubmit={handleGuardar} 
+                  onCancel={() => {
+                    setShowModal(false);
+                    setEditData(null);
+                  }} 
+                  buttonLabel="Guardar Cambios"
+                />
+              )}
+            </div>
           </AppModal>
         </>
       )}

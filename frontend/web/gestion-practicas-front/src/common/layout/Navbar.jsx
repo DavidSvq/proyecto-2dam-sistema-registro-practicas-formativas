@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { Navbar, Container, Nav, Button } from 'react-bootstrap';
+import { Navbar, Container, Nav, Button, Offcanvas } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import AppModal from '../../common/components/AppModal'; // Asegúrate de que la ruta sea correcta
 import AppForm from '../../common/components/AppForm';   // Asegúrate de que la ruta sea correcta
 import { recuperarPasswordService } from '../../services/authService'; // La función que creamos antes
 import Swal from 'sweetalert2';
+import Sidebar from './Sidebar';
 
-const CustomNavbar = ({ user, onLogout }) => {
+const CustomNavbar = ({ user, onLogout, links }) => {
   const navigate = useNavigate();
   const [showModalPass, setShowModalPass] = useState(false);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   // 1. Definimos los campos para el formulario de clave
   const camposPassword = [
@@ -61,8 +63,16 @@ const CustomNavbar = ({ user, onLogout }) => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" expand="lg" className="mb-4 py-12">
-        <Container>
+      <Navbar bg="dark" variant="dark" expand="md" className="mb-4 py-12">
+        <Container fluid className="px-3">
+          {/* 1. Botón Hamburguesa: SOLO visible en móvil (d-lg-none) */}
+          <Button 
+            variant="outline-light" 
+            className="d-md-none me-2" 
+            onClick={() => setShowOffcanvas(true)}
+          >
+            <i className="bi bi-list"></i>
+          </Button>
           <Navbar.Brand href="#">FCT Gestión</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -88,6 +98,20 @@ const CustomNavbar = ({ user, onLogout }) => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      {/* 2. Menú Lateral Desplegable (Móvil) */}
+      <Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} className="d-md-none">
+        <Offcanvas.Header closeButton className="border-bottom">
+          <Offcanvas.Title className="fw-bold">Navegación</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body className="p-0">
+          {/* Reutilizamos tu Sidebar aquí. Asegúrate de pasarle los links */}
+          {/* Le quitamos el vh-100 y el ancho fijo para que se adapte al Offcanvas */}
+          <div onClick={() => setShowOffcanvas(false)}>
+             <Sidebar links={links} isMobile={true} /> 
+          </div>
+        </Offcanvas.Body>
+      </Offcanvas>
 
       {/* Modal para el formulario de cambio de clave */}
       <AppModal 

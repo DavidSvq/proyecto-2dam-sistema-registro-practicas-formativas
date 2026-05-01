@@ -206,35 +206,47 @@ const GestionTareasTutor = ({ user }) => {
   if (error) return <Alert variant="danger" className="m-4">{error}</Alert>;
 
   return (
-    <Container fluid className="px-4">
-      <Row className="mb-4 align-items-center">
-        <Col md={8}>
-          <h2 className="fw-bold">Gestión de Tareas</h2>
-          <p className="text-muted">Administre y realice el seguimiento de las tareas.</p>
+    <Container fluid className="px-3 px-md-4 pb-5">
+      {/* CABECERA: Adaptable con botón que ocupa el ancho total en móvil */}
+      <Row className="mb-4 align-items-center g-3 pt-2">
+        <Col xs={12} md={8} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Gestión de Tareas</h2>
+          <p className="text-muted small mb-0">Administre y realice el seguimiento de las tareas.</p>
         </Col>
-        <Col md={4} className="text-end">
-          <Button variant="primary" onClick={() => setShowModal(true)}>
+        <Col xs={12} md={4} className="text-center text-md-end">
+          <Button 
+            variant="primary" 
+            className="w-100 w-md-auto shadow-sm"
+            onClick={() => setShowModal(true)}
+          >
             <i className="bi bi-plus-lg me-2"></i>Nueva Tarea
           </Button>
         </Col>
       </Row>
 
-      {/* FILTROS (Se mantienen igual) */}
-      <Row className="mb-4 g-3 bg-light p-2 rounded border mx-0 shadow-sm">
-        <Col md={3}>
+      {/* FILTROS: Optimizados para lectura vertical en móviles */}
+      <Row className="mb-4 g-3 bg-light p-3 rounded border mx-0 shadow-sm">
+        <Col xs={12} md={3}>
           <Form.Label className="small fw-bold text-secondary text-uppercase">Buscar</Form.Label>
-          <Form.Control size="sm" type="text" value={filtroTexto} onChange={(e) => setFiltroTexto(e.target.value)} />
+          <Form.Control 
+            type="text" 
+            placeholder="Título..."
+            value={filtroTexto} 
+            onChange={(e) => setFiltroTexto(e.target.value)} 
+          />
         </Col>
-        <Col md={5}>
+        <Col xs={12} md={5}>
           <Form.Label className="small fw-bold text-secondary text-uppercase">Alumno</Form.Label>
-          <Form.Select size="sm" value={filtroAlumno} onChange={(e) => setFiltroAlumno(e.target.value)}>
-            <option value="TODOS">Todos</option>
-            {alumnos.map(alu => <option key={alu.id} value={alu.id}>{alu.nombre} {alu.apellidos}</option>)}
+          <Form.Select value={filtroAlumno} onChange={(e) => setFiltroAlumno(e.target.value)}>
+            <option value="TODOS">Todos los alumnos</option>
+            {alumnos.map(alu => (
+              <option key={alu.id} value={alu.id}>{alu.nombre} {alu.apellidos}</option>
+            ))}
           </Form.Select>
         </Col>
-        <Col md={4}>
+        <Col xs={12} md={4}>
           <Form.Label className="small fw-bold text-secondary text-uppercase">Estado</Form.Label>
-          <Form.Select size="sm" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
+          <Form.Select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
             <option value="ASIGNADA">Asignadas</option>
             <option value="EN_PROGRESO">En Progreso</option>
             <option value="COMPLETADA">Completadas</option>
@@ -245,38 +257,44 @@ const GestionTareasTutor = ({ user }) => {
         </Col>
       </Row>
 
+      {/* TABLA DE RESULTADOS: Con scroll preventivo y texto protegido */}
       <Row>
-        <Col>
-          <div className="bg-white p-4 rounded shadow-sm border">
+        <Col xs={12}>
+          {/* Aseguramos que el contenedor blanco no se rompa */}
+          <div className="bg-white rounded shadow-sm border overflow-hidden">
             {loading ? (
               <div className="text-center p-5"><Spinner animation="border" variant="primary" /></div>
             ) : (
+              /* Al llamar a AppTable, ella sola ya gestiona su scroll */
               <AppTable 
                 headers={columnas} 
                 data={tareasFiltradas} 
                 accessorKeys={llaves} 
-                onEdit={abrirModalEdicion} // ÚNICO BOTÓN: Gestionar
+                onEdit={abrirModalEdicion}
               />
             )}
           </div>
         </Col>
       </Row>
 
+      {/* MODAL: Padding táctil para el formulario */}
       <AppModal 
         show={showModal} 
         handleClose={cerrarModal} 
         title={tareaSeleccionada ? "Gestionar Tarea" : "Crear Nueva Tarea"}
         size="lg"
       >
-        <AppForm 
-          fields={campos} 
-          initialValues={tareaSeleccionada ? {
-            ...tareaSeleccionada,
-            idAlumno: tareaSeleccionada.alumno?.id
-          } : {}}
-          onSubmit={handleSubmitTarea}
-          buttonLabel={tareaSeleccionada ? "Guardar Cambios" : "Asignar Tarea"}
-        />
+        <div className="px-1">
+          <AppForm 
+            fields={campos} 
+            initialValues={tareaSeleccionada ? {
+              ...tareaSeleccionada,
+              idAlumno: tareaSeleccionada.alumno?.id
+            } : {}}
+            onSubmit={handleSubmitTarea}
+            buttonLabel={tareaSeleccionada ? "Guardar Cambios" : "Asignar Tarea"}
+          />
+        </div>
       </AppModal>
     </Container>
   );

@@ -151,58 +151,63 @@ const TareasAlumno = ({ user }) => {
   if (error) return <Alert variant="danger" className="m-4">{error}</Alert>;
 
   return (
-    <Container fluid className="px-4 pb-5">
+    <Container fluid className="px-2 px-md-4 pb-5">
       {/* CABECERA */}
-      <Row className="mb-4 pt-3">
-        <Col md={8}>
-          <h2 className="fw-bold text-primary mb-0">Mi Plan de Trabajo</h2>
-          <p className="fs-5 fw-bold text-dark mb-0">
+      <Row className="mb-4 pt-3 align-items-center">
+        <Col xs={12} md={8} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Mi Plan de Trabajo</h2>
+          <p className="fs-6 fw-bold text-dark mb-0">
             <i className="bi bi-journal-check me-2 text-primary"></i>
             Gestión y Reporte de Tareas
           </p>
         </Col>
-        <Col md={4} className="text-md-end">
-          <Badge bg="light" text="dark" className="border shadow-sm p-2">Alumno ID: {user?.id}</Badge>
+        <Col xs={12} md={4} className="text-center text-md-end mt-2 mt-md-0">
+          <Badge bg="light" text="dark" className="border shadow-sm p-2 w-100 w-md-auto">
+            Alumno ID: {user?.id}
+          </Badge>
         </Col>
       </Row>
 
       {/* CARD DINÁMICA */}
-      <Card className={`border-0 shadow-sm mb-5 ${tareaAMostrar?.estado === 'EN_PROGRESO' ? 'border-start border-4 border-primary' : ''}`}>
+      <Card className={`border-0 shadow-sm mb-4 mb-md-5 ${tareaAMostrar?.estado === 'EN_PROGRESO' ? 'border-start border-4 border-primary' : ''}`}>
         <Card.Body className="py-4">
           {tareaAMostrar ? (
-            <Row className="align-items-center">
-              <Col lg={8}>
-                <Stack direction="horizontal" gap={2} className="mb-2">
-                  <h3 className="fw-bold mb-0">{tareaAMostrar.titulo}</h3>
-                  {getBadgeEstado(tareaAMostrar.estado)}
-                </Stack>
-                <p className="text-muted fs-5">{tareaAMostrar.descripcion}</p>
-                <div className="d-flex gap-4 small fw-bold text-secondary">
+            <Row className="align-items-center g-3"> 
+              <Col xs={12} lg={8}>
+                <div className="d-flex flex-column flex-md-row align-items-md-center gap-2 mb-2">
+                  <h3 className="fw-bold mb-0 fs-4 fs-md-3">{tareaAMostrar.titulo}</h3>
+                  <div>{getBadgeEstado(tareaAMostrar.estado)}</div>
+                </div>
+                <p className="text-muted fs-6 fs-md-5">{tareaAMostrar.descripcion}</p>
+                
+                {/* Información secundaria: se envuelve (wrap) en pantallas pequeñas */}
+                <div className="d-flex flex-wrap gap-3 gap-md-4 small fw-bold text-secondary">
                   <span><i className="bi bi-calendar-x me-1"></i> Límite: {tareaAMostrar.fechaLimite}</span>
-                  <span><i className="bi bi-clock-history me-1"></i> Estimación: {tareaAMostrar.horasEstimadasIA}h</span>
+                  <span><i className="bi bi-clock-history me-1"></i> Est.: {tareaAMostrar.horasEstimadasIA}h</span>
                   {tareaAMostrar.horasRealesFormateadas !== "0.00 h" && (
                     <span className="text-success"><i className="bi bi-clock-fill me-1"></i> {tareaAMostrar.horasRealesFormateadas}</span>
                   )}
                 </div>
               </Col>
-              <Col lg={4} className="text-lg-end mt-4 mt-lg-0">
-                <Stack direction="horizontal" gap={2} className="justify-content-lg-end">
+              
+              <Col xs={12} lg={4} className="text-lg-end">
+                <div className="d-flex flex-column flex-sm-row gap-2 justify-content-lg-end">
                   {tareaAMostrar.estado === "ASIGNADA" && (
-                    <Button variant="primary" onClick={() => handleCambiarEstadoSimple(tareaAMostrar.idTarea, "EN_PROGRESO")} disabled={actionLoading}>
+                    <Button variant="primary" size="lg" className="w-100 w-md-auto" onClick={() => handleCambiarEstadoSimple(tareaAMostrar.idTarea, "EN_PROGRESO")} disabled={actionLoading}>
                       Iniciar Tarea
                     </Button>
                   )}
                   {tareaAMostrar.estado === "EN_PROGRESO" && (
                     <>
-                      <Button variant="outline-danger" onClick={() => handleCambiarEstadoSimple(tareaAMostrar.idTarea, "ASIGNADA")} disabled={actionLoading}>
+                      <Button variant="outline-danger" className="w-100 w-md-auto" onClick={() => handleCambiarEstadoSimple(tareaAMostrar.idTarea, "ASIGNADA")} disabled={actionLoading}>
                         Pedir Ayuda
                       </Button>
-                      <Button variant="success" onClick={() => setShowFinalizarModal(true)}>
+                      <Button variant="success" size="lg" className="w-100 w-md-auto" onClick={() => setShowFinalizarModal(true)}>
                         Finalizar Tarea
                       </Button>
                     </>
                   )}
-                </Stack>
+                </div>
               </Col>
             </Row>
           ) : (
@@ -212,33 +217,32 @@ const TareasAlumno = ({ user }) => {
       </Card>
 
       {/* HISTORIAL Y FILTROS */}
-      <Card className="border-0 shadow-sm">
-        <Card.Header className="bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-          <h5 className="mb-0 fw-bold">Registro de Actividades</h5>
-          <div className="d-flex gap-2">
-            {/* Buscador de texto */}
-            <Form.Control 
-              placeholder="Buscar por título..." 
-              size="sm" 
-              className="w-auto" 
-              value={filtroTexto}
-              onChange={(e) => setFiltroTexto(e.target.value)} 
-            />
-            
-            {/* Selector con TODOS los estados del Enum de Java */}
-            <Form.Select 
-              size="sm" 
-              className="w-auto" 
-              value={filtroEstado}
-              onChange={(e) => setFiltroEstado(e.target.value)}
-            >
-              <option value="">Todos los estados</option>
-              <option value="ASIGNADA">Asignadas</option>
-              <option value="EN_PROGRESO">En Progreso</option>
-              <option value="COMPLETADA">Completadas (Pendiente Validar)</option>
-              <option value="VALIDADA">Validadas (Finalizadas)</option>
-              <option value="CANCELADA">Canceladas</option>
-            </Form.Select>
+      <Card className="border-0 shadow-sm overflow-hidden">
+        <Card.Header className="bg-white py-3 border-bottom">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <h5 className="mb-0 fw-bold">Registro de Actividades</h5>
+            <div className="d-flex flex-column flex-sm-row gap-2">
+              <Form.Control 
+                placeholder="Buscar por título..." 
+                size="sm" 
+                className="w-100 w-md-auto" 
+                value={filtroTexto}
+                onChange={(e) => setFiltroTexto(e.target.value)} 
+              />
+              <Form.Select 
+                size="sm" 
+                className="w-100 w-md-auto" 
+                value={filtroEstado}
+                onChange={(e) => setFiltroEstado(e.target.value)}
+              >
+                <option value="">Todos los estados</option>
+                <option value="ASIGNADA">Asignadas</option>
+                <option value="EN_PROGRESO">En Progreso</option>
+                <option value="COMPLETADA">Completadas</option>
+                <option value="VALIDADA">Validadas</option>
+                <option value="CANCELADA">Canceladas</option>
+              </Form.Select>
+            </div>
           </div>
         </Card.Header>
         <Card.Body className="p-0">
@@ -254,12 +258,12 @@ const TareasAlumno = ({ user }) => {
         </Card.Body>
       </Card>
 
-      {/* MODAL: FINALIZAR TAREA (REPORTE DE HORAS) */}
+      {/* MODAL: FINALIZAR TAREA */}
       <AppModal show={showFinalizarModal} handleClose={() => setShowFinalizarModal(false)} title="Finalizar Entrega">
-        <div className="px-2">
-          <Alert variant="primary" className="border-0 shadow-sm py-2 mb-4">
+        <div className="px-1">
+          <Alert variant="primary" className="border-0 shadow-sm py-2 mb-4 small">
              <i className="bi bi-info-circle-fill me-2"></i>
-             Indica el tiempo real que te ha tomado completar: <strong>{tareaAMostrar?.titulo}</strong>
+             Indica el tiempo real para: <strong>{tareaAMostrar?.titulo}</strong>
           </Alert>
           <AppForm 
             fields={camposFinalizar} 
@@ -268,7 +272,6 @@ const TareasAlumno = ({ user }) => {
           />
         </div>
       </AppModal>
-
     </Container>
   );
 };

@@ -18,16 +18,16 @@ const AppTable = ({ headers, data, accessorKeys, onView, onEdit, onDelete, items
   
   return (
     <div className="table-container">
-      <Table striped bordered hover responsive className="shadow-sm mt-3 bg-white">
+      <Table striped bordered hover responsive size="sm" className="shadow-sm mt-3 bg-white">
         <thead className="table-dark">
           <tr>
             {headers.map((h, i) => (
-              <th key={i}>{h}</th>
+              <th key={i} className="small" >{h}</th>
             ))}
             {hasActions && <th className="text-center">Acciones</th>}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="small">
           {currentItems.length > 0 ? (
             currentItems.map((item, rowIndex) => (
               <tr key={rowIndex}>
@@ -60,7 +60,7 @@ const AppTable = ({ headers, data, accessorKeys, onView, onEdit, onDelete, items
       </Table>
       {/* Controles de Paginación con Inicio y Fin */}
       {totalPages > 1 && (
-        <Pagination className="justify-content-center mt-3">
+        <Pagination className="justify-content-center mt-3 flex-wrap shadow-sm">
           {/* Ir a la primera página */}
           <Pagination.First 
             onClick={() => paginate(1)} 

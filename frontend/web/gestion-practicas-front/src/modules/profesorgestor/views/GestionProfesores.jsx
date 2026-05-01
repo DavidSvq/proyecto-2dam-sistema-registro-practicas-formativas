@@ -162,30 +162,35 @@ const GestionProfesores = () => {
 
 
   return (
-    <div className="container-fluid mt-4">
-      {/* FILA 1: TÍTULO Y BOTÓN DE ACCIÓN */}
-      <Row className="mb-4 align-items-center">
-        <Col>
-          <h2 className="fw-bold text-dark">Gestión de Profesores</h2>
-          <p className="text-muted">Administración de personal docente del centro.</p>
+    <>
+      {/* CABECERA: Título y Botón adaptables */}
+      <Row className="mb-4 align-items-center g-3 pt-2">
+        <Col xs={12} md={8} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Gestión de Profesores</h2>
+          <p className="text-muted small mb-0">Administración de personal docente del centro.</p>
         </Col>
-        <Col className="text-end">
-          <Button variant="primary" className="shadow-sm" onClick={abrirCrear}>
+        <Col xs={12} md={4} className="text-center text-md-end">
+          <Button 
+            variant="primary" 
+            className="w-100 w-md-auto shadow-sm" 
+            onClick={abrirCrear}
+          >
             <i className="bi bi-person-plus me-2"></i>Nuevo Profesor
           </Button>
         </Col>
       </Row>
 
-      {/* FILA 2: BARRA DE BÚSQUEDA (Siguiendo el estilo de Alumnos) */}
-      <Row className="mb-3 g-3 bg-light p-3 rounded border mx-0 align-items-end">
-        <Col md={12}>
+      {/* BUSCADOR: Estilo limpio y táctil */}
+      <Row className="mb-4 mx-0 bg-light p-3 rounded border shadow-sm">
+        <Col xs={12}>
           <Form.Label className="small fw-bold text-secondary">Buscar por nombre o ID</Form.Label>
           <InputGroup>
-            <InputGroup.Text className="bg-white">
-              <i className="bi bi-search"></i>
+            <InputGroup.Text className="bg-white border-end-0">
+              <i className="bi bi-search text-primary"></i>
             </InputGroup.Text>
             <Form.Control 
-              placeholder="Buscar docente por nombre, apellidos o código..." 
+              className="border-start-0"
+              placeholder="Nombre, apellidos o código..." 
               value={filtro}
               onChange={(e) => setFiltro(e.target.value)}
             />
@@ -193,42 +198,41 @@ const GestionProfesores = () => {
         </Col>
       </Row>
 
-      {/* TABLA DE RESULTADOS */}
-      {loading ? (
-        <div className="text-center py-5">
-          <Spinner animation="border" variant="primary" />
-          <p className="mt-3 text-secondary">Sincronizando con el centro...</p>
-        </div>
-      ) : (
-        <div className="bg-white p-3 rounded shadow-sm border">
-          <AppTable 
-            headers={headers} 
-            data={profesoresFiltrados} 
-            accessorKeys={accessorKeys}
-            onView={abrirVerDetalle} // Pasas la función directamente
-            onEdit={abrirEditar}      // Pasas la función directamente
-            onDelete={manejarBaja}    // Pasas la función directamente
-          />
-        </div>
-      )}
+      {/* TABLA DE RESULTADOS: Sin Spinner para evitar errores de importación */}
+      <div className="bg-white rounded shadow-sm border overflow-hidden">
+        <AppTable 
+          headers={headers} 
+          data={profesoresFiltrados} 
+          accessorKeys={accessorKeys}
+          onView={abrirVerDetalle} 
+          onEdit={abrirEditar}     
+          onDelete={manejarBaja}    
+        />
+      </div>
 
-      {/* MODAL (Se mantiene igual) */}
+      {/* MODAL: Ajustado para evitar desbordamientos en móvil */}
       <AppModal
         show={showModal}
         handleClose={() => setShowModal(false)}
         title={modoLectura ? "Detalles del Docente" : (selectedProfesor ? "Editar Docente" : "Registrar Nuevo Docente")}
+        size="lg"
       >
-        <AppForm 
-          fields={camposFormulario}
-          initialValues={selectedProfesor ? {
-            ...selectedProfesor,
-            nombreCentro: selectedProfesor.centro?.nombre || 'No asignado'
-          } : { id: '', nombre: '', apellidos: '', email: '', numAlumnos: 0, nombreCentro: '' }}
-          onSubmit={manejarGuardar}
-          buttonLabel={modoLectura ? "Volver" : "Guardar Cambios"}
-        />
+        <div className="px-1">
+          <AppForm 
+            fields={camposFormulario.map(f => ({ 
+              ...f, 
+              disabled: modoLectura || f.disabled 
+            }))}
+            initialValues={selectedProfesor ? {
+              ...selectedProfesor,
+              nombreCentro: selectedProfesor.centro?.nombre || 'No asignado'
+            } : { id: '', nombre: '', apellidos: '', email: '', numAlumnos: 0, nombreCentro: '' }}
+            onSubmit={manejarGuardar}
+            buttonLabel={modoLectura ? null : "Guardar Cambios"}
+          />
+        </div>
       </AppModal>
-    </div>
+    </>
   );
 };
 
