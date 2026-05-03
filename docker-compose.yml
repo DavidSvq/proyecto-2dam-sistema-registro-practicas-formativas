@@ -1,4 +1,16 @@
 services:
+  # --- CORE: FRONTEND ---
+  frontend:
+    build: 
+      context: ./frontend/web/gestion-practicas-front
+    container_name: react-frontend-dam
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api-spring
+    networks:
+      - red-global-dam
+
   # --- CORE: BASE DE DATOS MYSQL ---
   db-mysql:
     image: mysql:8.0
