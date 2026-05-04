@@ -16,22 +16,13 @@ Actualmente, el proyecto cubre el ciclo completo de gestión de entidades (**Cen
 
 ---
 
-### ⏳ Próximas Implementaciones (Roadmap)
-
-El proyecto se encuentra en fase de expansión técnica, con las siguientes integraciones previstas:
-
-* **Módulo de Inteligencia Artificial:** Conexión con una **API de Python** especializada en modelos de **regresión**, orientada a la optimización y predicción del cálculo de horas.
-* **Integración con ERP (Odoo):** Desarrollo de módulos personalizados en **Odoo** para actuar como repositorio central de datos. Esta integración incluirá la adaptación de vistas e informes avanzados para la explotación de la información almacenada.
-
----
-
-## 🗂️ Estructura del Proyecto (Estado de Desarrollo)
+## 🗂️ Estructura del Proyecto
 
 El repositorio se organiza en los siguientes módulos, reflejando el progreso actual de la implementación:
 
 ### 🗄️ 1. Infraestructura de Base de Datos (MySQL)
-🟢 **Estado: Operativo**. Configuración de Docker para MySQL 8.0 y scripts de inicialización automatizada.
-👉 **[Documentación de Infraestructura](./infra/README.md)**
+🟢 **Estado: Operativo**. La base de datos se levanta automáticamente como parte del entorno unificado mediante **Docker Compose**, incluyendo la configuración de **MySQL 8.0** y los scripts de inicialización.
+👉 **[Documentación de Infraestructura](./docs/Backend/diagramas/entidad_relacion/)**
 
 ---
 
@@ -81,17 +72,80 @@ El repositorio se organiza en los siguientes módulos, reflejando el progreso ac
 
 ---
 
-### 💼 5. Módulo en Odoo (ERP)
-⚪ **Estado: Próximamente**. Integración prevista para actuar como repositorio central de datos y generación de informes avanzados. Se desarrollará un módulo personalizado para sincronizar la operativa de las prácticas con la gestión administrativa del centro.
+### 💼 5. Sistema Externo ERP (Odoo)
 
-👉 **[Documentación de Integración Odoo (Pendiente)]()**
+🟢 **Estado: Operativo**. Integración con un sistema ERP externo basado en **Odoo**, diseñado como repositorio espejo para la explotación de datos del sistema principal.
+
+* **Consumo de API:** Obtiene información directamente desde la API REST del backend.
+* **Persistencia Propia:** Almacenamiento independiente en base de datos **PostgreSQL**.
+* **Visualización y Reporting:** Generación de informes avanzados en formato PDF.
+* **Sistema de Soporte:** No modifica ni envía datos al sistema principal, por lo que no actúa como fuente de verdad.
+
+👉 **[Documentación de Integración Odoo](/odoo/README.md)**
 
 ---
 
-## 🚀 Instrucciones de Inicio Rápido
+### 🤖 6. Microservicio de Predicción (FastAPI)
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/DavidSvq/proyecto-dam-sistemas-registros-practicas-formativas
+🟢 **Estado: Operativo**. Servicio independiente basado en **FastAPI** encargado de estimar la duración de las tareas mediante modelos predictivos.
 
-## 📢 NOTA FINAL: ESTE PROYECTO SE ENCUENTRA ACTUALMENTE EN PLENO DESARROLLO, POR LO QUE EL CÓDIGO Y LA DOCUMENTACIÓN IRÁN SUFRIENDO MODIFICACIONES PERIÓDICAS.
+* **Integración con Backend:** Invocado automáticamente durante la creación de tareas.
+* **Procesamiento de Datos:** Recibe información contextual de la tarea para su análisis.
+* **Estimación de Duración:** Devuelve una predicción de horas estimadas.
+* **Sin Persistencia:** No almacena datos, funcionando como servicio de cálculo en tiempo real.
+
+👉 **[Documentación del Microservicio](./ML/README.md)**
+
+---
+
+### 🚀 7. Procedimiento de Despliegue con Docker Compose
+
+🟢 **Estado: Operativo**. Proceso estandarizado para la puesta en marcha de todo el ecosistema de microservicios mediante contenedores.
+
+#### **Requisitos Previos:**
+Para garantizar una ejecución exitosa del sistema, es necesario cumplir las siguientes condiciones:
+
+* **Estado de Docker:** El motor de Docker (**Docker Desktop** en Windows/Mac o daemon en Linux) debe estar instalado y en ejecución.
+* **Disponibilidad de Puertos:** El sistema anfitrión debe tener libres los siguientes puertos:
+  * **5173** → Frontend (React / Vite)
+  * **8088** → Backend (Spring Boot)
+  * **3308** → Base de Datos MySQL
+  * **8000** → Microservicio FastAPI
+  * **8069** → Odoo
+  * **5432** → PostgreSQL (Odoo)
+
+---
+
+#### **Pasos de Despliegue:**
+
+1. **Descarga del Proyecto:**  
+   Clonar el repositorio oficial o descargar el código fuente:  
+   `git clone https://github.com/tu-usuario/tu-repositorio.git`
+
+2. **Localización del Orquestador:**  
+   Acceder desde terminal al directorio raíz del proyecto, donde se encuentra el archivo  
+   `docker-compose.yml`
+
+3. **Levantamiento de Servicios:**  
+   Ejecutar el siguiente comando para construir y arrancar todos los servicios:  
+   `docker-compose up --build`
+
+   Este proceso automatiza:
+   * Descarga de imágenes oficiales  
+   * Compilación del backend (Java / Spring Boot)  
+   * Construcción del frontend (React)  
+   * Creación de la red virtual **red-global-dam**
+
+---
+
+#### **Acceso al Sistema:**
+
+Una vez finalizado el proceso, todos los contenedores estarán en estado operativo, permitiendo el acceso a los distintos servicios a través de sus respectivos puertos en el entorno local.
+
+---
+
+#### **Notas Adicionales:**
+
+* Para la carga y gestión de los módulos de **Odoo**, consultar la documentación específica disponible en el README dentro de la carpeta correspondiente.
+
+👉 **[Documentación carga modulos Odoo](/odoo/README.md)**

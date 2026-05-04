@@ -100,40 +100,6 @@ El microservicio ha sido construido utilizando las siguientes tecnologías y lib
 
 ---
 
-## 🛠️ Paso 1: Levantar la Infraestructura
-
-Antes de arrancar la aplicación, necesitamos que la base de datos esté lista. Desde la raíz del proyecto:
-
-1.  Navega a la carpeta de infraestructura:
-    ```bash
-    cd infra
-    ```
-2.  Levanta el contenedor de MySQL:
-    ```bash
-    docker-compose up -d
-    ```
-
-> **Nota:** Esto ejecutará automáticamente el script `database/mysql/init/schema.sql` y creará la BD `dam_project_db`.
-
----
-
-## 🏗️ Paso 2: Arrancar el Backend (Maven Local)
-
-Una vez que la infraestructura está activa, abre una terminal nueva:
-
-1.  Entra en el directorio del backend:
-    ```bash
-    cd backend/backend
-    ```
-2.  Compila y arranca la aplicación usando tu instalación local de Maven:
-    ```bash
-    mvn spring-boot:run
-    ```
-
-> **Nota:** En caso de **no utilizar un IDE** (ejecutando directamente desde la terminal del sistema), asegúrate de tener configuradas las variables de entorno `JAVA_HOME` (apuntando a Java 17) y `M2_HOME` para que el comando `mvn` sea reconocido globalmente.
-
----
-
 ## 🔌 Endpoints de la API (GET)
 
 Puedes verificar los datos cargados mediante el `schema.sql` accediendo a las siguientes URLs:

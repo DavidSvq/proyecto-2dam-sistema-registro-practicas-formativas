@@ -83,17 +83,7 @@ La interfaz de Odoo se ha organizado para reflejar fielmente la estructura de da
 
 ---
 
-## 🛠️ Paso 1: Despliegue con Docker
-El sistema utiliza una arquitectura de persistencia independiente para Odoo basada en **PostgreSQL 15**. Para levantar la infraestructura, ejecute desde la carpeta raíz de Odoo:
-
-```bash
-docker-compose up -d
-
-```
-
----
-
-## 🏗️ Paso 2: Configuración Inicial e Instalación de Módulos
+## 🏗️ Configuración Inicial e Instalación de Módulos
 
 Para que el sistema funcione correctamente como espejo, siga este procedimiento detallado. Es un proceso **cíclico**: debe repetir los pasos de activación y búsqueda para cada módulo.
 
