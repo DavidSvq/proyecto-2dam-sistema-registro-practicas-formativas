@@ -98,13 +98,4 @@ Actualmente, el sistema utiliza las siguientes credenciales preconfiguradas para
 
 ---
 
-## 📝 Próximas Tareas y Documentación
-
-* ⏳ **Guía de Usuario:** Pendiente de redacción. Incluirá el manual de uso detallado para cada rol, capturas de flujo de trabajo y resolución de problemas comunes.
-* 🛠️ **Refactorización de Auth:** Mejora del sistema de tokens y persistencia.
-
-## 📢 NOTA FINAL: ESTE PROYECTO SE ENCUENTRA ACTUALMENTE EN PLENO DESARROLLO.
-
----
-
 ⬅️ [Volver al Repositorio Principal](../README.md)
