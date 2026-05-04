@@ -151,8 +151,4 @@ Si deseas conectarte directamente a la base de datos desde un cliente externo:
 
 ---
 
-## 📢 NOTA FINAL: ESTE PROYECTO SE ENCUENTRA ACTUALMENTE EN PLENO DESARROLLO, POR LO QUE EL CÓDIGO Y LA DOCUMENTACIÓN IRÁN SUFRIENDO MODIFICACIONES PERIÓDICAS.
-
----
-
 ⬅️ [Volver al Repositorio Principal](../../README.md)
