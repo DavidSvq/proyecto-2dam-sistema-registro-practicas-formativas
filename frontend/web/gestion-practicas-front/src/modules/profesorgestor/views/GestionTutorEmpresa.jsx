@@ -5,6 +5,7 @@ import { empresaService } from '../../../services/empresaService';
 import AppTable from "../../../common/components/AppTable";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const GestionTutoresEmpresa = ({ user }) => {
   const [tutores, setTutores] = useState([]);
@@ -111,7 +112,14 @@ const GestionTutoresEmpresa = ({ user }) => {
       }
       setShowModal(false);
       cargarDatos();
-    } catch (err) { alert("Error al guardar."); }
+    } catch (err) { 
+      Swal.fire({
+        title: "Error al guardar",
+        text: "Ocurrió un error al guardar los datos del tutor.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
+    }
   };
 
   const manejarEliminar = async (tutor) => {
@@ -119,7 +127,14 @@ const GestionTutoresEmpresa = ({ user }) => {
       try {
         await tutorEmpresaService.eliminarTutor(tutor.id);
         cargarDatos();
-      } catch (err) { alert("Error al eliminar."); }
+      } catch (err) { 
+        Swal.fire({
+          title: "Error al eliminar",
+          text: "Ocurrió un error al eliminar el tutor.",
+          icon: "error",
+          confirmButtonColor: "#dc3545"
+        });
+      }
     }
   };
 
@@ -130,29 +145,40 @@ const GestionTutoresEmpresa = ({ user }) => {
 
   return (
     <>
-      <Row className="mb-4 align-items-center">
-        <Col>
-          <h2 className="fw-bold">Gestión de Tutores de Empresa</h2>
-          <p className="text-muted">Centro: {user?.profesorInfo?.centroNombre}</p>
+      {/* CABECERA: Adaptable con espaciado consistente */}
+      <Row className="mb-4 align-items-center g-3 pt-2">
+        <Col xs={12} md={8} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Gestión de Tutores de Empresa</h2>
+          <p className="text-muted small mb-0">Centro: {user?.profesorInfo?.centroNombre}</p>
         </Col>
-        <Col className="text-end">
-          <Button variant="primary" onClick={abrirModalCrear}>Nuevo Tutor</Button>
+        <Col xs={12} md={4} className="text-center text-md-end">
+          <Button 
+            variant="primary" 
+            className="w-100 w-md-auto shadow-sm" 
+            onClick={abrirModalCrear}
+          >
+            <i className="bi bi-person-plus-fill me-2"></i>Nuevo Tutor
+          </Button>
         </Col>
       </Row>
 
-      <Row className="mb-3 g-3 bg-light p-3 rounded border mx-0">
-        <Col md={7}>
+      {/* FILTROS: Ajustados para lectura vertical en móviles */}
+      <Row className="mb-4 g-3 bg-light p-3 rounded border mx-0 shadow-sm">
+        <Col xs={12} md={7}>
           <Form.Label className="small fw-bold text-secondary">Buscar Tutor</Form.Label>
           <InputGroup>
-            <InputGroup.Text className="bg-white"><i className="bi bi-search"></i></InputGroup.Text>
+            <InputGroup.Text className="bg-white border-end-0">
+              <i className="bi bi-search text-primary"></i>
+            </InputGroup.Text>
             <Form.Control 
+              className="border-start-0"
               placeholder="Nombre o ID..." 
               value={filtroTexto}
               onChange={(e) => setFiltroTexto(e.target.value)}
             />
           </InputGroup>
         </Col>
-        <Col md={5}>
+        <Col xs={12} md={5}>
           <Form.Label className="small fw-bold text-secondary">Filtrar por Empresa</Form.Label>
           <Form.Select value={filtroEmpresa} onChange={(e) => setFiltroEmpresa(e.target.value)}>
             <option value="">Todas las empresas</option>
@@ -163,32 +189,38 @@ const GestionTutoresEmpresa = ({ user }) => {
         </Col>
       </Row>
 
-      <div className="bg-white p-4 rounded shadow-sm border">
-        {loading ? <div className="text-center"><Spinner animation="border" /></div> : (
-          <AppTable 
-            headers={columnas} 
-            data={tutoresFiltrados} 
-            accessorKeys={llaves} 
-            onView={(t) => abrirModalEditar(t, true)}
-            onEdit={(t) => abrirModalEditar(t, false)}
-            onDelete={manejarEliminar}
-          />
-        )}
+      {/* TABLA DE RESULTADOS */}
+      <div className="bg-white rounded shadow-sm border overflow-hidden">
+        {/* Eliminamos el Spinner para evitar fallos de importación y usamos carga directa */}
+        <AppTable 
+          headers={columnas} 
+          data={tutoresFiltrados} 
+          accessorKeys={llaves} 
+          onView={(t) => abrirModalEditar(t, true)}
+          onEdit={(t) => abrirModalEditar(t, false)}
+          onDelete={manejarEliminar}
+        />
       </div>
 
+      {/* MODAL DE EDICIÓN / CREACIÓN */}
       <AppModal 
         show={showModal} 
-        handleClose={() => setShowModal(false)} 
+        handleClose={() => {
+            setShowModal(false);
+            // Si tienes setSelectedTutor lo ideal es limpiarlo aquí para evitar persistencia
+        }} 
         title={isReadOnly ? "Detalle Tutor" : (selectedTutor ? "Editar Tutor" : "Nuevo Tutor")}
         size="lg"
         closeLabel={isReadOnly ? "Volver" : "Cancelar"}
       >
-        <AppForm 
-          fields={obtenerCampos().map(f => ({ ...f, disabled: isReadOnly || f.disabled }))} 
-          initialValues={selectedTutor || { id: '', nombre: '', apellidos: '', email: '', fk_empresa: '' }} 
-          onSubmit={manejarGuardar} 
-          buttonLabel={isReadOnly ? null : "Guardar"} 
-        />
+        <div className="px-1">
+          <AppForm 
+            fields={obtenerCampos().map(f => ({ ...f, disabled: isReadOnly || f.disabled }))} 
+            initialValues={selectedTutor || { id: '', nombre: '', apellidos: '', email: '', fk_empresa: '' }} 
+            onSubmit={manejarGuardar} 
+            buttonLabel={isReadOnly ? null : "Guardar Cambios"} 
+          />
+        </div>
       </AppModal>
     </>
   );

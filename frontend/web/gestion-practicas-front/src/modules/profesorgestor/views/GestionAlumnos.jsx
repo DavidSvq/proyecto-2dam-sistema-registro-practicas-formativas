@@ -8,6 +8,7 @@ import { tutorEmpresaService } from '../../../services/tutorEmpresaService';
 import AppTable from "../../../common/components/AppTable";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const GestionAlumnos = ({ user }) => {
   const [alumnos, setAlumnos] = useState([]);
@@ -166,47 +167,72 @@ const GestionAlumnos = ({ user }) => {
       }
       setShowModal(false);
       cargarAlumnos();
-    } catch (err) { alert("Error al procesar la solicitud."); }
+    } catch (err) { 
+      Swal.fire({
+        title: "Error",
+        text: "Error al procesar la solicitud.",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
+    }
   };
 
   const manejarEliminar = async (alumno) => {
     if (window.confirm(`¿Estás seguro de eliminar al alumno ${alumno.nombreCompleto}?`)) {
       try {
         await alumnoService.deleteAlumno(alumno.id);
-        alert("Alumno eliminado correctamente.");
+        Swal.fire({
+          title: "¡Eliminado!",
+          text: "Alumno eliminado correctamente.",
+          icon: "success",
+          confirmButtonColor: "#0d6efd",
+          timer: 2000
+        });
         cargarAlumnos();
       } catch (err) {
-        console.error("Error al eliminar", err);
-        alert("No se puede eliminar el alumno. Es probable que tenga registros asociados (asistencias, evaluaciones, etc).");
+        Swal.fire({
+          title: "Error",
+          text: "No se puede eliminar el alumno. Es probable que tenga registros asociados (asistencias, evaluaciones, etc).",
+          icon: "error",
+          confirmButtonColor: "#dc3545"
+        });
       }
     }
   };
 
   return (
     <>
-      <Row className="mb-4 align-items-center">
-        <Col>
-          <h2 className="fw-bold">Gestión de Alumnos</h2>
-          <p className="text-muted">Centro: {user?.profesorInfo?.centroNombre}</p>
+      {/* CABECERA: Adaptable para que el botón no se corte en móvil */}
+      <Row className="mb-4 align-items-center g-3">
+        <Col xs={12} md={8} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Gestión de Alumnos</h2>
+          <p className="text-muted small mb-0">Centro: {user?.profesorInfo?.centroNombre}</p>
         </Col>
-        <Col className="text-end">
-          <Button variant="primary" onClick={abrirModalCrear}>Matricular Alumno</Button>
+        <Col xs={12} md={4} className="text-center text-md-end">
+          <Button variant="primary" className="w-100 w-md-auto" onClick={abrirModalCrear}>
+            <i className="bi bi-person-plus me-2"></i>
+            Matricular Alumno
+          </Button>
         </Col>
       </Row>
 
-      <Row className="mb-3 g-3 bg-light p-3 rounded border mx-0">
-        <Col md={7}>
+      {/* FILTROS: Mejora de espaciado y lectura vertical */}
+      <Row className="mb-4 g-3 bg-light p-3 rounded border mx-0 shadow-sm">
+        <Col xs={12} md={7}>
           <Form.Label className="small fw-bold text-secondary">Buscar por nombre o ID</Form.Label>
           <InputGroup>
-            <InputGroup.Text className="bg-white"><i className="bi bi-search"></i></InputGroup.Text>
+            <InputGroup.Text className="bg-white border-end-0">
+              <i className="bi bi-search text-primary"></i>
+            </InputGroup.Text>
             <Form.Control 
-              placeholder="Buscar alumno..." 
+              className="border-start-0"
+              placeholder="Ej: Juan Pérez..." 
               value={filtroTexto}
               onChange={(e) => setFiltroTexto(e.target.value)}
             />
           </InputGroup>
         </Col>
-        <Col md={5}>
+        <Col xs={12} md={5}>
           <Form.Label className="small fw-bold text-secondary">Filtrar por Empresa</Form.Label>
           <Form.Select value={filtroEmpresa} onChange={(e) => setFiltroEmpresa(e.target.value)}>
             <option value="">Todas las empresas</option>
@@ -217,8 +243,14 @@ const GestionAlumnos = ({ user }) => {
         </Col>
       </Row>
 
-      <div className="bg-white p-4 rounded shadow-sm border">
-        {loading ? <div className="text-center"><Spinner animation="border" /></div> : (
+      {/* TABLA: Contenedor con scroll horizontal automático si es necesario */}
+      <div className="bg-white rounded shadow-sm border overflow-hidden">
+        {loading ? (
+          <div className="text-center py-5">
+            <Spinner animation="border" variant="primary" />
+            <p className="mt-2 text-muted">Cargando alumnos...</p>
+          </div>
+        ) : (
           <AppTable 
             headers={columnas} 
             data={alumnosFiltrados} 
@@ -230,6 +262,7 @@ const GestionAlumnos = ({ user }) => {
         )}
       </div>
 
+      {/* MODAL: Ajuste de padding para formularios móviles */}
       <AppModal 
         show={showModal} 
         handleClose={() => setShowModal(false)} 
@@ -237,12 +270,14 @@ const GestionAlumnos = ({ user }) => {
         size="lg"
         closeLabel={isReadOnly ? "Volver" : "Cancelar"}
       >
-        <AppForm 
-          fields={camposAlumno.map(f => ({ ...f, disabled: isReadOnly || f.disabled }))} 
-          initialValues={selectedAlumno || { nombre: '', apellidos: '', email: '', horasTotales: 0 }} 
-          onSubmit={manejarGuardar} 
-          buttonLabel={isReadOnly ? null : "Guardar"} 
-        />
+        <div className="px-1"> {/* Pequeño respiro lateral para el formulario */}
+          <AppForm 
+            fields={camposAlumno.map(f => ({ ...f, disabled: isReadOnly || f.disabled }))} 
+            initialValues={selectedAlumno || { nombre: '', apellidos: '', email: '', horasTotales: 0 }} 
+            onSubmit={manejarGuardar} 
+            buttonLabel={isReadOnly ? null : "Guardar Alumno"} 
+          />
+        </div>
       </AppModal>
     </>
   );

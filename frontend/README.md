@@ -77,33 +77,6 @@ Este módulo ha sido desarrollado utilizando **React** y **Vite**. Sigue estos p
 
 ---
 
-## 🏗️ Paso 1: Instalación de Dependencias
-
-Antes de arrancar por primera vez, descarga todas las librerías necesarias. Desde la raíz de la carpeta del frontend (dentro de la carpeta `web` si es el caso):
-
-1.  Navega a la carpeta del proyecto:
-    ```bash
-    cd frontend/web/gestion-practicas-front
-    ```
-2.  Instala los paquetes:
-    ```bash
-    npm install
-    ```
-
----
-
-## 🛠️ Paso 2: Ejecución en Modo Desarrollo
-
-Para iniciar la aplicación con recarga en caliente (Hot Reload):
-
-1.  Ejecuta el comando de desarrollo:
-    ```bash
-    npm run dev
-    ```
-2.  Abre tu navegador en la dirección que indique la terminal (normalmente `http://localhost:5173`).
-
----
-
 ## 🌐 Conexión con el Backend
 
 Nota de Integración: El sistema cuenta con soporte nativo para el intercambio de recursos entre orígenes (CORS), ya configurado en el backend mediante @CrossOrigin, garantizando la comunicación inmediata con el entorno de desarrollo.

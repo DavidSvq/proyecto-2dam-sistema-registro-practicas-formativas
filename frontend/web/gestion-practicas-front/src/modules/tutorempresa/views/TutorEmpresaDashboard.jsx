@@ -22,7 +22,7 @@ const TutorEmpresaDashboard = ({ user, onLogout }) => {
   return (
     <div className="d-flex flex-column vh-100">
       {/* Barra de navegación superior con identidad del usuario */}
-      <CustomNavbar user={user} onLogout={onLogout} />
+      <CustomNavbar user={user} onLogout={onLogout} links={linksTutor} />
 
       <div className="d-flex flex-grow-1 overflow-hidden">
         {/* Menú lateral con los accesos directos a las entidades */}

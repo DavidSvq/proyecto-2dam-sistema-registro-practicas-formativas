@@ -1,10 +1,16 @@
 package com.dam.proyecto.backend.service.impl;
+import com.dam.proyecto.backend.dto.alumno.AlumnoMapper;
 import com.dam.proyecto.backend.dto.tarea.TareaDTO;
 import com.dam.proyecto.backend.dto.tarea.TareaMapper;
 import com.dam.proyecto.backend.model.Tarea;
 import com.dam.proyecto.backend.model.enums.EstadoTarea;
+import com.dam.proyecto.backend.model.users.Alumno;
+import com.dam.proyecto.backend.model.users.TutorEmpresa;
 import com.dam.proyecto.backend.repository.TareaRepository;
+import com.dam.proyecto.backend.repository.users.AlumnoRepository;
+import com.dam.proyecto.backend.repository.users.TutorEmpresaRepository;
 import com.dam.proyecto.backend.service.ITareaService;
+import com.dam.proyecto.backend.service.external.IARestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.ReadOnlyProperty;
@@ -22,13 +28,42 @@ public class TareaServiceImpl implements ITareaService {
 
     private final TareaRepository tareaRepository;
     private final TareaMapper tareaMapper;
+    private final AlumnoRepository alumnoRepository;
+    private final TutorEmpresaRepository tutorEmpresaRepository;
+    private final IARestClient iaRestClient;
 
-    // 1. CREACIÓN PURA
     @Override
     @Transactional
     public Tarea crearTarea(Tarea tarea) {
-        log.info("Persistiendo nueva tarea en borrador: {}", tarea.getTitulo());
-        // Solo guarda, no dispara estados ni fechas aún
+        log.info("Iniciando creación de tarea: {}", tarea.getTitulo());
+
+        // 1. Validar y recuperar Alumno
+        if (tarea.getAlumno() != null && tarea.getAlumno().getId() != null) {
+            // Buscamos por el ID heredado
+            Alumno alumnoReal = alumnoRepository.findById(tarea.getAlumno().getId())
+                    .orElseThrow(() -> new RuntimeException("Alumno no encontrado con ID: " + tarea.getAlumno().getId()));
+            tarea.setAlumno(alumnoReal);
+        }
+
+        // 2. Validar y recuperar Tutor
+        if (tarea.getTutorEmpresa() != null && tarea.getTutorEmpresa().getId() != null) {
+            TutorEmpresa tutorReal = tutorEmpresaRepository.findById(tarea.getTutorEmpresa().getId())
+                    .orElseThrow(() -> new RuntimeException("Tutor no encontrado con ID: " + tarea.getTutorEmpresa().getId()));
+            tarea.setTutorEmpresa(tutorReal);
+        }
+
+        tarea.setFechaAsignacion(LocalDate.now());
+        if (tarea.getEstado() == null) {
+            tarea.setEstado(EstadoTarea.ASIGNADA);
+        }
+
+        // --- BLOQUE DE LA IA ---
+        if (tarea.getDescripcion() != null && !tarea.getDescripcion().isBlank()) {
+            log.info("Solicitando estimación de IA antes de guardar...");
+            Double prediccion = iaRestClient.obtenerPrediccionHoras(tarea.getDescripcion());
+            tarea.setHorasEstimadasIA(prediccion);
+        }
+        // -----------------------
         return tareaRepository.save(tarea);
     }
 

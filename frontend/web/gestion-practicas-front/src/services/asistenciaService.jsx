@@ -15,7 +15,7 @@ export const asistenciaService = {
         const url = hora 
             ? `/asistencias/salida/${idAlumno}?hora=${hora}` 
             : `/asistencias/salida/${idAlumno}`;
-        // Enviamos observaciones en el body como un String simple según tu Controller
+        // Enviamos observaciones en el body como un String simple
         const response = await api.patch(url, observaciones, {
             headers: { 'Content-Type': 'text/plain' }
         });

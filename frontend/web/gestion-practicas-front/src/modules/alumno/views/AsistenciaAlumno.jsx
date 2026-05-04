@@ -5,6 +5,7 @@ import AppTable from "../../../common/components/AppTable";
 import InfoCard from "../../../common/components/InfoCard";
 import AppModal from "../../../common/components/AppModal";
 import AppForm from "../../../common/components/AppForm";
+import Swal from 'sweetalert2';
 
 const AsistenciaAlumno = ({ user }) => {
   // Estados de datos
@@ -88,7 +89,13 @@ const AsistenciaAlumno = ({ user }) => {
       await asistenciaService.registrarEntrada(user.id, `${horaManual}:00`);
       await cargarDatos();
     } catch (err) {
-      alert(err.response?.data?.message || "Error al registrar entrada");
+      Swal.fire({
+        title: "Error de Registro",
+        text: err.response?.data?.message || "Error al registrar entrada",
+        icon: "error",
+        confirmButtonColor: "#dc3545",
+        confirmButtonText: "Aceptar"
+      });
     } finally {
       setActionLoading(false);
     }
@@ -100,7 +107,12 @@ const AsistenciaAlumno = ({ user }) => {
       await asistenciaService.registrarSalida(user.id, observaciones, `${horaManual}:00`);
       await cargarDatos();
     } catch (err) {
-      alert(err.response?.data?.message || "Error al registrar salida");
+      Swal.fire({
+        title: "Error de Registro",
+        text: err.response?.data?.message || "Error al registrar salida",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     } finally {
       setActionLoading(false);
     }
@@ -139,15 +151,24 @@ const AsistenciaAlumno = ({ user }) => {
       // 2. Cerramos el modal
       setShowEditModal(false);
       
-      // 3. RECARGAMOS LOS DATOS
-      // Esto es CRUCIAL: al llamar a cargarDatos(), el Front pide la lista nueva,
-      // y el Back le envía las horas ya recalculadas automáticamente.
+      // 3. RECARGAMOS LOS DATOS PARA VER LOS CAMBIOS REFLEJADOS
       await cargarDatos(); 
 
-      alert("¡Registro actualizado correctamente!");
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "¡Registro actualizado correctamente!",
+        icon: "success",
+        confirmButtonColor: "#0d6efd",
+        timer: 2000
+      });
     } catch (err) {
       console.error("Error al actualizar:", err);
-      alert("Error: " + (err.response?.data?.message || "No se pudo actualizar el registro"));
+      Swal.fire({
+        title: "Error",
+        text: err.response?.data?.message || "No se pudo actualizar el registro",
+        icon: "error",
+        confirmButtonColor: "#dc3545"
+      });
     } finally {
       setActionLoading(false);
     }
@@ -160,24 +181,26 @@ const AsistenciaAlumno = ({ user }) => {
   const jornadaCerrada = asistenciaHoy && asistenciaHoy.horaSalida;
 
   return (
-    <Container fluid className="px-4 pb-5">
-      {/* CABECERA */}
-      <Row className="mb-4 pt-3">
-        <Col md={8}>
-          <h2 className="fw-bold text-primary mb-0">Gestión de Asistencia</h2>
-          <p className="fs-5 fw-bold text-dark text-capitalize mb-0 shadow-sm-inline">
+    <Container fluid className="px-2 px-md-4 pb-5">
+      {/* CABECERA: Se apila en móvil, alineada en PC */}
+      <Row className="mb-3 mb-md-4 pt-3 align-items-center"> {/* Reducimos margen en móvil */}
+        <Col xs={12} md={8} className="mb-2 mb-md-0 text-center text-md-start"> {/* Centrado en móvil ayuda a la jerarquía */}
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Gestión de Asistencia</h2>
+          <p className="fs-6 fw-bold text-dark text-capitalize mb-0">
             <i className="bi bi-calendar3 me-2 text-primary"></i>
             {hoyLargo}
           </p>
         </Col>
-        <Col md={4} className="text-md-end">
-           <Badge bg="light" text="dark" className="border shadow-sm p-2">Alumno: {user?.id}</Badge>
+        <Col xs={12} md={4} className="text-center text-md-end">
+           <Badge bg="light" text="dark" className="border shadow-sm p-2 w-100 w-md-auto mt-2 mt-md-0">
+             Alumno: {user?.id}
+           </Badge>
         </Col>
       </Row>
 
       {/* PANEL DE CONTROL DINÁMICO */}
-      <Row className="mb-5">
-        <Col lg={4} className="mb-3 mb-lg-0">
+      <Row className="mb-4 mb-md-5 g-3"> {/* g-3 asegura espacio uniforme entre las dos columnas */}
+        <Col lg={4}>
           <InfoCard 
             titulo="Estado Actual" 
             contenido={!asistenciaHoy ? "Ausente" : estaDentro ? "En Jornada" : "Finalizado"} 
@@ -187,32 +210,42 @@ const AsistenciaAlumno = ({ user }) => {
         </Col>
         <Col lg={8}>
           <Card className="border-0 shadow-sm h-100 bg-white">
-            <Card.Body className="d-flex align-items-center">
+            <Card.Body className="d-flex align-items-center p-3 p-md-4">
               {!asistenciaHoy && (
-                <div className="w-100 d-flex gap-3 align-items-end">
-                   <Form.Group className="flex-grow-1">
-                      <Form.Label className="small fw-bold text-muted">HORA DE ENTRADA</Form.Label>
-                      <Form.Control type="time" value={horaManual} onChange={(e)=>setHoraManual(e.target.value)}/>
-                   </Form.Group>
-                   <Button variant="primary" className="px-4 py-2" onClick={handleEntrada} disabled={actionLoading}>
-                     Fichar Entrada
-                   </Button>
+                <div className="w-100 d-flex flex-column flex-md-row gap-3 align-items-md-end">
+                    <Form.Group className="flex-grow-1">
+                       <Form.Label className="small fw-bold text-muted">HORA DE ENTRADA</Form.Label>
+                       <Form.Control 
+                         type="time" 
+                         size="lg" // Botones e inputs más grandes en móvil son más fáciles de tocar
+                         value={horaManual} 
+                         onChange={(e)=>setHoraManual(e.target.value)}
+                       />
+                    </Form.Group>
+                    <Button variant="primary" size="lg" className="px-4 w-100 w-md-auto" onClick={handleEntrada} disabled={actionLoading}>
+                      Fichar Entrada
+                    </Button>
                 </div>
               )}
 
               {estaDentro && (
                 <div className="w-100">
-                  <Row className="g-3">
-                    <Col md={3}>
+                  <Row className="g-3"> {/* g-3 para que los inputs no se peguen al apilarse */}
+                    <Col xs={12} md={3}>
                       <Form.Label className="small fw-bold text-muted">HORA SALIDA</Form.Label>
-                      <Form.Control type="time" value={horaManual} onChange={(e)=>setHoraManual(e.target.value)}/>
+                      <Form.Control type="time" size="lg" value={horaManual} onChange={(e)=>setHoraManual(e.target.value)}/>
                     </Col>
-                    <Col md={6}>
+                    <Col xs={12} md={6}>
                       <Form.Label className="small fw-bold text-muted">OBSERVACIONES</Form.Label>
-                      <Form.Control placeholder="¿Qué has hecho hoy?" value={observaciones} onChange={(e)=>setObservaciones(e.target.value)}/>
+                      <Form.Control 
+                        placeholder="¿Qué has hecho hoy?" 
+                        size="lg"
+                        value={observaciones} 
+                        onChange={(e)=>setObservaciones(e.target.value)}
+                      />
                     </Col>
-                    <Col md={3} className="d-flex align-items-end">
-                      <Button variant="danger" className="w-100" onClick={handleSalida} disabled={actionLoading}>
+                    <Col xs={12} md={3} className="d-flex align-items-end">
+                      <Button variant="danger" size="lg" className="w-100" onClick={handleSalida} disabled={actionLoading}>
                         Cerrar Jornada
                       </Button>
                     </Col>
@@ -222,9 +255,9 @@ const AsistenciaAlumno = ({ user }) => {
 
               {jornadaCerrada && (
                 <div className="text-center w-100 py-2">
-                  <h5 className="text-success mb-0 fw-bold">
+                  <h5 className="text-success mb-0 fw-bold fs-6 fs-md-5">
                     <i className="bi bi-check-circle-fill me-2"></i>
-                    Jornada del día completada ({asistenciaHoy.horaEntrada} - {asistenciaHoy.horaSalida})
+                    Jornada completada ({asistenciaHoy.horaEntrada} - {asistenciaHoy.horaSalida})
                   </h5>
                 </div>
               )}
@@ -234,19 +267,20 @@ const AsistenciaAlumno = ({ user }) => {
       </Row>
 
       {/* HISTORIAL CON FILTRADO */}
-      <Card className="border-0 shadow-sm">
-        <Card.Header className="bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-          <h5 className="mb-0 fw-bold">Historial de Jornadas</h5>
-          <div className="d-flex gap-2">
+      <Card className="border-0 shadow-sm overflow-hidden"> {/* overflow-hidden evita que la tabla sobresalga del radio del borde */}
+        <Card.Header className="bg-white py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center border-bottom gap-3">
+          <h5 className="fs-5 fw-bold mb-0 text-center text-md-start">Historial de Jornadas</h5>
+          <div className="d-flex gap-2 flex-wrap flex-md-nowrap">
             <Form.Control 
               type="date" 
-              size="sm" 
-              className="w-auto" 
+              className="flex-grow-1 w-md-auto" 
               value={filtroFecha} 
               onChange={(e) => setFiltroFecha(e.target.value)} 
             />
-            <Button variant="primary" size="sm" onClick={handleFiltrar}>Buscar</Button>
-            <Button variant="secondary" size="sm" onClick={() => {setFiltroFecha(""); cargarDatos();}}>Limpiar</Button>
+            <Button variant="primary" className="flex-grow-1" onClick={handleFiltrar}>Buscar</Button>
+            <Button variant="secondary" className="flex-grow-1" onClick={() => {setFiltroFecha(""); cargarDatos();}}>
+                <i className="bi bi-arrow-clockwise"></i> {/* Un icono ayuda a identificar "Limpiar" en móvil */}
+            </Button>
           </div>
         </Card.Header>
         <Card.Body className="p-0">
@@ -259,14 +293,13 @@ const AsistenciaAlumno = ({ user }) => {
         </Card.Body>
       </Card>
 
-      {/* TU COMPONENTE MODAL PARA EDICIÓN */}
+      {/* MODAL EDICIÓN */}
       <AppModal
         show={showEditModal}
         handleClose={() => setShowEditModal(false)}
         title={`Editar Jornada - ${registroAEditar?.fecha}`}
         size="lg"
       >
-        {/* TU COMPONENTE FORMULARIO */}
         <AppForm 
           fields={camposEdicion} 
           initialValues={registroAEditar} 

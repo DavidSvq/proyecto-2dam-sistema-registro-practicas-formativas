@@ -9,16 +9,16 @@ import { Modal, Button } from 'react-bootstrap';
  */
 const AppModal = ({ show, handleClose, title, children, size = "md", closeLabel = "Cancelar" }) => {
   return (
-    <Modal show={show} onHide={handleClose} size={size} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>{title}</Modal.Title>
+    <Modal show={show} onHide={handleClose} size={size} centered scrollable>
+      <Modal.Header closeButton className="py-2 py-md-3">
+        <Modal.Title className="fs-5 fs-md-4">{title}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body className="p-2 p-md-3">
         {children}
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          {closeLabel} {/* <--- Aquí usamos la nueva prop */}
+      <Modal.Footer className="p-2 p-md-3">
+        <Button variant="secondary" onClick={handleClose} className="w-100 w-md-auto" >
+          {closeLabel}
         </Button>
       </Modal.Footer>
     </Modal>

@@ -18,15 +18,15 @@ const AlumnoDashboard = ({ user, onLogout }) => {
   return (
     <div className="d-flex flex-column vh-100">
       {/* 1. Navbar siempre arriba */}
-      <CustomNavbar user={user} onLogout={onLogout} />
+      <CustomNavbar user={user} onLogout={onLogout} links={linksAlumno} />
 
-      <div className="d-flex flex-grow-1">
+      <div className="d-flex flex-grow-1 overflow-hidden">
         {/* 2. Sidebar fijo a la izquierda */}
         <Sidebar links={linksAlumno} />
 
         {/* 3. Área de contenido dinámico */}
         <main className="flex-grow-1 p-4 bg-light" style={{ overflowY: 'auto' }}>
-          <Container fluid>
+          <Container fluid className="p-2 p-md-4">
             <Outlet />
           </Container>
         </main>

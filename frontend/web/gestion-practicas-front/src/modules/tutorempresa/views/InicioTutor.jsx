@@ -55,94 +55,87 @@ const InicioTutor = ({ user }) => {
   if (error) return <Alert variant="danger" className="m-4">{error}</Alert>;
 
   return (
-    <Container fluid className="px-4">
-      <Row className="mb-4">
-        <Col>
-          <h2 className="fw-bold">Panel de Inicio</h2>
-          <p className="text-muted">
+    <Container fluid className="px-3 px-md-4 pb-5">
+      {/* CABECERA: Centrada en móvil, alineada en escritorio */}
+      <Row className="mb-4 align-items-center g-3 pt-2">
+        <Col xs={12} md={8} className="text-center text-md-start">
+          <h2 className="fw-bold text-primary mb-0 fs-3 fs-md-2">Panel de Inicio</h2>
+          <p className="text-muted small mb-0">
             Bienvenido, <strong>{datosTutor?.nombreSolo}</strong>. 
-            Consulta aquí la información de tu perfil y empresa.
+            Consulta aquí tu perfil y empresa.
           </p>
         </Col>
       </Row>
 
-      {/* FILA 1: RAZÓN SOCIAL */}
-      <Row className="mb-3">
-        <Col md={12}>
-          <InfoCard 
-            titulo="Empresa / Entidad" 
-            contenido={datosTutor?.razonSocial} 
-            variante="dark" 
-            icono="bi bi-building"
-          />
-        </Col>
-      </Row>
+      {/* SECCIÓN EMPRESA */}
+      <div className="mb-4">
+        <Row className="g-3">
+          <Col xs={12}>
+            <InfoCard 
+              titulo="Empresa / Entidad" 
+              contenido={datosTutor?.razonSocial} 
+              variante="dark" 
+              icono="bi bi-building"
+            />
+          </Col>
+          <Col xs={12} md={6}>
+            <InfoCard 
+              titulo="CIF" 
+              contenido={datosTutor?.cif} 
+              variante="secondary" 
+              icono="bi bi-card-text"
+            />
+          </Col>
+          <Col xs={12} md={6}>
+            <InfoCard 
+              titulo="Localidad" 
+              contenido={datosTutor?.localidad} 
+              variante="secondary" 
+              icono="bi bi-geo-alt"
+            />
+          </Col>
+        </Row>
+      </div>
 
-      {/* FILA 2: CIF Y LOCALIDAD */}
-      <Row className="mb-4">
-        <Col md={6} className="mb-3 mb-md-0">
-          <InfoCard 
-            titulo="CIF" 
-            contenido={datosTutor?.cif} 
-            variante="secondary" 
-            icono="bi bi-card-text"
-          />
-        </Col>
-        <Col md={6}>
-          <InfoCard 
-            titulo="Localidad" 
-            contenido={datosTutor?.localidad} 
-            variante="secondary" 
-            icono="bi bi-geo-alt"
-          />
-        </Col>
-      </Row>
+      <hr className="my-4 opacity-25" />
 
-      <hr className="my-4" />
-
-      {/* FILA 3: NOMBRE DEL TUTOR */}
-      <Row className="mb-3">
-        <Col md={12}>
-          <InfoCard 
-            titulo="Tutor de Empresa" 
-            contenido={datosTutor?.nombreCompleto} 
-            variante="primary" 
-            icono="bi bi-person-badge"
-          />
-        </Col>
-      </Row>
-
-      {/* FILA 4: CÓDIGO Y Nº ALUMNOS */}
-      <Row className="mb-3">
-        <Col md={6} className="mb-3 mb-md-0">
-          <InfoCard 
-            titulo="Código de Tutor" 
-            contenido={datosTutor?.id} 
-            variante="info" 
-            icono="bi bi-hash"
-          />
-        </Col>
-        <Col md={6}>
-          <InfoCard 
-            titulo="Alumnos Asignados" 
-            contenido={datosTutor?.numAlumnosDisplay} 
-            variante="info" 
-            icono="bi bi-people"
-          />
-        </Col>
-      </Row>
-
-      {/* FILA 5: EMAIL */}
-      <Row className="mb-5">
-        <Col md={12}>
-          <InfoCard 
-            titulo="Correo Electrónico" 
-            contenido={datosTutor?.email} 
-            variante="success" 
-            icono="bi bi-envelope-at"
-          />
-        </Col>
-      </Row>
+      {/* SECCIÓN TUTOR */}
+      <div className="mb-5">
+        <Row className="g-3">
+          <Col xs={12}>
+            <InfoCard 
+              titulo="Tutor de Empresa" 
+              contenido={datosTutor?.nombreCompleto} 
+              variante="primary" 
+              icono="bi bi-person-badge"
+            />
+          </Col>
+          <Col xs={12} md={6}>
+            <InfoCard 
+              titulo="Código de Tutor" 
+              contenido={datosTutor?.id} 
+              variante="info" 
+              icono="bi bi-hash"
+            />
+          </Col>
+          <Col xs={12} md={6}>
+            <InfoCard 
+              titulo="Alumnos Asignados" 
+              contenido={datosTutor?.numAlumnosDisplay} 
+              variante="info" 
+              icono="bi bi-people"
+            />
+          </Col>
+          <Col xs={12}>
+            <InfoCard 
+              titulo="Correo Electrónico" 
+              contenido={datosTutor?.email} 
+              variante="success" 
+              icono="bi bi-envelope-at"
+            />
+          </Col>
+        </Row>
+      </div>
     </Container>
   );
 };

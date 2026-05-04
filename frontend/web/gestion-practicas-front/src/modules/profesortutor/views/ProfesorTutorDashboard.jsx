@@ -17,7 +17,7 @@ const ProfesorTutorDashboard = ({ user, onLogout }) => {
   return (
     <div className="d-flex flex-column vh-100">
       {/* 1. Barra superior */}
-      <CustomNavbar user={user} onLogout={onLogout} />
+      <CustomNavbar user={user} onLogout={onLogout} links={linksTutorDocente} />
 
       <div className="d-flex flex-grow-1">
         {/* 2. Menú lateral de supervisión */}
