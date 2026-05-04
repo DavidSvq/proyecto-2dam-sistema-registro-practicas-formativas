@@ -119,16 +119,4 @@ Siga este orden para respetar las dependencias del sistema:
 
 --- 
 
-## 🔌 Configuración del Endpoint
-El conector está pre-configurado para apuntar a la API de Java que se ejecuta en el Host. Debido a la naturaleza del aislamiento de contenedores, es crítico verificar la accesibilidad del endpoint para que la sincronización sea efectiva:
-
-* **Dirección de consumo por defecto:** `http://192.168.x.x:8088/api` 
-* **Ajuste de red:** Se debe sustituir las `x.x` por la IP local de la máquina host. En entornos de Docker Desktop sobre Windows/Mac, también puede probarse el uso de `http://host.docker.internal:8088/api` para facilitar la comunicación entre el contenedor y el servicio local.
-
----
-
-## 📢 NOTA FINAL: ESTE PROYECTO SE ENCUENTRA ACTUALMENTE EN PLENO DESARROLLO, POR LO QUE EL CÓDIGO Y LA DOCUMENTACIÓN IRÁN SUFRIENDO MODIFICACIONES PERIÓDICAS.
-
----
-
 ⬅️ [Volver al Repositorio Principal](../README.md)
